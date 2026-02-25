@@ -1,0 +1,55 @@
+name: Daily Cubs Pipeline Reminder
+
+on:
+  schedule:
+    # Run twice daily: 6:00 AM CT (12:00 UTC) and 4:00 PM CT (22:00 UTC)
+    - cron: '0 12 * * *'
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get current date info
+        id: date
+        run: |
+          echo "date=$(TZ='America/Chicago' date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          echo "time=$(TZ='America/Chicago' date +'%I:%M %p CT')" >> $GITHUB_OUTPUT
+          echo "day=$(TZ='America/Chicago' date +'%A')" >> $GITHUB_OUTPUT
+
+      - name: Send email notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "Cubs Pipeline Ready - ${{ steps.date.outputs.day }} ${{ steps.date.outputs.date }}"
+          to: ${{ secrets.NOTIFY_EMAIL }}
+          from: "Cubs Pipeline Bot <${{ secrets.EMAIL_USERNAME }}>"
+          body: |
+            Chicago Cubs Fan HQ - Daily Content Pipeline
+
+            Date: ${{ steps.date.outputs.day }}, ${{ steps.date.outputs.date }}
+            Time: ${{ steps.date.outputs.time }}
+
+            Your Cubs content pipeline is ready to run.
+
+            Quick Start:
+            1. Open Claude Code in your Fan_HQ project
+            2. Paste: "Run the Cubs content pipeline for today"
+            3. Review the dashboard when complete
+
+            Or run all pipelines:
+            Paste the contents of daily-pipeline-prompt.md
+
+            Dashboard: https://fangearhq-boop.github.io/cubs-dashboards/
+
+      # Optional: Discord webhook (uncomment and add DISCORD_WEBHOOK secret)
+      # - name: Send Discord notification
+      #   run: |
+      #     curl -H "Content-Type: application/json" \
+      #       -d '{"content": "Cubs Pipeline Ready - ${{ steps.date.outputs.day }} ${{ steps.date.outputs.date }}"}' \
+      #       ${{ secrets.DISCORD_WEBHOOK }}
