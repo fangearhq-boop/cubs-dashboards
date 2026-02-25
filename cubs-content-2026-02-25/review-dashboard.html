@@ -170,6 +170,19 @@
         .edit-bar-label { font-size: 12px; font-weight: 600; color: #cc6600; flex: 1; }
         .edit-bar .btn { padding: 7px 14px; font-size: 12px; }
 
+        .tweet-meta-bar {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; padding: 0;
+        }
+        .tweet-meta-badge {
+            display: inline-block; padding: 4px 10px; border-radius: 4px;
+            font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+        }
+        .tweet-meta-label { background: #e0e7ff; color: #3730a3; }
+        .tweet-meta-time { background: #fef3c7; color: #92400e; }
+        .tweet-meta-type { background: #d1fae5; color: #065f46; }
+        .tweet-meta-tier { background: #f3e8ff; color: #6b21a8; }
+        .tweet-meta-hashtags { background: #dbeafe; color: #1e40af; font-family: monospace; }
+
         .char-count {
             font-size: 12px; margin: 0 0 10px 0; padding: 8px;
             background: #f0f0f0; border-radius: 4px;
@@ -363,12 +376,12 @@
             </div>
             <div class="nav-item" onclick="filterByType('x_post')">
                 X / Twitter Posts
-                <span class="nav-item-count">13</span>
+                <span class="nav-item-count">23</span>
             </div>
 
             <div class="nav-item" onclick="filterByType('all')">
                 All Items
-                <span class="nav-item-count">20</span>
+                <span class="nav-item-count">30</span>
             </div>
         </div>
 
@@ -401,7 +414,7 @@
             <div class="header-meta">
                 <div class="progress-bar">
                     <div class="progress-label">
-                        <span id="reviewed-count">0</span> of <span id="total-count">20</span> items reviewed
+                        <span id="reviewed-count">0</span> of <span id="total-count">30</span> items reviewed
                     </div>
                     <div class="progress-container">
                         <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
@@ -435,6 +448,7 @@
                         <div class="card-title">PECOTA Projects Cubs to Run Away with NL Central</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
                     </div>
+                    
 
                     <div class="card-content collapsed" id="content-story-1-daily_brief">
                         <div class="card-content-text">PECOTA Projects Cubs to Run Away with NL Central
@@ -487,6 +501,7 @@ Multiple projection systems now have the Cubs as clear NL Central favorites. PEC
                         <div class="card-title">Justin Steele Rehab Ahead of Schedule, Targeting May Return</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
                     </div>
+                    
 
                     <div class="card-content collapsed" id="content-story-2-daily_brief">
                         <div class="card-content-text">Justin Steele Rehab Ahead of Schedule, Targeting May Return
@@ -539,6 +554,7 @@ Justin Steele&#x27;s recovery from left elbow UCL revision surgery is ahead of s
                         <div class="card-title">Cubs Sign Michael Conforto to Minor League Deal</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
                     </div>
+                    
 
                     <div class="card-content collapsed" id="content-story-3-daily_brief">
                         <div class="card-content-text">Cubs Sign Michael Conforto to Minor League Deal
@@ -591,6 +607,7 @@ The Cubs agreed to a minor league deal with outfielder Michael Conforto on Febru
                         <div class="card-title">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
                     </div>
+                    
 
                     <div class="card-content collapsed" id="content-story-4-daily_brief">
                         <div class="card-content-text">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot
@@ -643,6 +660,7 @@ With the core roster locked in, the Cubs have two key battles in Mesa. The fourt
                         <div class="card-title">Cade Horton Emerges as Opening Day Starter Favorite</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
                     </div>
+                    
 
                     <div class="card-content collapsed" id="content-story-5-daily_brief">
                         <div class="card-content-text">Cade Horton Emerges as Opening Day Starter Favorite
@@ -695,6 +713,7 @@ Cade Horton is the favorite to get the Opening Day nod after a dominant second-h
                         <div class="card-title">Happ and Suzuki — No Extension Talks Yet with Cubs</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
                     </div>
+                    
 
                     <div class="card-content collapsed" id="content-story-6-daily_brief">
                         <div class="card-content-text">Happ and Suzuki — No Extension Talks Yet with Cubs
@@ -747,6 +766,7 @@ Both Ian Happ and Seiya Suzuki told the Chicago Sun-Times that they haven&#x27;t
                         <div class="card-title">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose</div>
                         <div><span class="fact-check-badge fact-check-warning" title="Some claims were removed or flagged for review">REVIEW FLAGS</span><span class="card-badge badge-brief">BRIEF</span></div>
                     </div>
+                    
 
                     <div class="card-content collapsed" id="content-story-7-daily_brief">
                         <div class="card-content-text">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose
@@ -856,1543 +876,1074 @@ The Cardinals have traded away most of their veterans and entered full rebuild m
 
                     <div class="status-label" id="status-story-7-daily_brief"></div>
                 </div>
-                <div class="card" data-id="story-1-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-1-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">PECOTA Projects Cubs to Run Away with NL Central</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post</span><span class="tweet-meta-badge tweet-meta-time">7:00 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Informative</span><span class="tweet-meta-badge tweet-meta-tier">Tier 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #MLB</span></div>
 
-                    <div class="card-content collapsed" id="content-story-1-x_post">
-                        <div class="card-content-text">PECOTA Projects Cubs to Run Away with NL Central
-
-**Tier:** 1
-**Assigned Angles:** The Numbers Don&#x27;t Lie / Cardinals Collapse
-
-### Text Post
-
-```
-PECOTA projects the Cubs for 90.1 wins in 2026 — TEN games ahead of the Brewers.
+                    <div class="card-content expanded" id="content-story-1-x_post-1">
+                        <div class="card-content-text">PECOTA projects the Cubs for 90.1 wins in 2026 — TEN games ahead of the Brewers.
 
 FanGraphs has them at 86 wins. ZiPS says Cubs by a game.
 
 Every system agrees: the NL Central belongs to Chicago.
 
-#Cubs #GoCubs #MLB
-```
-
-**[POSTING WINDOW: 7:00 AM CT]**
-**[CHARACTER COUNT: 215/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Retweets, Replies
-
----
-
-### Thread (3 tweets)
-
-**Tweet 1 (Hook):**
-```
-The projection systems have spoken, and they&#x27;re not being subtle about it.
-
-PECOTA: Cubs win 90.1 games
-FanGraphs: Cubs win 86 games
-ZiPS: Cubs take the NL Central
-
-Every single model says this is Chicago&#x27;s division. Here&#x27;s why. (thread)
-
-#Cubs #NorthSiders #MLB
-```
-
-**[POSTING WINDOW: 9:00 AM CT]**
-**[CHARACTER COUNT: 262/280]**
-**[TYPE: Informative]**
-
-**Tweet 2 (Context):**
-```
-The rotation is the engine. Horton, Imanaga, Taillon, Boyd, and Cabrera — five deep before Steele even comes back from rehab.
-
-Add Bregman&#x27;s bat at third base ($175M investment), and you&#x27;ve got a roster built to win now.
-```
-
-**[POSTING WINDOW: 9:03 AM CT]**
-**[CHARACTER COUNT: 220/280]**
-
-**Tweet 3 (Closer):**
-```
-Meanwhile, the Cardinals are projected LAST in the NL Central after trading everyone.
-
-The Brewers are regressing from 97 wins to the low 80s.
-
-The path is clear. The Cubs haven&#x27;t had a division outlook this favorable in years.
-```
-
-**[POSTING WINDOW: 9:06 AM CT]**
-**[CHARACTER COUNT: 227/280]**
-
-**Thread Strategy:** Lead with the data, build context with roster strength, close with the rival angle. Three tweets keeps it tight and shareable.
-
----</div>
+#Cubs #GoCubs #MLB</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-1-x_post" placeholder="Edit content here...">PECOTA Projects Cubs to Run Away with NL Central
-
-**Tier:** 1
-**Assigned Angles:** The Numbers Don&#x27;t Lie / Cardinals Collapse
-
-### Text Post
-
-```
-PECOTA projects the Cubs for 90.1 wins in 2026 — TEN games ahead of the Brewers.
+                    <textarea class="edit-textarea" id="editor-story-1-x_post-1" placeholder="Edit content here...">PECOTA projects the Cubs for 90.1 wins in 2026 — TEN games ahead of the Brewers.
 
 FanGraphs has them at 86 wins. ZiPS says Cubs by a game.
 
 Every system agrees: the NL Central belongs to Chicago.
 
-#Cubs #GoCubs #MLB
-```
-
-**[POSTING WINDOW: 7:00 AM CT]**
-**[CHARACTER COUNT: 215/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Retweets, Replies
-
----
-
-### Thread (3 tweets)
-
-**Tweet 1 (Hook):**
-```
-The projection systems have spoken, and they&#x27;re not being subtle about it.
-
-PECOTA: Cubs win 90.1 games
-FanGraphs: Cubs win 86 games
-ZiPS: Cubs take the NL Central
-
-Every single model says this is Chicago&#x27;s division. Here&#x27;s why. (thread)
-
-#Cubs #NorthSiders #MLB
-```
-
-**[POSTING WINDOW: 9:00 AM CT]**
-**[CHARACTER COUNT: 262/280]**
-**[TYPE: Informative]**
-
-**Tweet 2 (Context):**
-```
-The rotation is the engine. Horton, Imanaga, Taillon, Boyd, and Cabrera — five deep before Steele even comes back from rehab.
-
-Add Bregman&#x27;s bat at third base ($175M investment), and you&#x27;ve got a roster built to win now.
-```
-
-**[POSTING WINDOW: 9:03 AM CT]**
-**[CHARACTER COUNT: 220/280]**
-
-**Tweet 3 (Closer):**
-```
-Meanwhile, the Cardinals are projected LAST in the NL Central after trading everyone.
-
-The Brewers are regressing from 97 wins to the low 80s.
-
-The path is clear. The Cubs haven&#x27;t had a division outlook this favorable in years.
-```
-
-**[POSTING WINDOW: 9:06 AM CT]**
-**[CHARACTER COUNT: 227/280]**
-
-**Thread Strategy:** Lead with the data, build context with roster strength, close with the rival angle. Three tweets keeps it tight and shareable.
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-1-x_post" onclick="toggleExpand('story-1-x_post')">Show Full Content</span>
+#Cubs #GoCubs #MLB</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-1-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-1-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-1-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-1-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-1-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-1-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-1-x_post">Characters: 1701/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-1-x_post-1">Characters: 215/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-1-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-1-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-1-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-1-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-1-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-1-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-1-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-1-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-1-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-1-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-1-x_post">
+                    <div class="notes-section" id="notes-story-1-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-1-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-1-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-1-x_post"></div>
+                    <div class="status-label" id="status-story-1-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-2-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-1-x_post-2" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">PECOTA Projects Cubs to Run Away with NL Central</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Thread 1</span><span class="tweet-meta-badge tweet-meta-time">9:00 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Informative</span><span class="tweet-meta-badge tweet-meta-tier">Tier 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #NorthSiders #MLB</span></div>
+
+                    <div class="card-content expanded" id="content-story-1-x_post-2">
+                        <div class="card-content-text">The projection systems have spoken, and they&#x27;re not being subtle about it.
+
+PECOTA: Cubs win 90.1 games
+FanGraphs: Cubs win 86 games
+ZiPS: Cubs take the NL Central
+
+Every single model says this is Chicago&#x27;s division. Here&#x27;s why. (thread)
+
+#Cubs #NorthSiders #MLB</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-1-x_post-2" placeholder="Edit content here...">The projection systems have spoken, and they&#x27;re not being subtle about it.
+
+PECOTA: Cubs win 90.1 games
+FanGraphs: Cubs win 86 games
+ZiPS: Cubs take the NL Central
+
+Every single model says this is Chicago&#x27;s division. Here&#x27;s why. (thread)
+
+#Cubs #NorthSiders #MLB</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-1-x_post-2">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-1-x_post-2')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-1-x_post-2')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-1-x_post-2">Characters: 262/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-1-x_post-2">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-1-x_post-2')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-1-x_post-2')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-1-x_post-2')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-1-x_post-2')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-1-x_post-2">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-1-x_post-2" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-1-x_post-2"></div>
+                </div>
+                <div class="card" data-id="story-1-x_post-3" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">PECOTA Projects Cubs to Run Away with NL Central</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Thread 2</span><span class="tweet-meta-badge tweet-meta-time">9:03 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Informative</span><span class="tweet-meta-badge tweet-meta-tier">Tier 1</span></div>
+
+                    <div class="card-content expanded" id="content-story-1-x_post-3">
+                        <div class="card-content-text">The rotation is the engine. Horton, Imanaga, Taillon, Boyd, and Cabrera — five deep before Steele even comes back from rehab.
+
+Add Bregman&#x27;s bat at third base ($175M investment), and you&#x27;ve got a roster built to win now.</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-1-x_post-3" placeholder="Edit content here...">The rotation is the engine. Horton, Imanaga, Taillon, Boyd, and Cabrera — five deep before Steele even comes back from rehab.
+
+Add Bregman&#x27;s bat at third base ($175M investment), and you&#x27;ve got a roster built to win now.</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-1-x_post-3">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-1-x_post-3')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-1-x_post-3')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-1-x_post-3">Characters: 220/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-1-x_post-3">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-1-x_post-3')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-1-x_post-3')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-1-x_post-3')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-1-x_post-3')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-1-x_post-3">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-1-x_post-3" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-1-x_post-3"></div>
+                </div>
+                <div class="card" data-id="story-1-x_post-4" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">PECOTA Projects Cubs to Run Away with NL Central</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Thread 3</span><span class="tweet-meta-badge tweet-meta-time">9:06 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Informative</span><span class="tweet-meta-badge tweet-meta-tier">Tier 1</span></div>
+
+                    <div class="card-content expanded" id="content-story-1-x_post-4">
+                        <div class="card-content-text">Meanwhile, the Cardinals are projected LAST in the NL Central after trading everyone.
+
+The Brewers are regressing from 97 wins to the low 80s.
+
+The path is clear. The Cubs haven&#x27;t had a division outlook this favorable in years.</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-1-x_post-4" placeholder="Edit content here...">Meanwhile, the Cardinals are projected LAST in the NL Central after trading everyone.
+
+The Brewers are regressing from 97 wins to the low 80s.
+
+The path is clear. The Cubs haven&#x27;t had a division outlook this favorable in years.</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-1-x_post-4">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-1-x_post-4')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-1-x_post-4')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-1-x_post-4">Characters: 227/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-1-x_post-4">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-1-x_post-4')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-1-x_post-4')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-1-x_post-4')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-1-x_post-4')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-1-x_post-4">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-1-x_post-4" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-1-x_post-4"></div>
+                </div>
+                <div class="card" data-id="story-2-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">Justin Steele Rehab Ahead of Schedule, Targeting May Return</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post</span><span class="tweet-meta-badge tweet-meta-time">8:30 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Bold/Passionate</span><span class="tweet-meta-badge tweet-meta-tier">Tier 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #CubsBaseball #MLB</span></div>
 
-                    <div class="card-content collapsed" id="content-story-2-x_post">
-                        <div class="card-content-text">Justin Steele Rehab Ahead of Schedule, Targeting May Return
-
-**Tier:** 1
-**Assigned Angles:** Steele Return Hype / Best Rotation in Baseball
-
-### Text Post
-
-```
-Justin Steele says he&#x27;s AHEAD of schedule in his UCL rehab and targeting a May-June return.
+                    <div class="card-content expanded" id="content-story-2-x_post-1">
+                        <div class="card-content-text">Justin Steele says he&#x27;s AHEAD of schedule in his UCL rehab and targeting a May-June return.
 
 He&#x27;s throwing bullpens, feeling great, and working on new pitches.
 
 This rotation is about to get scary deep.
 
-#Cubs #CubsBaseball #MLB
-```
-
-**[POSTING WINDOW: 8:30 AM CT]**
-**[CHARACTER COUNT: 228/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Replies, Likes
-
----
-
-### Thread (3 tweets)
-
-**Tweet 1 (Hook):**
-```
-Justin Steele update from Mesa, and it&#x27;s all good news:
-
-- Ahead of schedule in UCL rehab
-- Bullpen sessions progressing well
-- Targeting May-June return
-- Working on NEW pitches during recovery
-
-This man isn&#x27;t just coming back. He&#x27;s leveling up.
-
-#Cubs #GoCubs #CubsBaseball
-```
-
-**[POSTING WINDOW: 7:00 PM CT]**
-**[CHARACTER COUNT: 275/280]**
-**[TYPE: Bold/Passionate]**
-
-**Tweet 2 (Context):**
-```
-Steele was the Opening Day starter in 2025 before his elbow shut him down after four starts. His last outing? A 7-inning shutout against the Rangers.
-
-He&#x27;ll be on an innings limit when he returns, but even managed, he&#x27;s a front-end arm.
-```
-
-**[POSTING WINDOW: 7:03 PM CT]**
-**[CHARACTER COUNT: 236/280]**
-
-**Tweet 3 (Closer):**
-```
-The Cubs&#x27; rotation by June:
-
-Horton
-Imanaga
-Steele
-Taillon
-Boyd
-Cabrera
-
-That&#x27;s SIX legit starters on one team. Name a deeper rotation in the NL. Take your time.
-```
-
-**[POSTING WINDOW: 7:06 PM CT]**
-**[CHARACTER COUNT: 161/280]**
-
-**Thread Strategy:** Open with the update details, provide injury context, close with the &quot;six starters&quot; hook that invites debate.
-
----</div>
+#Cubs #CubsBaseball #MLB</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-2-x_post" placeholder="Edit content here...">Justin Steele Rehab Ahead of Schedule, Targeting May Return
-
-**Tier:** 1
-**Assigned Angles:** Steele Return Hype / Best Rotation in Baseball
-
-### Text Post
-
-```
-Justin Steele says he&#x27;s AHEAD of schedule in his UCL rehab and targeting a May-June return.
+                    <textarea class="edit-textarea" id="editor-story-2-x_post-1" placeholder="Edit content here...">Justin Steele says he&#x27;s AHEAD of schedule in his UCL rehab and targeting a May-June return.
 
 He&#x27;s throwing bullpens, feeling great, and working on new pitches.
 
 This rotation is about to get scary deep.
 
-#Cubs #CubsBaseball #MLB
-```
-
-**[POSTING WINDOW: 8:30 AM CT]**
-**[CHARACTER COUNT: 228/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Replies, Likes
-
----
-
-### Thread (3 tweets)
-
-**Tweet 1 (Hook):**
-```
-Justin Steele update from Mesa, and it&#x27;s all good news:
-
-- Ahead of schedule in UCL rehab
-- Bullpen sessions progressing well
-- Targeting May-June return
-- Working on NEW pitches during recovery
-
-This man isn&#x27;t just coming back. He&#x27;s leveling up.
-
-#Cubs #GoCubs #CubsBaseball
-```
-
-**[POSTING WINDOW: 7:00 PM CT]**
-**[CHARACTER COUNT: 275/280]**
-**[TYPE: Bold/Passionate]**
-
-**Tweet 2 (Context):**
-```
-Steele was the Opening Day starter in 2025 before his elbow shut him down after four starts. His last outing? A 7-inning shutout against the Rangers.
-
-He&#x27;ll be on an innings limit when he returns, but even managed, he&#x27;s a front-end arm.
-```
-
-**[POSTING WINDOW: 7:03 PM CT]**
-**[CHARACTER COUNT: 236/280]**
-
-**Tweet 3 (Closer):**
-```
-The Cubs&#x27; rotation by June:
-
-Horton
-Imanaga
-Steele
-Taillon
-Boyd
-Cabrera
-
-That&#x27;s SIX legit starters on one team. Name a deeper rotation in the NL. Take your time.
-```
-
-**[POSTING WINDOW: 7:06 PM CT]**
-**[CHARACTER COUNT: 161/280]**
-
-**Thread Strategy:** Open with the update details, provide injury context, close with the &quot;six starters&quot; hook that invites debate.
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-2-x_post" onclick="toggleExpand('story-2-x_post')">Show Full Content</span>
+#Cubs #CubsBaseball #MLB</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-2-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-2-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-2-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-2-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-2-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-2-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-2-x_post">Characters: 1680/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-2-x_post-1">Characters: 228/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-2-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-2-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-2-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-2-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-2-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-2-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-2-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-2-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-2-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-2-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-2-x_post">
+                    <div class="notes-section" id="notes-story-2-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-2-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-2-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-2-x_post"></div>
+                    <div class="status-label" id="status-story-2-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-3-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-2-x_post-2" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Justin Steele Rehab Ahead of Schedule, Targeting May Return</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Thread 1</span><span class="tweet-meta-badge tweet-meta-time">7:00 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Bold/Passionate</span><span class="tweet-meta-badge tweet-meta-tier">Tier 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #CubsBaseball</span></div>
+
+                    <div class="card-content expanded" id="content-story-2-x_post-2">
+                        <div class="card-content-text">Justin Steele update from Mesa, and it&#x27;s all good news:
+
+- Ahead of schedule in UCL rehab
+- Bullpen sessions progressing well
+- Targeting May-June return
+- Working on NEW pitches during recovery
+
+This man isn&#x27;t just coming back. He&#x27;s leveling up.
+
+#Cubs #GoCubs #CubsBaseball</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-2-x_post-2" placeholder="Edit content here...">Justin Steele update from Mesa, and it&#x27;s all good news:
+
+- Ahead of schedule in UCL rehab
+- Bullpen sessions progressing well
+- Targeting May-June return
+- Working on NEW pitches during recovery
+
+This man isn&#x27;t just coming back. He&#x27;s leveling up.
+
+#Cubs #GoCubs #CubsBaseball</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-2-x_post-2">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-2-x_post-2')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-2-x_post-2')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-2-x_post-2">Characters: 275/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-2-x_post-2">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-2-x_post-2')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-2-x_post-2')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-2-x_post-2')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-2-x_post-2')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-2-x_post-2">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-2-x_post-2" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-2-x_post-2"></div>
+                </div>
+                <div class="card" data-id="story-2-x_post-3" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Justin Steele Rehab Ahead of Schedule, Targeting May Return</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Thread 2</span><span class="tweet-meta-badge tweet-meta-time">7:03 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Bold/Passionate</span><span class="tweet-meta-badge tweet-meta-tier">Tier 1</span></div>
+
+                    <div class="card-content expanded" id="content-story-2-x_post-3">
+                        <div class="card-content-text">Steele was the Opening Day starter in 2025 before his elbow shut him down after four starts. His last outing? A 7-inning shutout against the Rangers.
+
+He&#x27;ll be on an innings limit when he returns, but even managed, he&#x27;s a front-end arm.</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-2-x_post-3" placeholder="Edit content here...">Steele was the Opening Day starter in 2025 before his elbow shut him down after four starts. His last outing? A 7-inning shutout against the Rangers.
+
+He&#x27;ll be on an innings limit when he returns, but even managed, he&#x27;s a front-end arm.</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-2-x_post-3">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-2-x_post-3')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-2-x_post-3')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-2-x_post-3">Characters: 236/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-2-x_post-3">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-2-x_post-3')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-2-x_post-3')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-2-x_post-3')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-2-x_post-3')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-2-x_post-3">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-2-x_post-3" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-2-x_post-3"></div>
+                </div>
+                <div class="card" data-id="story-2-x_post-4" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Justin Steele Rehab Ahead of Schedule, Targeting May Return</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Thread 3</span><span class="tweet-meta-badge tweet-meta-time">7:06 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Bold/Passionate</span><span class="tweet-meta-badge tweet-meta-tier">Tier 1</span></div>
+
+                    <div class="card-content expanded" id="content-story-2-x_post-4">
+                        <div class="card-content-text">The Cubs&#x27; rotation by June:
+
+Horton
+Imanaga
+Steele
+Taillon
+Boyd
+Cabrera
+
+That&#x27;s SIX legit starters on one team. Name a deeper rotation in the NL. Take your time.</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-2-x_post-4" placeholder="Edit content here...">The Cubs&#x27; rotation by June:
+
+Horton
+Imanaga
+Steele
+Taillon
+Boyd
+Cabrera
+
+That&#x27;s SIX legit starters on one team. Name a deeper rotation in the NL. Take your time.</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-2-x_post-4">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-2-x_post-4')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-2-x_post-4')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-2-x_post-4">Characters: 161/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-2-x_post-4">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-2-x_post-4')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-2-x_post-4')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-2-x_post-4')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-2-x_post-4')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-2-x_post-4">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-2-x_post-4" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-2-x_post-4"></div>
+                </div>
+                <div class="card" data-id="story-3-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">Cubs Sign Michael Conforto to Minor League Deal</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post</span><span class="tweet-meta-badge tweet-meta-time">10:00 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Informative</span><span class="tweet-meta-badge tweet-meta-tier">Tier 2</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #ChicagoCubs #MLB</span></div>
 
-                    <div class="card-content collapsed" id="content-story-3-x_post">
-                        <div class="card-content-text">Cubs Sign Michael Conforto to Minor League Deal
-
-**Tier:** 2
-**Assigned Angles:** Low-Risk Depth Move
-
-### Text Post
-
-```
-Cubs sign former All-Star Michael Conforto to a minor league deal with a $2MM salary if selected.
+                    <div class="card-content expanded" id="content-story-3-x_post-1">
+                        <div class="card-content-text">Cubs sign former All-Star Michael Conforto to a minor league deal with a $2MM salary if selected.
 
 Adds a lefty bat to the fourth outfield race against Alcantara, Dean, Carlson, and McCormick.
 
 Smart depth move by the front office.
 
-#Cubs #ChicagoCubs #MLB
-```
-
-**[POSTING WINDOW: 10:00 AM CT]**
-**[CHARACTER COUNT: 256/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Likes, Replies
-
----</div>
+#Cubs #ChicagoCubs #MLB</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-3-x_post" placeholder="Edit content here...">Cubs Sign Michael Conforto to Minor League Deal
-
-**Tier:** 2
-**Assigned Angles:** Low-Risk Depth Move
-
-### Text Post
-
-```
-Cubs sign former All-Star Michael Conforto to a minor league deal with a $2MM salary if selected.
+                    <textarea class="edit-textarea" id="editor-story-3-x_post-1" placeholder="Edit content here...">Cubs sign former All-Star Michael Conforto to a minor league deal with a $2MM salary if selected.
 
 Adds a lefty bat to the fourth outfield race against Alcantara, Dean, Carlson, and McCormick.
 
 Smart depth move by the front office.
 
-#Cubs #ChicagoCubs #MLB
-```
-
-**[POSTING WINDOW: 10:00 AM CT]**
-**[CHARACTER COUNT: 256/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Likes, Replies
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-3-x_post" onclick="toggleExpand('story-3-x_post')">Show Full Content</span>
+#Cubs #ChicagoCubs #MLB</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-3-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-3-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-3-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-3-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-3-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-3-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-3-x_post">Characters: 516/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-3-x_post-1">Characters: 256/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-3-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-3-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-3-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-3-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-3-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-3-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-3-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-3-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-3-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-3-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-3-x_post">
+                    <div class="notes-section" id="notes-story-3-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-3-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-3-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-3-x_post"></div>
+                    <div class="status-label" id="status-story-3-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-4-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-4-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post</span><span class="tweet-meta-badge tweet-meta-time">1:00 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Informative</span><span class="tweet-meta-badge tweet-meta-tier">Tier 2</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #CubsBaseball #NorthSiders</span></div>
 
-                    <div class="card-content collapsed" id="content-story-4-x_post">
-                        <div class="card-content-text">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot
-
-**Tier:** 2
-**Assigned Angles:** Contender&#x27;s Luxury — Too Much Depth
-
-### Text Post
-
-```
-The Cubs have five guys fighting for the fourth outfield spot and six arms battling for the last bullpen job.
+                    <div class="card-content expanded" id="content-story-4-x_post-1">
+                        <div class="card-content-text">The Cubs have five guys fighting for the fourth outfield spot and six arms battling for the last bullpen job.
 
 Moises Ballesteros hit .868 OPS in 20 MLB games last year and still might not crack the roster.
 
 Contender problems.
 
-#Cubs #CubsBaseball #NorthSiders
-```
-
-**[POSTING WINDOW: 1:00 PM CT]**
-**[CHARACTER COUNT: 261/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Replies, Debate
-
----</div>
+#Cubs #CubsBaseball #NorthSiders</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-4-x_post" placeholder="Edit content here...">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot
-
-**Tier:** 2
-**Assigned Angles:** Contender&#x27;s Luxury — Too Much Depth
-
-### Text Post
-
-```
-The Cubs have five guys fighting for the fourth outfield spot and six arms battling for the last bullpen job.
+                    <textarea class="edit-textarea" id="editor-story-4-x_post-1" placeholder="Edit content here...">The Cubs have five guys fighting for the fourth outfield spot and six arms battling for the last bullpen job.
 
 Moises Ballesteros hit .868 OPS in 20 MLB games last year and still might not crack the roster.
 
 Contender problems.
 
-#Cubs #CubsBaseball #NorthSiders
-```
-
-**[POSTING WINDOW: 1:00 PM CT]**
-**[CHARACTER COUNT: 261/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Replies, Debate
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-4-x_post" onclick="toggleExpand('story-4-x_post')">Show Full Content</span>
+#Cubs #CubsBaseball #NorthSiders</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-4-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-4-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-4-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-4-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-4-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-4-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-4-x_post">Characters: 562/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-4-x_post-1">Characters: 261/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-4-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-4-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-4-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-4-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-4-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-4-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-4-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-4-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-4-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-4-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-4-x_post">
+                    <div class="notes-section" id="notes-story-4-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-4-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-4-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-4-x_post"></div>
+                    <div class="status-label" id="status-story-4-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-5-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-5-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">Cade Horton Emerges as Opening Day Starter Favorite</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post (Bold)</span><span class="tweet-meta-badge tweet-meta-time">3:00 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Bold/Passionate</span><span class="tweet-meta-badge tweet-meta-tier">Tier 2</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #FlyTheW #CubsBaseball</span></div>
 
-                    <div class="card-content collapsed" id="content-story-5-x_post">
-                        <div class="card-content-text">Cade Horton Emerges as Opening Day Starter Favorite
-
-**Tier:** 2
-**Assigned Angles:** Homegrown Ace Arrives / Bold Take
-
-### Text Post (Bold)
-
-```
-Cade Horton getting the Opening Day start.
+                    <div class="card-content expanded" id="content-story-5-x_post-1">
+                        <div class="card-content-text">Cade Horton getting the Opening Day start.
 
 From top draft pick to staff ace. From rib injury to the best second half by any Cubs starter in years.
 
 This is what the plan looks like when it works.
 
-#Cubs #FlyTheW #CubsBaseball
-```
-
-**[POSTING WINDOW: 3:00 PM CT]**
-**[CHARACTER COUNT: 226/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Likes, Retweets
-
----
-
-### Text Post 2 (Humor/Bold Closer)
-
-```
-Cade Horton is going to be a top-10 NL starter this year and the Cubs drafted him, developed him, and handed him the ball on Opening Day.
-
-Meanwhile, the Cardinals are developing a nice rebuild PowerPoint.
-
-#Cubs #GoCubs #NorthSiders
-```
-
-**[POSTING WINDOW: 8:30 PM CT]**
-**[CHARACTER COUNT: 233/280]**
-**[TYPE: Humor/Rival Jab]**
-
-**Engagement Target:** Retweets, Replies, Rivalry engagement
-
----</div>
+#Cubs #FlyTheW #CubsBaseball</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-5-x_post" placeholder="Edit content here...">Cade Horton Emerges as Opening Day Starter Favorite
-
-**Tier:** 2
-**Assigned Angles:** Homegrown Ace Arrives / Bold Take
-
-### Text Post (Bold)
-
-```
-Cade Horton getting the Opening Day start.
+                    <textarea class="edit-textarea" id="editor-story-5-x_post-1" placeholder="Edit content here...">Cade Horton getting the Opening Day start.
 
 From top draft pick to staff ace. From rib injury to the best second half by any Cubs starter in years.
 
 This is what the plan looks like when it works.
 
-#Cubs #FlyTheW #CubsBaseball
-```
-
-**[POSTING WINDOW: 3:00 PM CT]**
-**[CHARACTER COUNT: 226/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Likes, Retweets
-
----
-
-### Text Post 2 (Humor/Bold Closer)
-
-```
-Cade Horton is going to be a top-10 NL starter this year and the Cubs drafted him, developed him, and handed him the ball on Opening Day.
-
-Meanwhile, the Cardinals are developing a nice rebuild PowerPoint.
-
-#Cubs #GoCubs #NorthSiders
-```
-
-**[POSTING WINDOW: 8:30 PM CT]**
-**[CHARACTER COUNT: 233/280]**
-**[TYPE: Humor/Rival Jab]**
-
-**Engagement Target:** Retweets, Replies, Rivalry engagement
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-5-x_post" onclick="toggleExpand('story-5-x_post')">Show Full Content</span>
+#Cubs #FlyTheW #CubsBaseball</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-5-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-5-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-5-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-5-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-5-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-5-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-5-x_post">Characters: 955/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-5-x_post-1">Characters: 226/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-5-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-5-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-5-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-5-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-5-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-5-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-5-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-5-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-5-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-5-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-5-x_post">
+                    <div class="notes-section" id="notes-story-5-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-5-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-5-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-5-x_post"></div>
+                    <div class="status-label" id="status-story-5-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-6-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-5-x_post-2" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cade Horton Emerges as Opening Day Starter Favorite</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post 2 (Humor/Bold Closer)</span><span class="tweet-meta-badge tweet-meta-time">8:30 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Humor/Rival Jab</span><span class="tweet-meta-badge tweet-meta-tier">Tier 2</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #NorthSiders</span></div>
+
+                    <div class="card-content expanded" id="content-story-5-x_post-2">
+                        <div class="card-content-text">Cade Horton is going to be a top-10 NL starter this year and the Cubs drafted him, developed him, and handed him the ball on Opening Day.
+
+Meanwhile, the Cardinals are developing a nice rebuild PowerPoint.
+
+#Cubs #GoCubs #NorthSiders</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-5-x_post-2" placeholder="Edit content here...">Cade Horton is going to be a top-10 NL starter this year and the Cubs drafted him, developed him, and handed him the ball on Opening Day.
+
+Meanwhile, the Cardinals are developing a nice rebuild PowerPoint.
+
+#Cubs #GoCubs #NorthSiders</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-5-x_post-2">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-5-x_post-2')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-5-x_post-2')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-5-x_post-2">Characters: 233/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-5-x_post-2">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-5-x_post-2')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-5-x_post-2')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-5-x_post-2')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-5-x_post-2')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-5-x_post-2">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-5-x_post-2" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-5-x_post-2"></div>
+                </div>
+                <div class="card" data-id="story-6-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">Happ and Suzuki — No Extension Talks Yet with Cubs</div>
                         <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post</span><span class="tweet-meta-badge tweet-meta-time">5:30 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Informative</span><span class="tweet-meta-badge tweet-meta-tier">Tier 2</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #ChicagoCubs #CubNation</span></div>
 
-                    <div class="card-content collapsed" id="content-story-6-x_post">
-                        <div class="card-content-text">Happ and Suzuki — No Extension Talks Yet with Cubs
-
-**Tier:** 2
-**Assigned Angles:** Three Core Players, One Offseason
-
-### Text Post
-
-```
-Ian Happ and Seiya Suzuki both say they haven&#x27;t had extension talks with the Cubs.
+                    <div class="card-content expanded" id="content-story-6-x_post-1">
+                        <div class="card-content-text">Ian Happ and Seiya Suzuki both say they haven&#x27;t had extension talks with the Cubs.
 
 With Nico Hoerner also heading to free agency after 2026, that&#x27;s three core players on the clock.
 
 Who gets the deal first?
 
-#Cubs #ChicagoCubs #CubNation
-```
-
-**[POSTING WINDOW: 5:30 PM CT]**
-**[CHARACTER COUNT: 238/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Replies, Poll engagement, Debate
-
----</div>
+#Cubs #ChicagoCubs #CubNation</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-6-x_post" placeholder="Edit content here...">Happ and Suzuki — No Extension Talks Yet with Cubs
-
-**Tier:** 2
-**Assigned Angles:** Three Core Players, One Offseason
-
-### Text Post
-
-```
-Ian Happ and Seiya Suzuki both say they haven&#x27;t had extension talks with the Cubs.
+                    <textarea class="edit-textarea" id="editor-story-6-x_post-1" placeholder="Edit content here...">Ian Happ and Seiya Suzuki both say they haven&#x27;t had extension talks with the Cubs.
 
 With Nico Hoerner also heading to free agency after 2026, that&#x27;s three core players on the clock.
 
 Who gets the deal first?
 
-#Cubs #ChicagoCubs #CubNation
-```
-
-**[POSTING WINDOW: 5:30 PM CT]**
-**[CHARACTER COUNT: 238/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Replies, Poll engagement, Debate
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-6-x_post" onclick="toggleExpand('story-6-x_post')">Show Full Content</span>
+#Cubs #ChicagoCubs #CubNation</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-6-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-6-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-6-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-6-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-6-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-6-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-6-x_post">Characters: 532/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-6-x_post-1">Characters: 238/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-6-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-6-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-6-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-6-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-6-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-6-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-6-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-6-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-6-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-6-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-6-x_post">
+                    <div class="notes-section" id="notes-story-6-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-6-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-6-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-6-x_post"></div>
+                    <div class="status-label" id="status-story-6-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-7-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-7-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose</div>
                         <div><span class="fact-check-badge fact-check-warning" title="Some claims were removed or flagged for review">REVIEW FLAGS</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post</span><span class="tweet-meta-badge tweet-meta-time">11:30 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Humor/Rival Jab</span><span class="tweet-meta-badge tweet-meta-tier">Tier 3</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #FlyTheW #MLB</span></div>
 
-                    <div class="card-content collapsed" id="content-story-7-x_post">
-                        <div class="card-content-text">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose
-
-**Tier:** 3
-**Assigned Angles:** Rivalry Humor
-
-### Text Post
-
-```
-The Cardinals are projected LAST in the NL Central by every major system.
+                    <div class="card-content expanded" id="content-story-7-x_post-1">
+                        <div class="card-content-text">The Cardinals are projected LAST in the NL Central by every major system.
 
 They traded everyone, entered a full rebuild, and are now looking up at the Cubs, Brewers, Pirates, AND Reds.
 
 Best fans in baseball watching the worst team in the division.
 
-#Cubs #FlyTheW #MLB
-```
-
-**[POSTING WINDOW: 11:30 AM CT]**
-**[CHARACTER COUNT: 269/280]**
-**[TYPE: Humor/Rival Jab]**
-
-**Engagement Target:** Retweets, Replies, Rivalry banter
-
----
-
-## Post Distribution Summary
-
-| # | Posting Window | Story | Post Type | Content Type |
-|---|---------------|-------|-----------|-------------|
-| 1 | 7:00 AM CT | Story 1 | Text Post | Informative |
-| 2 | 8:30 AM CT | Story 2 | Text Post | Bold/Passionate |
-| 3 | 9:00 AM CT | Story 1 | Thread (3 tweets) | Informative |
-| 4 | 10:00 AM CT | Story 3 | Text Post | Informative |
-| 5 | 11:30 AM CT | Story 7 | Text Post | Humor/Rival Jab |
-| 6 | 1:00 PM CT | Story 4 | Text Post | Informative |
-| 7 | 3:00 PM CT | Story 5 | Text Post | Bold/Passionate |
-| 8 | 5:30 PM CT | Story 6 | Text Post | Informative |
-| 9 | 7:00 PM CT | Story 2 | Thread (3 tweets) | Bold/Passionate |
-| 10 | 8:30 PM CT | Story 5 | Text Post | Humor/Rival Jab |
-
-**Total Standalone Tweets:** 10
-**Total Thread Tweets:** 6 (2 threads x 3 tweets each)
-**Grand Total Posts:** 10 standalone + 6 thread = 16 total posts
-
-**Content Mix Check:**
-- Informative: 5 posts (50%) — Stories 1, 3, 4, 6, and Story 1 thread
-- Bold/Passionate/Humor: 5 posts (50%) — Stories 2, 5 (x2), 7, and Story 2 thread
-
----
-
-## Hashtag Distribution
-
-| Hashtag | Times Used |
-|---------|-----------|
-| #Cubs | 10 (every post) |
-| #MLB | 4 |
-| #GoCubs | 3 |
-| #CubsBaseball | 3 |
-| #FlyTheW | 2 |
-| #NorthSiders | 2 |
-| #ChicagoCubs | 2 |
-| #CubNation | 1 |
-
-All posts use exactly 3 hashtags. #Cubs appears in every post.
-
----
-
-## BONUS TWEETS — Fan Sentiment-Driven (Reddit / Community)
-
-*Source: r/CHICubs hot posts (2026-02-25). These tweets tap into what fans are actually talking about and feeling right now. Mix into the schedule or use as alternates.*
-
----</div>
+#Cubs #FlyTheW #MLB</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-7-x_post" placeholder="Edit content here...">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose
-
-**Tier:** 3
-**Assigned Angles:** Rivalry Humor
-
-### Text Post
-
-```
-The Cardinals are projected LAST in the NL Central by every major system.
+                    <textarea class="edit-textarea" id="editor-story-7-x_post-1" placeholder="Edit content here...">The Cardinals are projected LAST in the NL Central by every major system.
 
 They traded everyone, entered a full rebuild, and are now looking up at the Cubs, Brewers, Pirates, AND Reds.
 
 Best fans in baseball watching the worst team in the division.
 
-#Cubs #FlyTheW #MLB
-```
-
-**[POSTING WINDOW: 11:30 AM CT]**
-**[CHARACTER COUNT: 269/280]**
-**[TYPE: Humor/Rival Jab]**
-
-**Engagement Target:** Retweets, Replies, Rivalry banter
-
----
-
-## Post Distribution Summary
-
-| # | Posting Window | Story | Post Type | Content Type |
-|---|---------------|-------|-----------|-------------|
-| 1 | 7:00 AM CT | Story 1 | Text Post | Informative |
-| 2 | 8:30 AM CT | Story 2 | Text Post | Bold/Passionate |
-| 3 | 9:00 AM CT | Story 1 | Thread (3 tweets) | Informative |
-| 4 | 10:00 AM CT | Story 3 | Text Post | Informative |
-| 5 | 11:30 AM CT | Story 7 | Text Post | Humor/Rival Jab |
-| 6 | 1:00 PM CT | Story 4 | Text Post | Informative |
-| 7 | 3:00 PM CT | Story 5 | Text Post | Bold/Passionate |
-| 8 | 5:30 PM CT | Story 6 | Text Post | Informative |
-| 9 | 7:00 PM CT | Story 2 | Thread (3 tweets) | Bold/Passionate |
-| 10 | 8:30 PM CT | Story 5 | Text Post | Humor/Rival Jab |
-
-**Total Standalone Tweets:** 10
-**Total Thread Tweets:** 6 (2 threads x 3 tweets each)
-**Grand Total Posts:** 10 standalone + 6 thread = 16 total posts
-
-**Content Mix Check:**
-- Informative: 5 posts (50%) — Stories 1, 3, 4, 6, and Story 1 thread
-- Bold/Passionate/Humor: 5 posts (50%) — Stories 2, 5 (x2), 7, and Story 2 thread
-
----
-
-## Hashtag Distribution
-
-| Hashtag | Times Used |
-|---------|-----------|
-| #Cubs | 10 (every post) |
-| #MLB | 4 |
-| #GoCubs | 3 |
-| #CubsBaseball | 3 |
-| #FlyTheW | 2 |
-| #NorthSiders | 2 |
-| #ChicagoCubs | 2 |
-| #CubNation | 1 |
-
-All posts use exactly 3 hashtags. #Cubs appears in every post.
-
----
-
-## BONUS TWEETS — Fan Sentiment-Driven (Reddit / Community)
-
-*Source: r/CHICubs hot posts (2026-02-25). These tweets tap into what fans are actually talking about and feeling right now. Mix into the schedule or use as alternates.*
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-7-x_post" onclick="toggleExpand('story-7-x_post')">Show Full Content</span>
+#Cubs #FlyTheW #MLB</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-7-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-7-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-7-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-7-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-7-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-7-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-7-x_post">Characters: 2164/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-7-x_post-1">Characters: 269/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-7-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-7-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-7-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-7-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-7-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-7-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-7-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-7-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-7-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-7-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-7-x_post">
+                    <div class="notes-section" id="notes-story-7-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-7-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-7-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-7-x_post"></div>
+                    <div class="status-label" id="status-story-7-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-8-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-8-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">Pete Crow-Armstrong Calls Out Dodgers Fans</div>
                         <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post (Bold)</span><span class="tweet-meta-badge tweet-meta-time">Alternate 8:30 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Bold/Passionate</span><span class="tweet-meta-badge tweet-meta-tier">Tier 1 (Reddit: 876 upvotes, 76 comments — biggest fan story of the week)</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #FlyTheW #GoCubs</span></div>
 
-                    <div class="card-content collapsed" id="content-story-8-x_post">
-                        <div class="card-content-text">Pete Crow-Armstrong Calls Out Dodgers Fans
-
-**Tier:** 1 (Reddit: 876 upvotes, 76 comments — biggest fan story of the week)
-**Assigned Angles:** PCA Is That Guy / Dodgers Rivalry Energy
-
-### Text Post (Bold)
-
-```
-Pete Crow-Armstrong didn&#x27;t hold back when asked about Dodgers fans.
+                    <div class="card-content expanded" id="content-story-8-x_post-1">
+                        <div class="card-content-text">Pete Crow-Armstrong didn&#x27;t hold back when asked about Dodgers fans.
 
 This 22-year-old center fielder has the bat, the glove, and apparently zero fear of LA&#x27;s fanbase.
 
 He&#x27;s not just a future star. He&#x27;s already a Cubs legend in the making.
 
-#Cubs #FlyTheW #GoCubs
-```
-
-**[POSTING WINDOW: Alternate 8:30 AM CT]**
-**[CHARACTER COUNT: 236/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Retweets, Replies, Quote tweets — Dodgers fans will interact
-
----
-
-### Text Post 2 (Humor)
-
-```
-Pete Crow-Armstrong talking about Dodgers fans the way we&#x27;ve all wanted to for years.
-
-That&#x27;s my center fielder.
-
-#Cubs #GoCubs #MLB
-```
-
-**[POSTING WINDOW: Alternate 11:30 AM CT]**
-**[CHARACTER COUNT: 134/280]**
-**[TYPE: Humor]**
-
-**Engagement Target:** Massive RT potential, Dodgers-Cubs crossover engagement
-
----</div>
+#Cubs #FlyTheW #GoCubs</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-8-x_post" placeholder="Edit content here...">Pete Crow-Armstrong Calls Out Dodgers Fans
-
-**Tier:** 1 (Reddit: 876 upvotes, 76 comments — biggest fan story of the week)
-**Assigned Angles:** PCA Is That Guy / Dodgers Rivalry Energy
-
-### Text Post (Bold)
-
-```
-Pete Crow-Armstrong didn&#x27;t hold back when asked about Dodgers fans.
+                    <textarea class="edit-textarea" id="editor-story-8-x_post-1" placeholder="Edit content here...">Pete Crow-Armstrong didn&#x27;t hold back when asked about Dodgers fans.
 
 This 22-year-old center fielder has the bat, the glove, and apparently zero fear of LA&#x27;s fanbase.
 
 He&#x27;s not just a future star. He&#x27;s already a Cubs legend in the making.
 
-#Cubs #FlyTheW #GoCubs
-```
-
-**[POSTING WINDOW: Alternate 8:30 AM CT]**
-**[CHARACTER COUNT: 236/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Retweets, Replies, Quote tweets — Dodgers fans will interact
-
----
-
-### Text Post 2 (Humor)
-
-```
-Pete Crow-Armstrong talking about Dodgers fans the way we&#x27;ve all wanted to for years.
-
-That&#x27;s my center fielder.
-
-#Cubs #GoCubs #MLB
-```
-
-**[POSTING WINDOW: Alternate 11:30 AM CT]**
-**[CHARACTER COUNT: 134/280]**
-**[TYPE: Humor]**
-
-**Engagement Target:** Massive RT potential, Dodgers-Cubs crossover engagement
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-8-x_post" onclick="toggleExpand('story-8-x_post')">Show Full Content</span>
+#Cubs #FlyTheW #GoCubs</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-8-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-8-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-8-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-8-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-8-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-8-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-8-x_post">Characters: 1017/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-8-x_post-1">Characters: 262/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-8-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-8-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-8-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-8-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-8-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-8-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-8-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-8-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-8-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-8-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-8-x_post">
+                    <div class="notes-section" id="notes-story-8-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-8-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-8-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-8-x_post"></div>
+                    <div class="status-label" id="status-story-8-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-9-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-8-x_post-2" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Pete Crow-Armstrong Calls Out Dodgers Fans</div>
+                        <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post 2 (Humor)</span><span class="tweet-meta-badge tweet-meta-time">Alternate 11:30 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Humor</span><span class="tweet-meta-badge tweet-meta-tier">Tier 1 (Reddit: 876 upvotes, 76 comments — biggest fan story of the week)</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #MLB</span></div>
+
+                    <div class="card-content expanded" id="content-story-8-x_post-2">
+                        <div class="card-content-text">Pete Crow-Armstrong talking about Dodgers fans the way we&#x27;ve all wanted to for years.
+
+That&#x27;s my center fielder.
+
+#Cubs #GoCubs #MLB</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-8-x_post-2" placeholder="Edit content here...">Pete Crow-Armstrong talking about Dodgers fans the way we&#x27;ve all wanted to for years.
+
+That&#x27;s my center fielder.
+
+#Cubs #GoCubs #MLB</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-8-x_post-2">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-8-x_post-2')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-8-x_post-2')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-8-x_post-2">Characters: 132/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-8-x_post-2">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-8-x_post-2')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-8-x_post-2')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-8-x_post-2')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-8-x_post-2')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-8-x_post-2">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-8-x_post-2" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-8-x_post-2"></div>
+                </div>
+                <div class="card" data-id="story-9-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">PCA Covers Chicago Magazine — The Face of the Cubs</div>
                         <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post</span><span class="tweet-meta-badge tweet-meta-time">Alternate 10:00 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Bold/Passionate</span><span class="tweet-meta-badge tweet-meta-tier">Tier 2 (Reddit: 313 upvotes, 22 comments)</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #ChicagoCubs #NorthSiders</span></div>
 
-                    <div class="card-content collapsed" id="content-story-9-x_post">
-                        <div class="card-content-text">PCA Covers Chicago Magazine — The Face of the Cubs
-
-**Tier:** 2 (Reddit: 313 upvotes, 22 comments)
-**Assigned Angles:** New Face of the Franchise / Culture Content
-
-### Text Post
-
-```
-Pete Crow-Armstrong on the cover of Chicago magazine&#x27;s March edition.
+                    <div class="card-content expanded" id="content-story-9-x_post-1">
+                        <div class="card-content-text">Pete Crow-Armstrong on the cover of Chicago magazine&#x27;s March edition.
 
 22 years old. Gold Glove defense. 30+ steal speed. And now the face of the franchise on newsstands.
 
 The Cubs&#x27; future isn&#x27;t coming. It&#x27;s already here.
 
-#Cubs #ChicagoCubs #NorthSiders
-```
-
-**[POSTING WINDOW: Alternate 10:00 AM CT]**
-**[CHARACTER COUNT: 234/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Likes, Retweets, fan pride shares
-
----</div>
+#Cubs #ChicagoCubs #NorthSiders</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-9-x_post" placeholder="Edit content here...">PCA Covers Chicago Magazine — The Face of the Cubs
-
-**Tier:** 2 (Reddit: 313 upvotes, 22 comments)
-**Assigned Angles:** New Face of the Franchise / Culture Content
-
-### Text Post
-
-```
-Pete Crow-Armstrong on the cover of Chicago magazine&#x27;s March edition.
+                    <textarea class="edit-textarea" id="editor-story-9-x_post-1" placeholder="Edit content here...">Pete Crow-Armstrong on the cover of Chicago magazine&#x27;s March edition.
 
 22 years old. Gold Glove defense. 30+ steal speed. And now the face of the franchise on newsstands.
 
 The Cubs&#x27; future isn&#x27;t coming. It&#x27;s already here.
 
-#Cubs #ChicagoCubs #NorthSiders
-```
-
-**[POSTING WINDOW: Alternate 10:00 AM CT]**
-**[CHARACTER COUNT: 234/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Likes, Retweets, fan pride shares
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-9-x_post" onclick="toggleExpand('story-9-x_post')">Show Full Content</span>
+#Cubs #ChicagoCubs #NorthSiders</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-9-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-9-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-9-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-9-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-9-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-9-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-9-x_post">Characters: 609/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-9-x_post-1">Characters: 254/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-9-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-9-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-9-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-9-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-9-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-9-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-9-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-9-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-9-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-9-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-9-x_post">
+                    <div class="notes-section" id="notes-story-9-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-9-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-9-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-9-x_post"></div>
+                    <div class="status-label" id="status-story-9-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-10-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-10-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">Seiya Suzuki — Fan Favorite Energy</div>
                         <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post (Humor)</span><span class="tweet-meta-badge tweet-meta-time">Alternate 3:00 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Humor/Culture</span><span class="tweet-meta-badge tweet-meta-tier">Tier 2 (Reddit: 561 upvotes on a Seiya appreciation post — fans adore this man)</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #CubNation</span></div>
 
-                    <div class="card-content collapsed" id="content-story-10-x_post">
-                        <div class="card-content-text">Seiya Suzuki — Fan Favorite Energy
-
-**Tier:** 2 (Reddit: 561 upvotes on a Seiya appreciation post — fans adore this man)
-**Assigned Angles:** Seiya Love / Fan Culture
-
-### Text Post (Humor)
-
-```
-r/CHICubs got a Seiya Suzuki appreciation post to 560+ upvotes this week.
+                    <div class="card-content expanded" id="content-story-10-x_post-1">
+                        <div class="card-content-text">r/CHICubs got a Seiya Suzuki appreciation post to 560+ upvotes this week.
 
 No stats. No news. Just a photo of Seiya smiling.
 
 That&#x27;s how you know a player owns a city.
 
-#Cubs #GoCubs #CubNation
-```
-
-**[POSTING WINDOW: Alternate 3:00 PM CT]**
-**[CHARACTER COUNT: 204/280]**
-**[TYPE: Humor/Culture]**
-
-**Engagement Target:** Likes, fan engagement, quote tweets with Seiya stories
-
----
-
-### Text Post 2 (Bold)
-
-```
-Seiya Suzuki hasn&#x27;t even gotten his extension yet and Cubs fans are already building statues.
-
-.280 hitter. 25+ HR power. That infectious smile.
-
-Pay. This. Man.
-
-#Cubs #CubsBaseball #MLB
-```
-
-**[POSTING WINDOW: Alternate 5:30 PM CT]**
-**[CHARACTER COUNT: 195/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Replies, extension debate, engagement from Suzuki fans
-
----</div>
+#Cubs #GoCubs #CubNation</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-10-x_post" placeholder="Edit content here...">Seiya Suzuki — Fan Favorite Energy
-
-**Tier:** 2 (Reddit: 561 upvotes on a Seiya appreciation post — fans adore this man)
-**Assigned Angles:** Seiya Love / Fan Culture
-
-### Text Post (Humor)
-
-```
-r/CHICubs got a Seiya Suzuki appreciation post to 560+ upvotes this week.
+                    <textarea class="edit-textarea" id="editor-story-10-x_post-1" placeholder="Edit content here...">r/CHICubs got a Seiya Suzuki appreciation post to 560+ upvotes this week.
 
 No stats. No news. Just a photo of Seiya smiling.
 
 That&#x27;s how you know a player owns a city.
 
-#Cubs #GoCubs #CubNation
-```
-
-**[POSTING WINDOW: Alternate 3:00 PM CT]**
-**[CHARACTER COUNT: 204/280]**
-**[TYPE: Humor/Culture]**
-
-**Engagement Target:** Likes, fan engagement, quote tweets with Seiya stories
-
----
-
-### Text Post 2 (Bold)
-
-```
-Seiya Suzuki hasn&#x27;t even gotten his extension yet and Cubs fans are already building statues.
-
-.280 hitter. 25+ HR power. That infectious smile.
-
-Pay. This. Man.
-
-#Cubs #CubsBaseball #MLB
-```
-
-**[POSTING WINDOW: Alternate 5:30 PM CT]**
-**[CHARACTER COUNT: 195/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Replies, extension debate, engagement from Suzuki fans
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-10-x_post" onclick="toggleExpand('story-10-x_post')">Show Full Content</span>
+#Cubs #GoCubs #CubNation</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-10-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-10-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-10-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-10-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-10-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-10-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-10-x_post">Characters: 985/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-10-x_post-1">Characters: 193/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-10-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-10-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-10-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-10-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-10-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-10-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-10-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-10-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-10-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-10-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-10-x_post">
+                    <div class="notes-section" id="notes-story-10-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-10-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-10-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-10-x_post"></div>
+                    <div class="status-label" id="status-story-10-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-11-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-10-x_post-2" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Seiya Suzuki — Fan Favorite Energy</div>
+                        <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post 2 (Bold)</span><span class="tweet-meta-badge tweet-meta-time">Alternate 5:30 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Bold/Passionate</span><span class="tweet-meta-badge tweet-meta-tier">Tier 2 (Reddit: 561 upvotes on a Seiya appreciation post — fans adore this man)</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #CubsBaseball #MLB</span></div>
+
+                    <div class="card-content expanded" id="content-story-10-x_post-2">
+                        <div class="card-content-text">Seiya Suzuki hasn&#x27;t even gotten his extension yet and Cubs fans are already building statues.
+
+.280 hitter. 25+ HR power. That infectious smile.
+
+Pay. This. Man.
+
+#Cubs #CubsBaseball #MLB</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-10-x_post-2" placeholder="Edit content here...">Seiya Suzuki hasn&#x27;t even gotten his extension yet and Cubs fans are already building statues.
+
+.280 hitter. 25+ HR power. That infectious smile.
+
+Pay. This. Man.
+
+#Cubs #CubsBaseball #MLB</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-10-x_post-2">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-10-x_post-2')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-10-x_post-2')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-10-x_post-2">Characters: 187/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-10-x_post-2">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-10-x_post-2')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-10-x_post-2')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-10-x_post-2')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-10-x_post-2')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-10-x_post-2">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-10-x_post-2" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-10-x_post-2"></div>
+                </div>
+                <div class="card" data-id="story-11-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">Moises Ballesteros Arrives at Camp Ready to Compete</div>
                         <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post</span><span class="tweet-meta-badge tweet-meta-time">Alternate 1:00 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Informative</span><span class="tweet-meta-badge tweet-meta-tier">Tier 2 (Reddit: 142 upvotes, 10 comments — fans are hyped on this kid)</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #CubsBaseball #NorthSiders</span></div>
 
-                    <div class="card-content collapsed" id="content-story-11-x_post">
-                        <div class="card-content-text">Moises Ballesteros Arrives at Camp Ready to Compete
-
-**Tier:** 2 (Reddit: 142 upvotes, 10 comments — fans are hyped on this kid)
-**Assigned Angles:** The Kid Is Ready / Prospect Hype
-
-### Text Post
-
-```
-Moises Ballesteros is in Mesa and ready to fight for a roster spot.
+                    <div class="card-content expanded" id="content-story-11-x_post-1">
+                        <div class="card-content-text">Moises Ballesteros is in Mesa and ready to fight for a roster spot.
 
 He&#x27;s 21. He slashed .868 OPS in his first 20 MLB games. And the Cubs still might not have room for him.
 
 Imagine having THIS problem on your roster.
 
-#Cubs #CubsBaseball #NorthSiders
-```
-
-**[POSTING WINDOW: Alternate 1:00 PM CT]**
-**[CHARACTER COUNT: 247/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Replies, prospect debate, &quot;make room for him&quot; takes
-
----</div>
+#Cubs #CubsBaseball #NorthSiders</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-11-x_post" placeholder="Edit content here...">Moises Ballesteros Arrives at Camp Ready to Compete
-
-**Tier:** 2 (Reddit: 142 upvotes, 10 comments — fans are hyped on this kid)
-**Assigned Angles:** The Kid Is Ready / Prospect Hype
-
-### Text Post
-
-```
-Moises Ballesteros is in Mesa and ready to fight for a roster spot.
+                    <textarea class="edit-textarea" id="editor-story-11-x_post-1" placeholder="Edit content here...">Moises Ballesteros is in Mesa and ready to fight for a roster spot.
 
 He&#x27;s 21. He slashed .868 OPS in his first 20 MLB games. And the Cubs still might not have room for him.
 
 Imagine having THIS problem on your roster.
 
-#Cubs #CubsBaseball #NorthSiders
-```
-
-**[POSTING WINDOW: Alternate 1:00 PM CT]**
-**[CHARACTER COUNT: 247/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Replies, prospect debate, &quot;make room for him&quot; takes
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-11-x_post" onclick="toggleExpand('story-11-x_post')">Show Full Content</span>
+#Cubs #CubsBaseball #NorthSiders</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-11-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-11-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-11-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-11-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-11-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-11-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-11-x_post">Characters: 638/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-11-x_post-1">Characters: 251/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-11-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-11-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-11-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-11-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-11-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-11-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-11-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-11-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-11-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-11-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-11-x_post">
+                    <div class="notes-section" id="notes-story-11-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-11-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-11-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-11-x_post"></div>
+                    <div class="status-label" id="status-story-11-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-12-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-12-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">Spring Training Win — Cubs 6, Padres 5</div>
                         <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post</span><span class="tweet-meta-badge tweet-meta-time">Alternate 7:00 AM CT</span><span class="tweet-meta-badge tweet-meta-type">Humor</span><span class="tweet-meta-badge tweet-meta-tier">Tier 3 (Reddit: game thread active with 27 comments + 14 in postgame)</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #MLB</span></div>
 
-                    <div class="card-content collapsed" id="content-story-12-x_post">
-                        <div class="card-content-text">Spring Training Win — Cubs 6, Padres 5
-
-**Tier:** 3 (Reddit: game thread active with 27 comments + 14 in postgame)
-**Assigned Angles:** Cactus League Vibes
-
-### Text Post
-
-```
-Cubs 6, Padres 5 in Cactus League play.
+                    <div class="card-content expanded" id="content-story-12-x_post-1">
+                        <div class="card-content-text">Cubs 6, Padres 5 in Cactus League play.
 
 Spring training doesn&#x27;t count. Except when you win. Then it counts a little.
 
 31 days until real baseball.
 
-#Cubs #GoCubs #MLB
-```
-
-**[POSTING WINDOW: Alternate 7:00 AM CT]**
-**[CHARACTER COUNT: 161/280]**
-**[TYPE: Humor]**
-
-**Engagement Target:** Likes, morning engagement, countdown hype
-
----</div>
+#Cubs #GoCubs #MLB</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-12-x_post" placeholder="Edit content here...">Spring Training Win — Cubs 6, Padres 5
-
-**Tier:** 3 (Reddit: game thread active with 27 comments + 14 in postgame)
-**Assigned Angles:** Cactus League Vibes
-
-### Text Post
-
-```
-Cubs 6, Padres 5 in Cactus League play.
+                    <textarea class="edit-textarea" id="editor-story-12-x_post-1" placeholder="Edit content here...">Cubs 6, Padres 5 in Cactus League play.
 
 Spring training doesn&#x27;t count. Except when you win. Then it counts a little.
 
 31 days until real baseball.
 
-#Cubs #GoCubs #MLB
-```
-
-**[POSTING WINDOW: Alternate 7:00 AM CT]**
-**[CHARACTER COUNT: 161/280]**
-**[TYPE: Humor]**
-
-**Engagement Target:** Likes, morning engagement, countdown hype
-
----</textarea>
-                    <span class="expand-toggle" id="toggle-story-12-x_post" onclick="toggleExpand('story-12-x_post')">Show Full Content</span>
+#Cubs #GoCubs #MLB</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-12-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-12-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-12-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-12-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-12-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-12-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-12-x_post">Characters: 511/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-12-x_post-1">Characters: 167/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-12-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-12-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-12-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-12-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-12-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-12-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-12-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-12-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-12-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-12-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-12-x_post">
+                    <div class="notes-section" id="notes-story-12-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-12-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-12-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-12-x_post"></div>
+                    <div class="status-label" id="status-story-12-x_post-1"></div>
                 </div>
-                <div class="card" data-id="story-13-x_post" data-type="x_post" data-status="unreviewed">
+                <div class="card" data-id="story-13-x_post-1" data-type="x_post" data-status="unreviewed">
                     <div class="card-header">
                         <div class="card-title">One Month Until Opening Day — Cubs vs. Nationals</div>
                         <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
                     </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post</span><span class="tweet-meta-badge tweet-meta-time">Alternate 8:30 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Bold/Passionate</span><span class="tweet-meta-badge tweet-meta-tier">Tier 3 (Reddit: r/baseball posted Opening Day schedule, Cubs open vs Nationals March 26)</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #FlyTheW #WrigleyField</span></div>
 
-                    <div class="card-content collapsed" id="content-story-13-x_post">
-                        <div class="card-content-text">One Month Until Opening Day — Cubs vs. Nationals
-
-**Tier:** 3 (Reddit: r/baseball posted Opening Day schedule, Cubs open vs Nationals March 26)
-**Assigned Angles:** Countdown Hype / Season Opener Preview
-
-### Text Post
-
-```
-ONE MONTH from today, the Cubs open the 2026 season against the Nationals at Wrigley Field.
+                    <div class="card-content expanded" id="content-story-13-x_post-1">
+                        <div class="card-content-text">ONE MONTH from today, the Cubs open the 2026 season against the Nationals at Wrigley Field.
 
 Bregman in the lineup. Horton on the mound. A rotation built to dominate.
 
 This is the year.
 
-#Cubs #FlyTheW #WrigleyField
-```
-
-**[POSTING WINDOW: Alternate 8:30 PM CT]**
-**[CHARACTER COUNT: 219/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Retweets, hype engagement, countdown participation
-
----
-
-### Text Post 2 (Informative)
-
-```
-March 26 at Wrigley Field. Cubs vs. Nationals. 2:20 PM CT.
-
-That&#x27;s the 2026 opener. 31 days away.
-
-The projected 90-win season starts in one month.
-
-#Cubs #ChicagoCubs #MLB
-```
-
-**[POSTING WINDOW: Alternate 10:00 PM CT]**
-**[CHARACTER COUNT: 174/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Likes, saves, calendar reminders
-
----
-
-## Updated Distribution — With Bonus Tweets
-
-### Recommended Additions to Schedule
-
-| Alt Slot | Story | Post Type | Content Type | Why (Reddit Signal) |
-|----------|-------|-----------|-------------|---------------------|
-| 8:30 AM | Story 8 (PCA vs Dodgers) | Text Post | Bold | 876 upvotes — biggest fan story |
-| 11:30 AM | Story 8 (PCA one-liner) | Text Post | Humor | Crossover Dodgers engagement |
-| 10:00 AM | Story 9 (PCA magazine) | Text Post | Bold | 313 upvotes — fan pride moment |
-| 3:00 PM | Story 10 (Seiya love) | Text Post | Humor/Culture | 561 upvotes on appreciation |
-| 5:30 PM | Story 10 (Seiya extension) | Text Post | Bold | Ties into Story 6 extension talk |
-| 1:00 PM | Story 11 (Ballesteros) | Text Post | Informative | 142 upvotes — prospect hype |
-| 7:00 AM | Story 12 (Spring W) | Text Post | Humor | Active game threads |
-| 8:30 PM | Story 13 (Opening Day countdown) | Text Post | Bold | r/baseball countdown post |
-| 10:00 PM | Story 13 (Opener details) | Text Post | Informative | Schedule awareness |
-
-### Content Mix with Bonus Tweets
-
-**Original:** 5 informative / 5 bold-humor (50/50)
-**Bonus tweets:** 3 informative / 6 bold-humor
-**Combined pool of 19 standalone options:** 8 informative / 11 bold-humor — pick 10-12 best to maintain 50/50
-
-### Why These Work (Fan Sentiment Logic)
-
-- **PCA (Stories 8-9):** The sub is absolutely buzzing about Pete Crow-Armstrong. Two posts totaling 1,189 upvotes and 98 comments. He IS the fan energy story right now. Any PCA tweet will outperform today.
-- **Seiya (Story 10):** 561 upvotes on a pure appreciation post. Fans love this man unconditionally. Ties perfectly into the extension talk already in Story 6.
-- **Ballesteros (Story 11):** 142 upvotes on an arrival post. Fans want this kid on the roster. Prospect hype drives replies.
-- **Game/Countdown (Stories 12-13):** Lower engagement but consistent community rituals. Opening Day countdown is a daily fan touchpoint. Spring training results keep the daily conversation going.</div>
+#Cubs #FlyTheW #WrigleyField</div>
                     </div>
-                    <textarea class="edit-textarea" id="editor-story-13-x_post" placeholder="Edit content here...">One Month Until Opening Day — Cubs vs. Nationals
-
-**Tier:** 3 (Reddit: r/baseball posted Opening Day schedule, Cubs open vs Nationals March 26)
-**Assigned Angles:** Countdown Hype / Season Opener Preview
-
-### Text Post
-
-```
-ONE MONTH from today, the Cubs open the 2026 season against the Nationals at Wrigley Field.
+                    <textarea class="edit-textarea" id="editor-story-13-x_post-1" placeholder="Edit content here...">ONE MONTH from today, the Cubs open the 2026 season against the Nationals at Wrigley Field.
 
 Bregman in the lineup. Horton on the mound. A rotation built to dominate.
 
 This is the year.
 
-#Cubs #FlyTheW #WrigleyField
-```
-
-**[POSTING WINDOW: Alternate 8:30 PM CT]**
-**[CHARACTER COUNT: 219/280]**
-**[TYPE: Bold/Passionate]**
-
-**Engagement Target:** Retweets, hype engagement, countdown participation
-
----
-
-### Text Post 2 (Informative)
-
-```
-March 26 at Wrigley Field. Cubs vs. Nationals. 2:20 PM CT.
-
-That&#x27;s the 2026 opener. 31 days away.
-
-The projected 90-win season starts in one month.
-
-#Cubs #ChicagoCubs #MLB
-```
-
-**[POSTING WINDOW: Alternate 10:00 PM CT]**
-**[CHARACTER COUNT: 174/280]**
-**[TYPE: Informative]**
-
-**Engagement Target:** Likes, saves, calendar reminders
-
----
-
-## Updated Distribution — With Bonus Tweets
-
-### Recommended Additions to Schedule
-
-| Alt Slot | Story | Post Type | Content Type | Why (Reddit Signal) |
-|----------|-------|-----------|-------------|---------------------|
-| 8:30 AM | Story 8 (PCA vs Dodgers) | Text Post | Bold | 876 upvotes — biggest fan story |
-| 11:30 AM | Story 8 (PCA one-liner) | Text Post | Humor | Crossover Dodgers engagement |
-| 10:00 AM | Story 9 (PCA magazine) | Text Post | Bold | 313 upvotes — fan pride moment |
-| 3:00 PM | Story 10 (Seiya love) | Text Post | Humor/Culture | 561 upvotes on appreciation |
-| 5:30 PM | Story 10 (Seiya extension) | Text Post | Bold | Ties into Story 6 extension talk |
-| 1:00 PM | Story 11 (Ballesteros) | Text Post | Informative | 142 upvotes — prospect hype |
-| 7:00 AM | Story 12 (Spring W) | Text Post | Humor | Active game threads |
-| 8:30 PM | Story 13 (Opening Day countdown) | Text Post | Bold | r/baseball countdown post |
-| 10:00 PM | Story 13 (Opener details) | Text Post | Informative | Schedule awareness |
-
-### Content Mix with Bonus Tweets
-
-**Original:** 5 informative / 5 bold-humor (50/50)
-**Bonus tweets:** 3 informative / 6 bold-humor
-**Combined pool of 19 standalone options:** 8 informative / 11 bold-humor — pick 10-12 best to maintain 50/50
-
-### Why These Work (Fan Sentiment Logic)
-
-- **PCA (Stories 8-9):** The sub is absolutely buzzing about Pete Crow-Armstrong. Two posts totaling 1,189 upvotes and 98 comments. He IS the fan energy story right now. Any PCA tweet will outperform today.
-- **Seiya (Story 10):** 561 upvotes on a pure appreciation post. Fans love this man unconditionally. Ties perfectly into the extension talk already in Story 6.
-- **Ballesteros (Story 11):** 142 upvotes on an arrival post. Fans want this kid on the roster. Prospect hype drives replies.
-- **Game/Countdown (Stories 12-13):** Lower engagement but consistent community rituals. Opening Day countdown is a daily fan touchpoint. Spring training results keep the daily conversation going.</textarea>
-                    <span class="expand-toggle" id="toggle-story-13-x_post" onclick="toggleExpand('story-13-x_post')">Show Full Content</span>
+#Cubs #FlyTheW #WrigleyField</textarea>
                     
-                    <div class="edit-bar" id="editbar-story-13-x_post">
+                    
+                    <div class="edit-bar" id="editbar-story-13-x_post-1">
                         <span class="edit-bar-label">Editing mode — make your changes above</span>
-                        <button class="btn btn-primary" onclick="saveAndApprove('story-13-x_post')">Save &amp; Approve</button>
-                        <button class="btn btn-secondary" onclick="cancelEdit('story-13-x_post')">Cancel</button>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-13-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-13-x_post-1')">Cancel</button>
                     </div>
-                    <div class="char-count warning" id="charcount-story-13-x_post">Characters: 3014/280  OVER LIMIT</div>
+                    <div class="char-count" id="charcount-story-13-x_post-1">Characters: 215/280</div>
                     
 
-                    <div class="card-actions" id="actions-story-13-x_post">
-                        <button class="action-btn btn-approve" onclick="approveCard('story-13-x_post')">Approve</button>
-                        <button class="action-btn btn-edit" onclick="startEdit('story-13-x_post')">Edit</button>
-                        <button class="action-btn btn-reject" onclick="rejectCard('story-13-x_post')">Reject</button>
-                        <button class="action-btn btn-copy" onclick="copyContent('story-13-x_post')">Copy</button>
+                    <div class="card-actions" id="actions-story-13-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-13-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-13-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-13-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-13-x_post-1')">Copy</button>
                     </div>
 
-                    <div class="notes-section" id="notes-story-13-x_post">
+                    <div class="notes-section" id="notes-story-13-x_post-1">
                         <div class="notes-label">Reviewer Notes:</div>
-                        <textarea class="notes-textarea" id="textarea-story-13-x_post" placeholder="Add reviewer notes..."></textarea>
+                        <textarea class="notes-textarea" id="textarea-story-13-x_post-1" placeholder="Add reviewer notes..."></textarea>
                     </div>
 
-                    <div class="status-label" id="status-story-13-x_post"></div>
+                    <div class="status-label" id="status-story-13-x_post-1"></div>
+                </div>
+                <div class="card" data-id="story-13-x_post-2" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">One Month Until Opening Day — Cubs vs. Nationals</div>
+                        <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Text Post 2 (Informative)</span><span class="tweet-meta-badge tweet-meta-time">Alternate 10:00 PM CT</span><span class="tweet-meta-badge tweet-meta-type">Informative</span><span class="tweet-meta-badge tweet-meta-tier">Tier 3 (Reddit: r/baseball posted Opening Day schedule, Cubs open vs Nationals March 26)</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #ChicagoCubs #MLB</span></div>
+
+                    <div class="card-content expanded" id="content-story-13-x_post-2">
+                        <div class="card-content-text">March 26 at Wrigley Field. Cubs vs. Nationals. 2:20 PM CT.
+
+That&#x27;s the 2026 opener. 31 days away.
+
+The projected 90-win season starts in one month.
+
+#Cubs #ChicagoCubs #MLB</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-13-x_post-2" placeholder="Edit content here...">March 26 at Wrigley Field. Cubs vs. Nationals. 2:20 PM CT.
+
+That&#x27;s the 2026 opener. 31 days away.
+
+The projected 90-win season starts in one month.
+
+#Cubs #ChicagoCubs #MLB</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-13-x_post-2">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-13-x_post-2')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-13-x_post-2')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-13-x_post-2">Characters: 172/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-13-x_post-2">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-13-x_post-2')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-13-x_post-2')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-13-x_post-2')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-13-x_post-2')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-13-x_post-2">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-13-x_post-2" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-13-x_post-2"></div>
                 </div>
             </div>
 
@@ -2444,7 +1995,7 @@ The projected 90-win season starts in one month.
         const SCHEDULE_STORAGE_KEY = 'cubs-content-schedule-config';
         const PHOTO_SOURCE = 'none';
         let reviewData = {};
-        const allStories = [{"id": "story-1-daily_brief", "title": "PECOTA Projects Cubs to Run Away with NL Central", "content": "PECOTA Projects Cubs to Run Away with NL Central\n**Freshness Tag:** TRENDING\n**Tier:** 1\n**Assigned Platforms:** X Text Post + X Thread (3-4 tweets)\n**Priority Score:** 9\n\n**Summary (2-4 sentences):**\nMultiple projection systems now have the Cubs as clear NL Central favorites. PECOTA projects 90.1 wins \u2014 a staggering 10 games ahead of the Brewers. FanGraphs has them at 86 wins, three ahead of the Pirates. After the Bregman signing and a deep rotation, this is the most projected dominance for the Cubs in years.\n\n---", "type": "daily_brief"}, {"id": "story-2-daily_brief", "title": "Justin Steele Rehab Ahead of Schedule, Targeting May Return", "content": "Justin Steele Rehab Ahead of Schedule, Targeting May Return\n**Freshness Tag:** TODAY\n**Tier:** 1\n**Assigned Platforms:** X Text Post + X Thread (3-4 tweets)\n**Priority Score:** 9\n\n**Summary (2-4 sentences):**\nJustin Steele's recovery from left elbow UCL revision surgery is ahead of schedule. The ace lefty is throwing bullpen sessions and targeting a May-June return. He confirmed he'll be on an innings limit and pitch count initially. When healthy, Steele gives the Cubs arguably the best rotation in the NL.\n\n---", "type": "daily_brief"}, {"id": "story-3-daily_brief", "title": "Cubs Sign Michael Conforto to Minor League Deal", "content": "Cubs Sign Michael Conforto to Minor League Deal\n**Freshness Tag:** TODAY\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 8\n\n**Summary (2-4 sentences):**\nThe Cubs agreed to a minor league deal with outfielder Michael Conforto on February 23, with a $2MM salary if his contract is selected. Conforto adds depth and a left-handed bat to a right-heavy outfield mix. He's competing for the fourth outfielder role in a crowded spring training battle.\n\n---", "type": "daily_brief"}, {"id": "story-4-daily_brief", "title": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot", "content": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot\n**Freshness Tag:** UPCOMING\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 7\n\n**Summary (2-4 sentences):**\nWith the core roster locked in, the Cubs have two key battles in Mesa. The fourth outfield spot features Alcantara, Dean, Carlson, McCormick, and now Conforto competing. The last bullpen vacancy has a deep list including Hodge, Brown, Little, and Assad. Moises Ballesteros is also pushing for the final position-player spot after his .868 OPS in 20 MLB games last year.\n\n---", "type": "daily_brief"}, {"id": "story-5-daily_brief", "title": "Cade Horton Emerges as Opening Day Starter Favorite", "content": "Cade Horton Emerges as Opening Day Starter Favorite\n**Freshness Tag:** TRENDING\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 7\n\n**Summary (2-4 sentences):**\nCade Horton is the favorite to get the Opening Day nod after a dominant second-half performance in 2025. The rotation is set with Horton, Imanaga, Taillon, Boyd, and Cabrera. Horton's emergence from a rib injury recovery signals a breakout 2026 campaign ahead.\n\n---", "type": "daily_brief"}, {"id": "story-6-daily_brief", "title": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs", "content": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs\n**Freshness Tag:** TODAY\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 6\n\n**Summary (2-4 sentences):**\nBoth Ian Happ and Seiya Suzuki told the Chicago Sun-Times that they haven't heard from the club about extensions. Along with Nico Hoerner, all three hit free agency after 2026. This sets up an intriguing subplot: will the Cubs lock up their core or let the market decide?\n\n---", "type": "daily_brief"}, {"id": "story-7-daily_brief", "title": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose", "content": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose\n**Freshness Tag:** EVERGREEN\n**Tier:** 3\n**Assigned Platforms:** X Text Post\n**Priority Score:** 5\n\n**Summary (2-4 sentences):**\nThe Cardinals have traded away most of their veterans and entered full rebuild mode. Every projection system has them at the bottom of the NL Central. For Cubs fans, the historic rivalry has a new dynamic \u2014 St. Louis is no longer the measuring stick, it's the punchline.\n\n---\n\n## Publishing Schedule\n\n**All times in CT:**\n\n| Time Slot | Story # | Content Type | Post Type |\n|-----------|---------|--------------|-----------|\n| 7:00 AM | Story 1 | Morning news / projection buzz | Informative \u2014 X Text Post |\n| 8:30 AM | Story 2 | Bold take / Steele hype | Bold/Passionate \u2014 X Text Post |\n| 9:00 AM | Story 1 | Thread: PECOTA deep dive | Informative \u2014 X Thread (3 tweets) |\n| 10:00 AM | Story 3 | Conforto signing news | Informative \u2014 X Text Post |\n| 11:30 AM | Story 7 | Cardinals rebuild jab | Humor/Rival Jab \u2014 X Text Post |\n| 1:00 PM | Story 4 | Roster battles preview | Informative \u2014 X Text Post |\n| 3:00 PM | Story 5 | Horton Opening Day take | Bold/Passionate \u2014 X Text Post |\n| 5:30 PM | Story 6 | Extension watch news | Informative \u2014 X Text Post |\n| 7:00 PM | Story 2 | Steele return hype thread | Bold/Passionate \u2014 X Thread (3 tweets) |\n| 8:30 PM | Story 5 | Horton bold take / witty closer | Humor \u2014 X Text Post |\n\n---\n\n## Content Tone & Voice\n\n**Brand Voice Guidelines:** From Chicago Cubs Fan HQ brand-voice.md\n- 50/50 split: informative (news, stats, recaps) and bold/passionate/humor (takes, jabs, wit)\n- Passionate Cubs fan who can rattle off WAR stats AND roast the Cardinals\n- Rival hierarchy: Cardinals (sharp) > Brewers (competitive) > White Sox (playful)\n\n**Hashtag Strategy:** From brand-guide.md\n- Primary: #Cubs (every post)\n- Secondary pool: #GoCubs #FlyTheW #CubsBaseball #WrigleyField #MLB #NorthSiders #ChicagoCubs #CubNation\n- Exactly 3 hashtags per tweet", "type": "daily_brief"}, {"id": "story-1-x_post", "title": "PECOTA Projects Cubs to Run Away with NL Central", "content": "PECOTA Projects Cubs to Run Away with NL Central\n\n**Tier:** 1\n**Assigned Angles:** The Numbers Don't Lie / Cardinals Collapse\n\n### Text Post\n\n```\nPECOTA projects the Cubs for 90.1 wins in 2026 \u2014 TEN games ahead of the Brewers.\n\nFanGraphs has them at 86 wins. ZiPS says Cubs by a game.\n\nEvery system agrees: the NL Central belongs to Chicago.\n\n#Cubs #GoCubs #MLB\n```\n\n**[POSTING WINDOW: 7:00 AM CT]**\n**[CHARACTER COUNT: 215/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Retweets, Replies\n\n---\n\n### Thread (3 tweets)\n\n**Tweet 1 (Hook):**\n```\nThe projection systems have spoken, and they're not being subtle about it.\n\nPECOTA: Cubs win 90.1 games\nFanGraphs: Cubs win 86 games\nZiPS: Cubs take the NL Central\n\nEvery single model says this is Chicago's division. Here's why. (thread)\n\n#Cubs #NorthSiders #MLB\n```\n\n**[POSTING WINDOW: 9:00 AM CT]**\n**[CHARACTER COUNT: 262/280]**\n**[TYPE: Informative]**\n\n**Tweet 2 (Context):**\n```\nThe rotation is the engine. Horton, Imanaga, Taillon, Boyd, and Cabrera \u2014 five deep before Steele even comes back from rehab.\n\nAdd Bregman's bat at third base ($175M investment), and you've got a roster built to win now.\n```\n\n**[POSTING WINDOW: 9:03 AM CT]**\n**[CHARACTER COUNT: 220/280]**\n\n**Tweet 3 (Closer):**\n```\nMeanwhile, the Cardinals are projected LAST in the NL Central after trading everyone.\n\nThe Brewers are regressing from 97 wins to the low 80s.\n\nThe path is clear. The Cubs haven't had a division outlook this favorable in years.\n```\n\n**[POSTING WINDOW: 9:06 AM CT]**\n**[CHARACTER COUNT: 227/280]**\n\n**Thread Strategy:** Lead with the data, build context with roster strength, close with the rival angle. Three tweets keeps it tight and shareable.\n\n---", "type": "x_post"}, {"id": "story-2-x_post", "title": "Justin Steele Rehab Ahead of Schedule, Targeting May Return", "content": "Justin Steele Rehab Ahead of Schedule, Targeting May Return\n\n**Tier:** 1\n**Assigned Angles:** Steele Return Hype / Best Rotation in Baseball\n\n### Text Post\n\n```\nJustin Steele says he's AHEAD of schedule in his UCL rehab and targeting a May-June return.\n\nHe's throwing bullpens, feeling great, and working on new pitches.\n\nThis rotation is about to get scary deep.\n\n#Cubs #CubsBaseball #MLB\n```\n\n**[POSTING WINDOW: 8:30 AM CT]**\n**[CHARACTER COUNT: 228/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Replies, Likes\n\n---\n\n### Thread (3 tweets)\n\n**Tweet 1 (Hook):**\n```\nJustin Steele update from Mesa, and it's all good news:\n\n- Ahead of schedule in UCL rehab\n- Bullpen sessions progressing well\n- Targeting May-June return\n- Working on NEW pitches during recovery\n\nThis man isn't just coming back. He's leveling up.\n\n#Cubs #GoCubs #CubsBaseball\n```\n\n**[POSTING WINDOW: 7:00 PM CT]**\n**[CHARACTER COUNT: 275/280]**\n**[TYPE: Bold/Passionate]**\n\n**Tweet 2 (Context):**\n```\nSteele was the Opening Day starter in 2025 before his elbow shut him down after four starts. His last outing? A 7-inning shutout against the Rangers.\n\nHe'll be on an innings limit when he returns, but even managed, he's a front-end arm.\n```\n\n**[POSTING WINDOW: 7:03 PM CT]**\n**[CHARACTER COUNT: 236/280]**\n\n**Tweet 3 (Closer):**\n```\nThe Cubs' rotation by June:\n\nHorton\nImanaga\nSteele\nTaillon\nBoyd\nCabrera\n\nThat's SIX legit starters on one team. Name a deeper rotation in the NL. Take your time.\n```\n\n**[POSTING WINDOW: 7:06 PM CT]**\n**[CHARACTER COUNT: 161/280]**\n\n**Thread Strategy:** Open with the update details, provide injury context, close with the \"six starters\" hook that invites debate.\n\n---", "type": "x_post"}, {"id": "story-3-x_post", "title": "Cubs Sign Michael Conforto to Minor League Deal", "content": "Cubs Sign Michael Conforto to Minor League Deal\n\n**Tier:** 2\n**Assigned Angles:** Low-Risk Depth Move\n\n### Text Post\n\n```\nCubs sign former All-Star Michael Conforto to a minor league deal with a $2MM salary if selected.\n\nAdds a lefty bat to the fourth outfield race against Alcantara, Dean, Carlson, and McCormick.\n\nSmart depth move by the front office.\n\n#Cubs #ChicagoCubs #MLB\n```\n\n**[POSTING WINDOW: 10:00 AM CT]**\n**[CHARACTER COUNT: 256/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Likes, Replies\n\n---", "type": "x_post"}, {"id": "story-4-x_post", "title": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot", "content": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot\n\n**Tier:** 2\n**Assigned Angles:** Contender's Luxury \u2014 Too Much Depth\n\n### Text Post\n\n```\nThe Cubs have five guys fighting for the fourth outfield spot and six arms battling for the last bullpen job.\n\nMoises Ballesteros hit .868 OPS in 20 MLB games last year and still might not crack the roster.\n\nContender problems.\n\n#Cubs #CubsBaseball #NorthSiders\n```\n\n**[POSTING WINDOW: 1:00 PM CT]**\n**[CHARACTER COUNT: 261/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Replies, Debate\n\n---", "type": "x_post"}, {"id": "story-5-x_post", "title": "Cade Horton Emerges as Opening Day Starter Favorite", "content": "Cade Horton Emerges as Opening Day Starter Favorite\n\n**Tier:** 2\n**Assigned Angles:** Homegrown Ace Arrives / Bold Take\n\n### Text Post (Bold)\n\n```\nCade Horton getting the Opening Day start.\n\nFrom top draft pick to staff ace. From rib injury to the best second half by any Cubs starter in years.\n\nThis is what the plan looks like when it works.\n\n#Cubs #FlyTheW #CubsBaseball\n```\n\n**[POSTING WINDOW: 3:00 PM CT]**\n**[CHARACTER COUNT: 226/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Likes, Retweets\n\n---\n\n### Text Post 2 (Humor/Bold Closer)\n\n```\nCade Horton is going to be a top-10 NL starter this year and the Cubs drafted him, developed him, and handed him the ball on Opening Day.\n\nMeanwhile, the Cardinals are developing a nice rebuild PowerPoint.\n\n#Cubs #GoCubs #NorthSiders\n```\n\n**[POSTING WINDOW: 8:30 PM CT]**\n**[CHARACTER COUNT: 233/280]**\n**[TYPE: Humor/Rival Jab]**\n\n**Engagement Target:** Retweets, Replies, Rivalry engagement\n\n---", "type": "x_post"}, {"id": "story-6-x_post", "title": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs", "content": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs\n\n**Tier:** 2\n**Assigned Angles:** Three Core Players, One Offseason\n\n### Text Post\n\n```\nIan Happ and Seiya Suzuki both say they haven't had extension talks with the Cubs.\n\nWith Nico Hoerner also heading to free agency after 2026, that's three core players on the clock.\n\nWho gets the deal first?\n\n#Cubs #ChicagoCubs #CubNation\n```\n\n**[POSTING WINDOW: 5:30 PM CT]**\n**[CHARACTER COUNT: 238/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Replies, Poll engagement, Debate\n\n---", "type": "x_post"}, {"id": "story-7-x_post", "title": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose", "content": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose\n\n**Tier:** 3\n**Assigned Angles:** Rivalry Humor\n\n### Text Post\n\n```\nThe Cardinals are projected LAST in the NL Central by every major system.\n\nThey traded everyone, entered a full rebuild, and are now looking up at the Cubs, Brewers, Pirates, AND Reds.\n\nBest fans in baseball watching the worst team in the division.\n\n#Cubs #FlyTheW #MLB\n```\n\n**[POSTING WINDOW: 11:30 AM CT]**\n**[CHARACTER COUNT: 269/280]**\n**[TYPE: Humor/Rival Jab]**\n\n**Engagement Target:** Retweets, Replies, Rivalry banter\n\n---\n\n## Post Distribution Summary\n\n| # | Posting Window | Story | Post Type | Content Type |\n|---|---------------|-------|-----------|-------------|\n| 1 | 7:00 AM CT | Story 1 | Text Post | Informative |\n| 2 | 8:30 AM CT | Story 2 | Text Post | Bold/Passionate |\n| 3 | 9:00 AM CT | Story 1 | Thread (3 tweets) | Informative |\n| 4 | 10:00 AM CT | Story 3 | Text Post | Informative |\n| 5 | 11:30 AM CT | Story 7 | Text Post | Humor/Rival Jab |\n| 6 | 1:00 PM CT | Story 4 | Text Post | Informative |\n| 7 | 3:00 PM CT | Story 5 | Text Post | Bold/Passionate |\n| 8 | 5:30 PM CT | Story 6 | Text Post | Informative |\n| 9 | 7:00 PM CT | Story 2 | Thread (3 tweets) | Bold/Passionate |\n| 10 | 8:30 PM CT | Story 5 | Text Post | Humor/Rival Jab |\n\n**Total Standalone Tweets:** 10\n**Total Thread Tweets:** 6 (2 threads x 3 tweets each)\n**Grand Total Posts:** 10 standalone + 6 thread = 16 total posts\n\n**Content Mix Check:**\n- Informative: 5 posts (50%) \u2014 Stories 1, 3, 4, 6, and Story 1 thread\n- Bold/Passionate/Humor: 5 posts (50%) \u2014 Stories 2, 5 (x2), 7, and Story 2 thread\n\n---\n\n## Hashtag Distribution\n\n| Hashtag | Times Used |\n|---------|-----------|\n| #Cubs | 10 (every post) |\n| #MLB | 4 |\n| #GoCubs | 3 |\n| #CubsBaseball | 3 |\n| #FlyTheW | 2 |\n| #NorthSiders | 2 |\n| #ChicagoCubs | 2 |\n| #CubNation | 1 |\n\nAll posts use exactly 3 hashtags. #Cubs appears in every post.\n\n---\n\n## BONUS TWEETS \u2014 Fan Sentiment-Driven (Reddit / Community)\n\n*Source: r/CHICubs hot posts (2026-02-25). These tweets tap into what fans are actually talking about and feeling right now. Mix into the schedule or use as alternates.*\n\n---", "type": "x_post"}, {"id": "story-8-x_post", "title": "Pete Crow-Armstrong Calls Out Dodgers Fans", "content": "Pete Crow-Armstrong Calls Out Dodgers Fans\n\n**Tier:** 1 (Reddit: 876 upvotes, 76 comments \u2014 biggest fan story of the week)\n**Assigned Angles:** PCA Is That Guy / Dodgers Rivalry Energy\n\n### Text Post (Bold)\n\n```\nPete Crow-Armstrong didn't hold back when asked about Dodgers fans.\n\nThis 22-year-old center fielder has the bat, the glove, and apparently zero fear of LA's fanbase.\n\nHe's not just a future star. He's already a Cubs legend in the making.\n\n#Cubs #FlyTheW #GoCubs\n```\n\n**[POSTING WINDOW: Alternate 8:30 AM CT]**\n**[CHARACTER COUNT: 236/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Retweets, Replies, Quote tweets \u2014 Dodgers fans will interact\n\n---\n\n### Text Post 2 (Humor)\n\n```\nPete Crow-Armstrong talking about Dodgers fans the way we've all wanted to for years.\n\nThat's my center fielder.\n\n#Cubs #GoCubs #MLB\n```\n\n**[POSTING WINDOW: Alternate 11:30 AM CT]**\n**[CHARACTER COUNT: 134/280]**\n**[TYPE: Humor]**\n\n**Engagement Target:** Massive RT potential, Dodgers-Cubs crossover engagement\n\n---", "type": "x_post"}, {"id": "story-9-x_post", "title": "PCA Covers Chicago Magazine \u2014 The Face of the Cubs", "content": "PCA Covers Chicago Magazine \u2014 The Face of the Cubs\n\n**Tier:** 2 (Reddit: 313 upvotes, 22 comments)\n**Assigned Angles:** New Face of the Franchise / Culture Content\n\n### Text Post\n\n```\nPete Crow-Armstrong on the cover of Chicago magazine's March edition.\n\n22 years old. Gold Glove defense. 30+ steal speed. And now the face of the franchise on newsstands.\n\nThe Cubs' future isn't coming. It's already here.\n\n#Cubs #ChicagoCubs #NorthSiders\n```\n\n**[POSTING WINDOW: Alternate 10:00 AM CT]**\n**[CHARACTER COUNT: 234/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Likes, Retweets, fan pride shares\n\n---", "type": "x_post"}, {"id": "story-10-x_post", "title": "Seiya Suzuki \u2014 Fan Favorite Energy", "content": "Seiya Suzuki \u2014 Fan Favorite Energy\n\n**Tier:** 2 (Reddit: 561 upvotes on a Seiya appreciation post \u2014 fans adore this man)\n**Assigned Angles:** Seiya Love / Fan Culture\n\n### Text Post (Humor)\n\n```\nr/CHICubs got a Seiya Suzuki appreciation post to 560+ upvotes this week.\n\nNo stats. No news. Just a photo of Seiya smiling.\n\nThat's how you know a player owns a city.\n\n#Cubs #GoCubs #CubNation\n```\n\n**[POSTING WINDOW: Alternate 3:00 PM CT]**\n**[CHARACTER COUNT: 204/280]**\n**[TYPE: Humor/Culture]**\n\n**Engagement Target:** Likes, fan engagement, quote tweets with Seiya stories\n\n---\n\n### Text Post 2 (Bold)\n\n```\nSeiya Suzuki hasn't even gotten his extension yet and Cubs fans are already building statues.\n\n.280 hitter. 25+ HR power. That infectious smile.\n\nPay. This. Man.\n\n#Cubs #CubsBaseball #MLB\n```\n\n**[POSTING WINDOW: Alternate 5:30 PM CT]**\n**[CHARACTER COUNT: 195/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Replies, extension debate, engagement from Suzuki fans\n\n---", "type": "x_post"}, {"id": "story-11-x_post", "title": "Moises Ballesteros Arrives at Camp Ready to Compete", "content": "Moises Ballesteros Arrives at Camp Ready to Compete\n\n**Tier:** 2 (Reddit: 142 upvotes, 10 comments \u2014 fans are hyped on this kid)\n**Assigned Angles:** The Kid Is Ready / Prospect Hype\n\n### Text Post\n\n```\nMoises Ballesteros is in Mesa and ready to fight for a roster spot.\n\nHe's 21. He slashed .868 OPS in his first 20 MLB games. And the Cubs still might not have room for him.\n\nImagine having THIS problem on your roster.\n\n#Cubs #CubsBaseball #NorthSiders\n```\n\n**[POSTING WINDOW: Alternate 1:00 PM CT]**\n**[CHARACTER COUNT: 247/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Replies, prospect debate, \"make room for him\" takes\n\n---", "type": "x_post"}, {"id": "story-12-x_post", "title": "Spring Training Win \u2014 Cubs 6, Padres 5", "content": "Spring Training Win \u2014 Cubs 6, Padres 5\n\n**Tier:** 3 (Reddit: game thread active with 27 comments + 14 in postgame)\n**Assigned Angles:** Cactus League Vibes\n\n### Text Post\n\n```\nCubs 6, Padres 5 in Cactus League play.\n\nSpring training doesn't count. Except when you win. Then it counts a little.\n\n31 days until real baseball.\n\n#Cubs #GoCubs #MLB\n```\n\n**[POSTING WINDOW: Alternate 7:00 AM CT]**\n**[CHARACTER COUNT: 161/280]**\n**[TYPE: Humor]**\n\n**Engagement Target:** Likes, morning engagement, countdown hype\n\n---", "type": "x_post"}, {"id": "story-13-x_post", "title": "One Month Until Opening Day \u2014 Cubs vs. Nationals", "content": "One Month Until Opening Day \u2014 Cubs vs. Nationals\n\n**Tier:** 3 (Reddit: r/baseball posted Opening Day schedule, Cubs open vs Nationals March 26)\n**Assigned Angles:** Countdown Hype / Season Opener Preview\n\n### Text Post\n\n```\nONE MONTH from today, the Cubs open the 2026 season against the Nationals at Wrigley Field.\n\nBregman in the lineup. Horton on the mound. A rotation built to dominate.\n\nThis is the year.\n\n#Cubs #FlyTheW #WrigleyField\n```\n\n**[POSTING WINDOW: Alternate 8:30 PM CT]**\n**[CHARACTER COUNT: 219/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Retweets, hype engagement, countdown participation\n\n---\n\n### Text Post 2 (Informative)\n\n```\nMarch 26 at Wrigley Field. Cubs vs. Nationals. 2:20 PM CT.\n\nThat's the 2026 opener. 31 days away.\n\nThe projected 90-win season starts in one month.\n\n#Cubs #ChicagoCubs #MLB\n```\n\n**[POSTING WINDOW: Alternate 10:00 PM CT]**\n**[CHARACTER COUNT: 174/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Likes, saves, calendar reminders\n\n---\n\n## Updated Distribution \u2014 With Bonus Tweets\n\n### Recommended Additions to Schedule\n\n| Alt Slot | Story | Post Type | Content Type | Why (Reddit Signal) |\n|----------|-------|-----------|-------------|---------------------|\n| 8:30 AM | Story 8 (PCA vs Dodgers) | Text Post | Bold | 876 upvotes \u2014 biggest fan story |\n| 11:30 AM | Story 8 (PCA one-liner) | Text Post | Humor | Crossover Dodgers engagement |\n| 10:00 AM | Story 9 (PCA magazine) | Text Post | Bold | 313 upvotes \u2014 fan pride moment |\n| 3:00 PM | Story 10 (Seiya love) | Text Post | Humor/Culture | 561 upvotes on appreciation |\n| 5:30 PM | Story 10 (Seiya extension) | Text Post | Bold | Ties into Story 6 extension talk |\n| 1:00 PM | Story 11 (Ballesteros) | Text Post | Informative | 142 upvotes \u2014 prospect hype |\n| 7:00 AM | Story 12 (Spring W) | Text Post | Humor | Active game threads |\n| 8:30 PM | Story 13 (Opening Day countdown) | Text Post | Bold | r/baseball countdown post |\n| 10:00 PM | Story 13 (Opener details) | Text Post | Informative | Schedule awareness |\n\n### Content Mix with Bonus Tweets\n\n**Original:** 5 informative / 5 bold-humor (50/50)\n**Bonus tweets:** 3 informative / 6 bold-humor\n**Combined pool of 19 standalone options:** 8 informative / 11 bold-humor \u2014 pick 10-12 best to maintain 50/50\n\n### Why These Work (Fan Sentiment Logic)\n\n- **PCA (Stories 8-9):** The sub is absolutely buzzing about Pete Crow-Armstrong. Two posts totaling 1,189 upvotes and 98 comments. He IS the fan energy story right now. Any PCA tweet will outperform today.\n- **Seiya (Story 10):** 561 upvotes on a pure appreciation post. Fans love this man unconditionally. Ties perfectly into the extension talk already in Story 6.\n- **Ballesteros (Story 11):** 142 upvotes on an arrival post. Fans want this kid on the roster. Prospect hype drives replies.\n- **Game/Countdown (Stories 12-13):** Lower engagement but consistent community rituals. Opening Day countdown is a daily fan touchpoint. Spring training results keep the daily conversation going.", "type": "x_post"}];
+        const allStories = [{"id": "story-1-daily_brief", "title": "PECOTA Projects Cubs to Run Away with NL Central", "content": "PECOTA Projects Cubs to Run Away with NL Central\n**Freshness Tag:** TRENDING\n**Tier:** 1\n**Assigned Platforms:** X Text Post + X Thread (3-4 tweets)\n**Priority Score:** 9\n\n**Summary (2-4 sentences):**\nMultiple projection systems now have the Cubs as clear NL Central favorites. PECOTA projects 90.1 wins \u2014 a staggering 10 games ahead of the Brewers. FanGraphs has them at 86 wins, three ahead of the Pirates. After the Bregman signing and a deep rotation, this is the most projected dominance for the Cubs in years.\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-2-daily_brief", "title": "Justin Steele Rehab Ahead of Schedule, Targeting May Return", "content": "Justin Steele Rehab Ahead of Schedule, Targeting May Return\n**Freshness Tag:** TODAY\n**Tier:** 1\n**Assigned Platforms:** X Text Post + X Thread (3-4 tweets)\n**Priority Score:** 9\n\n**Summary (2-4 sentences):**\nJustin Steele's recovery from left elbow UCL revision surgery is ahead of schedule. The ace lefty is throwing bullpen sessions and targeting a May-June return. He confirmed he'll be on an innings limit and pitch count initially. When healthy, Steele gives the Cubs arguably the best rotation in the NL.\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-3-daily_brief", "title": "Cubs Sign Michael Conforto to Minor League Deal", "content": "Cubs Sign Michael Conforto to Minor League Deal\n**Freshness Tag:** TODAY\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 8\n\n**Summary (2-4 sentences):**\nThe Cubs agreed to a minor league deal with outfielder Michael Conforto on February 23, with a $2MM salary if his contract is selected. Conforto adds depth and a left-handed bat to a right-heavy outfield mix. He's competing for the fourth outfielder role in a crowded spring training battle.\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-4-daily_brief", "title": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot", "content": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot\n**Freshness Tag:** UPCOMING\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 7\n\n**Summary (2-4 sentences):**\nWith the core roster locked in, the Cubs have two key battles in Mesa. The fourth outfield spot features Alcantara, Dean, Carlson, McCormick, and now Conforto competing. The last bullpen vacancy has a deep list including Hodge, Brown, Little, and Assad. Moises Ballesteros is also pushing for the final position-player spot after his .868 OPS in 20 MLB games last year.\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-5-daily_brief", "title": "Cade Horton Emerges as Opening Day Starter Favorite", "content": "Cade Horton Emerges as Opening Day Starter Favorite\n**Freshness Tag:** TRENDING\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 7\n\n**Summary (2-4 sentences):**\nCade Horton is the favorite to get the Opening Day nod after a dominant second-half performance in 2025. The rotation is set with Horton, Imanaga, Taillon, Boyd, and Cabrera. Horton's emergence from a rib injury recovery signals a breakout 2026 campaign ahead.\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-6-daily_brief", "title": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs", "content": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs\n**Freshness Tag:** TODAY\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 6\n\n**Summary (2-4 sentences):**\nBoth Ian Happ and Seiya Suzuki told the Chicago Sun-Times that they haven't heard from the club about extensions. Along with Nico Hoerner, all three hit free agency after 2026. This sets up an intriguing subplot: will the Cubs lock up their core or let the market decide?\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-7-daily_brief", "title": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose", "content": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose\n**Freshness Tag:** EVERGREEN\n**Tier:** 3\n**Assigned Platforms:** X Text Post\n**Priority Score:** 5\n\n**Summary (2-4 sentences):**\nThe Cardinals have traded away most of their veterans and entered full rebuild mode. Every projection system has them at the bottom of the NL Central. For Cubs fans, the historic rivalry has a new dynamic \u2014 St. Louis is no longer the measuring stick, it's the punchline.\n\n---\n\n## Publishing Schedule\n\n**All times in CT:**\n\n| Time Slot | Story # | Content Type | Post Type |\n|-----------|---------|--------------|-----------|\n| 7:00 AM | Story 1 | Morning news / projection buzz | Informative \u2014 X Text Post |\n| 8:30 AM | Story 2 | Bold take / Steele hype | Bold/Passionate \u2014 X Text Post |\n| 9:00 AM | Story 1 | Thread: PECOTA deep dive | Informative \u2014 X Thread (3 tweets) |\n| 10:00 AM | Story 3 | Conforto signing news | Informative \u2014 X Text Post |\n| 11:30 AM | Story 7 | Cardinals rebuild jab | Humor/Rival Jab \u2014 X Text Post |\n| 1:00 PM | Story 4 | Roster battles preview | Informative \u2014 X Text Post |\n| 3:00 PM | Story 5 | Horton Opening Day take | Bold/Passionate \u2014 X Text Post |\n| 5:30 PM | Story 6 | Extension watch news | Informative \u2014 X Text Post |\n| 7:00 PM | Story 2 | Steele return hype thread | Bold/Passionate \u2014 X Thread (3 tweets) |\n| 8:30 PM | Story 5 | Horton bold take / witty closer | Humor \u2014 X Text Post |\n\n---\n\n## Content Tone & Voice\n\n**Brand Voice Guidelines:** From Chicago Cubs Fan HQ brand-voice.md\n- 50/50 split: informative (news, stats, recaps) and bold/passionate/humor (takes, jabs, wit)\n- Passionate Cubs fan who can rattle off WAR stats AND roast the Cardinals\n- Rival hierarchy: Cardinals (sharp) > Brewers (competitive) > White Sox (playful)\n\n**Hashtag Strategy:** From brand-guide.md\n- Primary: #Cubs (every post)\n- Secondary pool: #GoCubs #FlyTheW #CubsBaseball #WrigleyField #MLB #NorthSiders #ChicagoCubs #CubNation\n- Exactly 3 hashtags per tweet", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-1-x_post-1", "title": "PECOTA Projects Cubs to Run Away with NL Central", "content": "PECOTA projects the Cubs for 90.1 wins in 2026 \u2014 TEN games ahead of the Brewers.\n\nFanGraphs has them at 86 wins. ZiPS says Cubs by a game.\n\nEvery system agrees: the NL Central belongs to Chicago.\n\n#Cubs #GoCubs #MLB", "type": "x_post", "posting_window": "7:00 AM CT", "tweet_type": "Informative", "hashtags": "#Cubs #GoCubs #MLB", "tweet_label": "Text Post"}, {"id": "story-1-x_post-2", "title": "PECOTA Projects Cubs to Run Away with NL Central", "content": "The projection systems have spoken, and they're not being subtle about it.\n\nPECOTA: Cubs win 90.1 games\nFanGraphs: Cubs win 86 games\nZiPS: Cubs take the NL Central\n\nEvery single model says this is Chicago's division. Here's why. (thread)\n\n#Cubs #NorthSiders #MLB", "type": "x_post", "posting_window": "9:00 AM CT", "tweet_type": "Informative", "hashtags": "#Cubs #NorthSiders #MLB", "tweet_label": "Thread 1"}, {"id": "story-1-x_post-3", "title": "PECOTA Projects Cubs to Run Away with NL Central", "content": "The rotation is the engine. Horton, Imanaga, Taillon, Boyd, and Cabrera \u2014 five deep before Steele even comes back from rehab.\n\nAdd Bregman's bat at third base ($175M investment), and you've got a roster built to win now.", "type": "x_post", "posting_window": "9:03 AM CT", "tweet_type": "Informative", "hashtags": "", "tweet_label": "Thread 2"}, {"id": "story-1-x_post-4", "title": "PECOTA Projects Cubs to Run Away with NL Central", "content": "Meanwhile, the Cardinals are projected LAST in the NL Central after trading everyone.\n\nThe Brewers are regressing from 97 wins to the low 80s.\n\nThe path is clear. The Cubs haven't had a division outlook this favorable in years.", "type": "x_post", "posting_window": "9:06 AM CT", "tweet_type": "Informative", "hashtags": "", "tweet_label": "Thread 3"}, {"id": "story-2-x_post-1", "title": "Justin Steele Rehab Ahead of Schedule, Targeting May Return", "content": "Justin Steele says he's AHEAD of schedule in his UCL rehab and targeting a May-June return.\n\nHe's throwing bullpens, feeling great, and working on new pitches.\n\nThis rotation is about to get scary deep.\n\n#Cubs #CubsBaseball #MLB", "type": "x_post", "posting_window": "8:30 AM CT", "tweet_type": "Bold/Passionate", "hashtags": "#Cubs #CubsBaseball #MLB", "tweet_label": "Text Post"}, {"id": "story-2-x_post-2", "title": "Justin Steele Rehab Ahead of Schedule, Targeting May Return", "content": "Justin Steele update from Mesa, and it's all good news:\n\n- Ahead of schedule in UCL rehab\n- Bullpen sessions progressing well\n- Targeting May-June return\n- Working on NEW pitches during recovery\n\nThis man isn't just coming back. He's leveling up.\n\n#Cubs #GoCubs #CubsBaseball", "type": "x_post", "posting_window": "7:00 PM CT", "tweet_type": "Bold/Passionate", "hashtags": "#Cubs #GoCubs #CubsBaseball", "tweet_label": "Thread 1"}, {"id": "story-2-x_post-3", "title": "Justin Steele Rehab Ahead of Schedule, Targeting May Return", "content": "Steele was the Opening Day starter in 2025 before his elbow shut him down after four starts. His last outing? A 7-inning shutout against the Rangers.\n\nHe'll be on an innings limit when he returns, but even managed, he's a front-end arm.", "type": "x_post", "posting_window": "7:03 PM CT", "tweet_type": "Bold/Passionate", "hashtags": "", "tweet_label": "Thread 2"}, {"id": "story-2-x_post-4", "title": "Justin Steele Rehab Ahead of Schedule, Targeting May Return", "content": "The Cubs' rotation by June:\n\nHorton\nImanaga\nSteele\nTaillon\nBoyd\nCabrera\n\nThat's SIX legit starters on one team. Name a deeper rotation in the NL. Take your time.", "type": "x_post", "posting_window": "7:06 PM CT", "tweet_type": "Bold/Passionate", "hashtags": "", "tweet_label": "Thread 3"}, {"id": "story-3-x_post-1", "title": "Cubs Sign Michael Conforto to Minor League Deal", "content": "Cubs sign former All-Star Michael Conforto to a minor league deal with a $2MM salary if selected.\n\nAdds a lefty bat to the fourth outfield race against Alcantara, Dean, Carlson, and McCormick.\n\nSmart depth move by the front office.\n\n#Cubs #ChicagoCubs #MLB", "type": "x_post", "posting_window": "10:00 AM CT", "tweet_type": "Informative", "hashtags": "#Cubs #ChicagoCubs #MLB", "tweet_label": "Text Post"}, {"id": "story-4-x_post-1", "title": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot", "content": "The Cubs have five guys fighting for the fourth outfield spot and six arms battling for the last bullpen job.\n\nMoises Ballesteros hit .868 OPS in 20 MLB games last year and still might not crack the roster.\n\nContender problems.\n\n#Cubs #CubsBaseball #NorthSiders", "type": "x_post", "posting_window": "1:00 PM CT", "tweet_type": "Informative", "hashtags": "#Cubs #CubsBaseball #NorthSiders", "tweet_label": "Text Post"}, {"id": "story-5-x_post-1", "title": "Cade Horton Emerges as Opening Day Starter Favorite", "content": "Cade Horton getting the Opening Day start.\n\nFrom top draft pick to staff ace. From rib injury to the best second half by any Cubs starter in years.\n\nThis is what the plan looks like when it works.\n\n#Cubs #FlyTheW #CubsBaseball", "type": "x_post", "posting_window": "3:00 PM CT", "tweet_type": "Bold/Passionate", "hashtags": "#Cubs #FlyTheW #CubsBaseball", "tweet_label": "Text Post (Bold)"}, {"id": "story-5-x_post-2", "title": "Cade Horton Emerges as Opening Day Starter Favorite", "content": "Cade Horton is going to be a top-10 NL starter this year and the Cubs drafted him, developed him, and handed him the ball on Opening Day.\n\nMeanwhile, the Cardinals are developing a nice rebuild PowerPoint.\n\n#Cubs #GoCubs #NorthSiders", "type": "x_post", "posting_window": "8:30 PM CT", "tweet_type": "Humor/Rival Jab", "hashtags": "#Cubs #GoCubs #NorthSiders", "tweet_label": "Text Post 2 (Humor/Bold Closer)"}, {"id": "story-6-x_post-1", "title": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs", "content": "Ian Happ and Seiya Suzuki both say they haven't had extension talks with the Cubs.\n\nWith Nico Hoerner also heading to free agency after 2026, that's three core players on the clock.\n\nWho gets the deal first?\n\n#Cubs #ChicagoCubs #CubNation", "type": "x_post", "posting_window": "5:30 PM CT", "tweet_type": "Informative", "hashtags": "#Cubs #ChicagoCubs #CubNation", "tweet_label": "Text Post"}, {"id": "story-7-x_post-1", "title": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose", "content": "The Cardinals are projected LAST in the NL Central by every major system.\n\nThey traded everyone, entered a full rebuild, and are now looking up at the Cubs, Brewers, Pirates, AND Reds.\n\nBest fans in baseball watching the worst team in the division.\n\n#Cubs #FlyTheW #MLB", "type": "x_post", "posting_window": "11:30 AM CT", "tweet_type": "Humor/Rival Jab", "hashtags": "#Cubs #FlyTheW #MLB", "tweet_label": "Text Post"}, {"id": "story-8-x_post-1", "title": "Pete Crow-Armstrong Calls Out Dodgers Fans", "content": "Pete Crow-Armstrong didn't hold back when asked about Dodgers fans.\n\nThis 22-year-old center fielder has the bat, the glove, and apparently zero fear of LA's fanbase.\n\nHe's not just a future star. He's already a Cubs legend in the making.\n\n#Cubs #FlyTheW #GoCubs", "type": "x_post", "posting_window": "Alternate 8:30 AM CT", "tweet_type": "Bold/Passionate", "hashtags": "#Cubs #FlyTheW #GoCubs", "tweet_label": "Text Post (Bold)"}, {"id": "story-8-x_post-2", "title": "Pete Crow-Armstrong Calls Out Dodgers Fans", "content": "Pete Crow-Armstrong talking about Dodgers fans the way we've all wanted to for years.\n\nThat's my center fielder.\n\n#Cubs #GoCubs #MLB", "type": "x_post", "posting_window": "Alternate 11:30 AM CT", "tweet_type": "Humor", "hashtags": "#Cubs #GoCubs #MLB", "tweet_label": "Text Post 2 (Humor)"}, {"id": "story-9-x_post-1", "title": "PCA Covers Chicago Magazine \u2014 The Face of the Cubs", "content": "Pete Crow-Armstrong on the cover of Chicago magazine's March edition.\n\n22 years old. Gold Glove defense. 30+ steal speed. And now the face of the franchise on newsstands.\n\nThe Cubs' future isn't coming. It's already here.\n\n#Cubs #ChicagoCubs #NorthSiders", "type": "x_post", "posting_window": "Alternate 10:00 AM CT", "tweet_type": "Bold/Passionate", "hashtags": "#Cubs #ChicagoCubs #NorthSiders", "tweet_label": "Text Post"}, {"id": "story-10-x_post-1", "title": "Seiya Suzuki \u2014 Fan Favorite Energy", "content": "r/CHICubs got a Seiya Suzuki appreciation post to 560+ upvotes this week.\n\nNo stats. No news. Just a photo of Seiya smiling.\n\nThat's how you know a player owns a city.\n\n#Cubs #GoCubs #CubNation", "type": "x_post", "posting_window": "Alternate 3:00 PM CT", "tweet_type": "Humor/Culture", "hashtags": "#Cubs #GoCubs #CubNation", "tweet_label": "Text Post (Humor)"}, {"id": "story-10-x_post-2", "title": "Seiya Suzuki \u2014 Fan Favorite Energy", "content": "Seiya Suzuki hasn't even gotten his extension yet and Cubs fans are already building statues.\n\n.280 hitter. 25+ HR power. That infectious smile.\n\nPay. This. Man.\n\n#Cubs #CubsBaseball #MLB", "type": "x_post", "posting_window": "Alternate 5:30 PM CT", "tweet_type": "Bold/Passionate", "hashtags": "#Cubs #CubsBaseball #MLB", "tweet_label": "Text Post 2 (Bold)"}, {"id": "story-11-x_post-1", "title": "Moises Ballesteros Arrives at Camp Ready to Compete", "content": "Moises Ballesteros is in Mesa and ready to fight for a roster spot.\n\nHe's 21. He slashed .868 OPS in his first 20 MLB games. And the Cubs still might not have room for him.\n\nImagine having THIS problem on your roster.\n\n#Cubs #CubsBaseball #NorthSiders", "type": "x_post", "posting_window": "Alternate 1:00 PM CT", "tweet_type": "Informative", "hashtags": "#Cubs #CubsBaseball #NorthSiders", "tweet_label": "Text Post"}, {"id": "story-12-x_post-1", "title": "Spring Training Win \u2014 Cubs 6, Padres 5", "content": "Cubs 6, Padres 5 in Cactus League play.\n\nSpring training doesn't count. Except when you win. Then it counts a little.\n\n31 days until real baseball.\n\n#Cubs #GoCubs #MLB", "type": "x_post", "posting_window": "Alternate 7:00 AM CT", "tweet_type": "Humor", "hashtags": "#Cubs #GoCubs #MLB", "tweet_label": "Text Post"}, {"id": "story-13-x_post-1", "title": "One Month Until Opening Day \u2014 Cubs vs. Nationals", "content": "ONE MONTH from today, the Cubs open the 2026 season against the Nationals at Wrigley Field.\n\nBregman in the lineup. Horton on the mound. A rotation built to dominate.\n\nThis is the year.\n\n#Cubs #FlyTheW #WrigleyField", "type": "x_post", "posting_window": "Alternate 8:30 PM CT", "tweet_type": "Bold/Passionate", "hashtags": "#Cubs #FlyTheW #WrigleyField", "tweet_label": "Text Post"}, {"id": "story-13-x_post-2", "title": "One Month Until Opening Day \u2014 Cubs vs. Nationals", "content": "March 26 at Wrigley Field. Cubs vs. Nationals. 2:20 PM CT.\n\nThat's the 2026 opener. 31 days away.\n\nThe projected 90-win season starts in one month.\n\n#Cubs #ChicagoCubs #MLB", "type": "x_post", "posting_window": "Alternate 10:00 PM CT", "tweet_type": "Informative", "hashtags": "#Cubs #ChicagoCubs #MLB", "tweet_label": "Text Post 2 (Informative)"}];
         const imageManifest = {};
         let imageURLs = {}; // Runtime store: {'1_x_image': 'url', '1_facebook_image': 'url', ...}
 
@@ -2843,15 +2394,27 @@ The projected 90-win season starts in one month.
                 var finalContent = data.editedContent || story.content;
 
                 if (story.type === 'x_post') {
-                    var sections = parseXPostContent(finalContent, story.title);
-                    sections.forEach(function(post) {
+                    // If this is an individual tweet card (has tweet_label), use directly
+                    if (story.tweet_label) {
                         xRows.push({
-                            content: post.text,
-                            type: post.type,
-                            hashtags: extractHashtags(post.text),
-                            story: story.title
+                            content: finalContent,
+                            type: story.tweet_type || 'text',
+                            hashtags: story.hashtags || extractHashtags(finalContent),
+                            story: story.title,
+                            posting_window: story.posting_window || ''
                         });
-                    });
+                    } else {
+                        // Legacy: parse full story markdown for individual tweets
+                        var sections = parseXPostContent(finalContent, story.title);
+                        sections.forEach(function(post) {
+                            xRows.push({
+                                content: post.text,
+                                type: post.type,
+                                hashtags: extractHashtags(post.text),
+                                story: story.title
+                            });
+                        });
+                    }
                 } else if (story.type === 'facebook') {
                     var fbPost = parseFacebookContent(finalContent, story.title);
                     if (fbPost) {
