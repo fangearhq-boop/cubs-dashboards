@@ -1,0 +1,3251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicago Cubs Fan HQ — Content Review Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #1a1a2e;
+            color: white;
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .sidebar h1 { font-size: 18px; margin-bottom: 10px; color: #FF8A00; font-weight: 700; }
+        .sidebar-date { font-size: 12px; color: #aaa; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #333; }
+        .sidebar-section { margin-bottom: 25px; }
+        .sidebar-section-title { font-size: 12px; text-transform: uppercase; color: #999; margin-bottom: 12px; font-weight: 600; letter-spacing: 1px; }
+
+        .nav-item {
+            display: block; padding: 12px 15px; margin-bottom: 8px; border-radius: 6px;
+            cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #ddd; user-select: none;
+        }
+        .nav-item:hover { background: #2d2d44; color: #FF8A00; }
+        .nav-item.active { background: #FF8A00; color: white; }
+        .nav-item-count { float: right; background: rgba(255, 107, 53, 0.3); padding: 2px 8px; border-radius: 3px; font-size: 12px; }
+        .nav-item.active .nav-item-count { background: rgba(0, 0, 0, 0.2); }
+
+        .main-content { margin-left: 280px; flex: 1; display: flex; flex-direction: column; }
+
+        .header {
+            background: white; padding: 25px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-bottom: 3px solid #FF8A00;
+        }
+        .header h1 { font-size: 28px; color: #1a1a2e; margin-bottom: 10px; }
+        .header-meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .progress-bar { flex: 1; min-width: 200px; }
+        .progress-label { font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 500; }
+        .progress-container { width: 100%; height: 8px; background: #ddd; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #FF8A00, #E53935); transition: width 0.3s ease; }
+        .header-actions { display: flex; gap: 10px; }
+
+        .btn {
+            padding: 10px 16px; border: none; border-radius: 6px; font-size: 14px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;
+        }
+        .btn-primary { background: #FF8A00; color: white; }
+        .btn-primary:hover { background: #E53935; }
+        .btn-secondary { background: #f0f0f0; color: #333; }
+        .btn-secondary:hover { background: #e0e0e0; }
+
+        .filter-bar {
+            background: white; padding: 20px 40px; display: flex;
+            gap: 10px; flex-wrap: wrap; border-bottom: 1px solid #eee;
+        }
+        .filter-btn {
+            padding: 8px 14px; border: 1px solid #ddd; background: white;
+            border-radius: 5px; cursor: pointer; font-size: 13px; transition: all 0.3s ease;
+        }
+        .filter-btn:hover { border-color: #FF8A00; color: #FF8A00; }
+        .filter-btn.active { background: #FF8A00; color: white; border-color: #FF8A00; }
+
+        .content { flex: 1; padding: 30px 40px; overflow-y: auto; }
+
+        .cards-container { display: flex; flex-direction: column; gap: 20px; max-width: 900px; }
+
+        .card {
+            background: white; border-radius: 8px; padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease;
+            border-left: 5px solid #ccc; display: none;
+        }
+        .card.show { display: block; }
+        .card.approved { border-left-color: #22c55e; }
+        .card.needs-edit { border-left-color: #eab308; }
+        .card.rejected { border-left-color: #ef4444; }
+        .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+        .card-title { font-size: 16px; font-weight: 600; color: #1a1a2e; flex: 1; margin-right: 10px; }
+
+        .card-badge {
+            display: inline-block; padding: 4px 10px; border-radius: 4px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .badge-x-post { background: #1da1f2; color: white; }
+        .badge-facebook { background: #4267b2; color: white; }
+        .badge-article { background: #9333ea; color: white; }
+        .badge-image { background: #06b6d4; color: white; }
+        .badge-brief { background: #10b981; color: white; }
+
+        .fact-check-badge {
+            display: inline-block; padding: 3px 8px; border-radius: 4px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            margin-left: 6px;
+        }
+        .fact-check-verified { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .fact-check-warning { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .fact-check-unverified { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Content area — preview (collapsed) and full (expanded) */
+        .card-content {
+            background: #f9f9f9; padding: 15px; border-radius: 6px;
+            margin-bottom: 15px; font-size: 13px; line-height: 1.6; color: #555;
+            position: relative;
+        }
+        .card-content-text {
+            white-space: pre-wrap; word-break: break-word;
+        }
+
+        /* Collapsed state: limit height with fade */
+        .card-content.collapsed {
+            max-height: 200px; overflow: hidden;
+        }
+        .card-content.collapsed::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+            background: linear-gradient(transparent, #f9f9f9);
+            pointer-events: none;
+        }
+
+        /* Expanded state: no limit */
+        .card-content.expanded {
+            max-height: none; overflow: visible;
+        }
+        .card-content.expanded::after { display: none; }
+
+        .expand-toggle {
+            display: inline-block; margin-bottom: 12px; padding: 6px 14px;
+            background: #eee; border: 1px solid #ddd; border-radius: 4px;
+            cursor: pointer; font-size: 12px; font-weight: 600; color: #555;
+            transition: all 0.2s ease;
+        }
+        .expand-toggle:hover { background: #ddd; color: #333; }
+
+        /* Inline editing */
+        .edit-textarea {
+            width: 100%; padding: 15px; border: 2px solid #FF8A00;
+            border-radius: 6px; font-size: 13px; font-family: inherit;
+            line-height: 1.6; resize: vertical; min-height: 200px;
+            background: #fffef5; color: #333; display: none;
+        }
+        .edit-textarea:focus {
+            outline: none; box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+        }
+        .card.editing .card-content { display: none; }
+        .card.editing .edit-textarea { display: block; }
+        .card.editing .expand-toggle { display: none; }
+
+        .edit-bar {
+            display: none; gap: 8px; margin-bottom: 12px; padding: 10px;
+            background: #fff8f0; border: 1px solid #ffcc99; border-radius: 6px;
+            align-items: center;
+        }
+        .card.editing .edit-bar { display: flex; }
+        .edit-bar-label { font-size: 12px; font-weight: 600; color: #cc6600; flex: 1; }
+        .edit-bar .btn { padding: 7px 14px; font-size: 12px; }
+
+        .char-count {
+            font-size: 12px; margin: 0 0 10px 0; padding: 8px;
+            background: #f0f0f0; border-radius: 4px;
+        }
+        .char-count.warning { background: #fee2e2; color: #991b1b; }
+
+        .card-actions { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .action-btn {
+            flex: 1; padding: 10px; border: none; border-radius: 5px;
+            cursor: pointer; font-size: 13px; font-weight: 600;
+            transition: all 0.3s ease; white-space: nowrap; min-width: 100px;
+        }
+        .btn-approve { background: #e8f5e9; color: #22c55e; border: 1px solid #22c55e; }
+        .btn-approve:hover { background: #22c55e; color: white; }
+        .btn-edit { background: #fff3e0; color: #e65100; border: 1px solid #ff9800; }
+        .btn-edit:hover { background: #ff9800; color: white; }
+        .btn-reject { background: #fee2e2; color: #ef4444; border: 1px solid #ef4444; }
+        .btn-reject:hover { background: #ef4444; color: white; }
+        .btn-copy { background: #f0f0f0; color: #333; border: 1px solid #ddd; }
+        .btn-copy:hover { background: #e0e0e0; }
+
+        .notes-section { display: none; margin-bottom: 12px; }
+        .notes-section.show { display: block; }
+        .notes-label { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 6px; }
+        .notes-textarea {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;
+            font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px;
+        }
+        .notes-textarea:focus { outline: none; border-color: #FF8A00; box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1); }
+
+        .status-label {
+            font-size: 11px; font-weight: 600; text-transform: uppercase;
+            padding: 4px 8px; border-radius: 3px; margin-top: 10px; display: inline-block;
+        }
+        .status-approved { background: #e8f5e9; color: #22c55e; }
+        .status-needs-edit { background: #fffbeb; color: #f59e0b; }
+        .status-rejected { background: #fee2e2; color: #ef4444; }
+        .status-edited { background: #e3f2fd; color: #1565c0; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: #999; }
+        .empty-state-icon { font-size: 48px; margin-bottom: 15px; }
+
+        /* Approval stats bar */
+        .approval-stats {
+            display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap;
+        }
+        .stat-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;
+        }
+        .stat-approved { background: #dcfce7; color: #16a34a; }
+        .stat-rejected { background: #fee2e2; color: #dc2626; }
+        .stat-unreviewed { background: #f3f4f6; color: #6b7280; }
+        .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .stat-approved .stat-dot { background: #22c55e; }
+        .stat-rejected .stat-dot { background: #ef4444; }
+        .stat-unreviewed .stat-dot { background: #9ca3af; }
+
+        /* PostPlanner XLSX button */
+        .btn-csv { background: #7c3aed; color: white; }
+        .btn-csv:hover { background: #6d28d9; }
+        .btn-csv:disabled { background: #c4b5fd; cursor: not-allowed; }
+
+        /* Schedule settings panel */
+        .schedule-panel {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; border-radius: 12px; padding: 30px; z-index: 1000;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); width: 500px; max-width: 90vw; max-height: 80vh; overflow-y: auto;
+        }
+        .schedule-panel.show { display: block; }
+        .schedule-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+        .schedule-overlay.show { display: block; }
+        .schedule-panel h3 { color: #1a1a2e; margin-bottom: 20px; font-size: 18px; }
+        .schedule-section { margin-bottom: 20px; }
+        .schedule-section label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
+        .schedule-section input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .schedule-section input:focus { outline: none; border-color: #7c3aed; }
+        .time-slots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .time-slot {
+            display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+            background: #f3f0ff; border: 1px solid #c4b5fd; border-radius: 20px; font-size: 13px;
+        }
+        .time-slot .remove-slot { cursor: pointer; color: #999; font-weight: bold; }
+        .time-slot .remove-slot:hover { color: #ef4444; }
+        .add-slot-btn {
+            padding: 6px 14px; background: #f3f0ff; border: 1px dashed #7c3aed; border-radius: 20px;
+            cursor: pointer; font-size: 13px; color: #7c3aed;
+        }
+        .add-slot-btn:hover { background: #ede9fe; }
+        .schedule-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+        /* Photo search links for image concepts */
+        .photo-section {
+            margin-bottom: 15px; padding: 12px; background: #f0f9ff;
+            border: 1px solid #bae6fd; border-radius: 6px;
+        }
+        .photo-section-title {
+            font-size: 12px; font-weight: 700; color: #0369a1; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 8px;
+        }
+        .photo-links { display: flex; flex-wrap: wrap; gap: 6px; }
+        .photo-link {
+            display: inline-block; padding: 6px 12px; background: #0ea5e9;
+            color: white; border-radius: 4px; font-size: 12px; font-weight: 500;
+            text-decoration: none; transition: all 0.2s ease; cursor: pointer;
+        }
+        .photo-link:hover { background: #0284c7; }
+
+        /* Image URL input and preview for image concepts */
+        .image-url-section {
+            margin-bottom: 15px; padding: 12px; background: #f0fdf4;
+            border: 1px solid #bbf7d0; border-radius: 6px;
+        }
+        .image-url-section label {
+            display: block; font-size: 12px; font-weight: 700; color: #166534;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+        }
+        .image-url-input {
+            width: 100%; padding: 8px 10px; border: 1px solid #86efac;
+            border-radius: 4px; font-size: 13px; font-family: monospace;
+            background: white; box-sizing: border-box;
+        }
+        .image-url-input:focus { outline: none; border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34,197,94,0.2); }
+        .image-url-hint {
+            font-size: 11px; color: #6b7280; margin-top: 4px;
+        }
+        .image-preview {
+            margin-top: 8px; text-align: center;
+        }
+        .image-preview img {
+            max-width: 100%; max-height: 200px; border-radius: 4px;
+            border: 1px solid #d1d5db; display: none;
+        }
+        .image-preview img.loaded { display: inline-block; }
+
+        /* Image production status badges */
+        .image-badge {
+            display: inline-block; padding: 2px 8px; border-radius: 3px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-left: 6px;
+        }
+        .image-exported { background: #dcfce7; color: #166534; }
+        .image-in-progress { background: #fef3c7; color: #92400e; }
+        .image-not-started { background: #f3f4f6; color: #6b7280; }
+
+        /* Text overlay preview for image concepts */
+        .overlay-section {
+            margin-bottom: 15px; padding: 15px; background: #1a1a2e;
+            border-radius: 6px; text-align: center;
+        }
+        .overlay-line {
+            font-family: 'Bebas Neue', Impact, 'Arial Black', sans-serif;
+            color: #ffd700; font-size: 18px; font-weight: 700; line-height: 1.4;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .overlay-line.sub { color: #ffffff; font-size: 14px; font-weight: 400; letter-spacing: 0; text-transform: none; }
+
+        /* Article content rendered as HTML */
+        .article-frame {
+            width: 100%; border: 1px solid #ddd; border-radius: 6px;
+            background: white; min-height: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; padding: 20px; }
+            .main-content { margin-left: 0; }
+            .content { padding: 20px; }
+            .header { padding: 15px 20px; }
+            .header h1 { font-size: 20px; }
+            .filter-bar { padding: 15px 20px; }
+            .header-meta { flex-direction: column; align-items: stretch; }
+            .progress-bar { min-width: auto; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Chicago Cubs Fan HQ</h1>
+        <div class="sidebar-date">Review Dashboard<br>2026-02-25</div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Content Types</div>
+            <div class="nav-item" onclick="filterByType('daily_brief')">
+                Daily Brief
+                <span class="nav-item-count">7</span>
+            </div>
+            <div class="nav-item" onclick="filterByType('x_post')">
+                X / Twitter Posts
+                <span class="nav-item-count">13</span>
+            </div>
+
+            <div class="nav-item" onclick="filterByType('all')">
+                All Items
+                <span class="nav-item-count">20</span>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Status Filter</div>
+            <div class="nav-item" onclick="filterByStatus('all')">All</div>
+            <div class="nav-item" onclick="filterByStatus('unreviewed')">Unreviewed</div>
+            <div class="nav-item" onclick="filterByStatus('approved')">Approved</div>
+            <div class="nav-item" onclick="filterByStatus('needs-edit')">Needs Edit</div>
+            <div class="nav-item" onclick="filterByStatus('rejected')">Rejected</div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Actions</div>
+            <div class="nav-item" onclick="approveAll()" style="color: #22c55e;">
+                Approve All
+            </div>
+            <div class="nav-item" onclick="exportApprovals()" style="color: #FF8A00;">
+                Export Results JSON
+            </div>
+            <div class="nav-item" onclick="downloadPostPlannerCSV()" style="color: #a78bfa;">
+                PostPlanner Upload
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Chicago Cubs Fan HQ — Content Review Dashboard</h1>
+            <div class="header-meta">
+                <div class="progress-bar">
+                    <div class="progress-label">
+                        <span id="reviewed-count">0</span> of <span id="total-count">20</span> items reviewed
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="approval-stats" id="approval-stats">
+                        <span class="stat-chip stat-approved"><span class="stat-dot"></span> <span id="stat-approved-count">0</span> approved</span>
+                        <span class="stat-chip stat-rejected"><span class="stat-dot"></span> <span id="stat-rejected-count">0</span> rejected</span>
+                        <span class="stat-chip stat-unreviewed"><span class="stat-dot"></span> <span id="stat-unreviewed-count">0</span> unreviewed</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="resetAll()">Reset All</button>
+                    <button class="btn btn-csv" id="btn-csv" onclick="downloadPostPlannerCSV()" disabled>PostPlanner Upload (0 approved)</button>
+                    <button class="btn btn-primary" onclick="exportApprovals()">Export JSON</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterByStatus('all')">All</button>
+            <button class="filter-btn" onclick="filterByStatus('unreviewed')">Unreviewed</button>
+            <button class="filter-btn" onclick="filterByStatus('approved')">Approved</button>
+            <button class="filter-btn" onclick="filterByStatus('needs-edit')">Needs Edit</button>
+            <button class="filter-btn" onclick="filterByStatus('rejected')">Rejected</button>
+        </div>
+
+        <div class="content">
+            <div class="cards-container" id="cards-container">
+                <div class="card" data-id="story-1-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">PECOTA Projects Cubs to Run Away with NL Central</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-1-daily_brief">
+                        <div class="card-content-text">PECOTA Projects Cubs to Run Away with NL Central
+**Freshness Tag:** TRENDING
+**Tier:** 1
+**Assigned Platforms:** X Text Post + X Thread (3-4 tweets)
+**Priority Score:** 9
+
+**Summary (2-4 sentences):**
+Multiple projection systems now have the Cubs as clear NL Central favorites. PECOTA projects 90.1 wins — a staggering 10 games ahead of the Brewers. FanGraphs has them at 86 wins, three ahead of the Pirates. After the Bregman signing and a deep rotation, this is the most projected dominance for the Cubs in years.
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-1-daily_brief" placeholder="Edit content here...">PECOTA Projects Cubs to Run Away with NL Central
+**Freshness Tag:** TRENDING
+**Tier:** 1
+**Assigned Platforms:** X Text Post + X Thread (3-4 tweets)
+**Priority Score:** 9
+
+**Summary (2-4 sentences):**
+Multiple projection systems now have the Cubs as clear NL Central favorites. PECOTA projects 90.1 wins — a staggering 10 games ahead of the Brewers. FanGraphs has them at 86 wins, three ahead of the Pirates. After the Bregman signing and a deep rotation, this is the most projected dominance for the Cubs in years.
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-1-daily_brief" onclick="toggleExpand('story-1-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-1-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-1-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-1-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-1-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-1-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-1-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-1-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-1-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-1-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-1-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-1-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-2-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Justin Steele Rehab Ahead of Schedule, Targeting May Return</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-2-daily_brief">
+                        <div class="card-content-text">Justin Steele Rehab Ahead of Schedule, Targeting May Return
+**Freshness Tag:** TODAY
+**Tier:** 1
+**Assigned Platforms:** X Text Post + X Thread (3-4 tweets)
+**Priority Score:** 9
+
+**Summary (2-4 sentences):**
+Justin Steele&#x27;s recovery from left elbow UCL revision surgery is ahead of schedule. The ace lefty is throwing bullpen sessions and targeting a May-June return. He confirmed he&#x27;ll be on an innings limit and pitch count initially. When healthy, Steele gives the Cubs arguably the best rotation in the NL.
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-2-daily_brief" placeholder="Edit content here...">Justin Steele Rehab Ahead of Schedule, Targeting May Return
+**Freshness Tag:** TODAY
+**Tier:** 1
+**Assigned Platforms:** X Text Post + X Thread (3-4 tweets)
+**Priority Score:** 9
+
+**Summary (2-4 sentences):**
+Justin Steele&#x27;s recovery from left elbow UCL revision surgery is ahead of schedule. The ace lefty is throwing bullpen sessions and targeting a May-June return. He confirmed he&#x27;ll be on an innings limit and pitch count initially. When healthy, Steele gives the Cubs arguably the best rotation in the NL.
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-2-daily_brief" onclick="toggleExpand('story-2-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-2-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-2-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-2-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-2-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-2-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-2-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-2-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-2-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-2-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-2-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-2-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-3-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cubs Sign Michael Conforto to Minor League Deal</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-3-daily_brief">
+                        <div class="card-content-text">Cubs Sign Michael Conforto to Minor League Deal
+**Freshness Tag:** TODAY
+**Tier:** 2
+**Assigned Platforms:** X Text Post
+**Priority Score:** 8
+
+**Summary (2-4 sentences):**
+The Cubs agreed to a minor league deal with outfielder Michael Conforto on February 23, with a $2MM salary if his contract is selected. Conforto adds depth and a left-handed bat to a right-heavy outfield mix. He&#x27;s competing for the fourth outfielder role in a crowded spring training battle.
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-3-daily_brief" placeholder="Edit content here...">Cubs Sign Michael Conforto to Minor League Deal
+**Freshness Tag:** TODAY
+**Tier:** 2
+**Assigned Platforms:** X Text Post
+**Priority Score:** 8
+
+**Summary (2-4 sentences):**
+The Cubs agreed to a minor league deal with outfielder Michael Conforto on February 23, with a $2MM salary if his contract is selected. Conforto adds depth and a left-handed bat to a right-heavy outfield mix. He&#x27;s competing for the fourth outfielder role in a crowded spring training battle.
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-3-daily_brief" onclick="toggleExpand('story-3-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-3-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-3-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-3-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-3-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-3-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-3-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-3-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-3-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-3-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-3-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-3-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-4-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-4-daily_brief">
+                        <div class="card-content-text">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot
+**Freshness Tag:** UPCOMING
+**Tier:** 2
+**Assigned Platforms:** X Text Post
+**Priority Score:** 7
+
+**Summary (2-4 sentences):**
+With the core roster locked in, the Cubs have two key battles in Mesa. The fourth outfield spot features Alcantara, Dean, Carlson, McCormick, and now Conforto competing. The last bullpen vacancy has a deep list including Hodge, Brown, Little, and Assad. Moises Ballesteros is also pushing for the final position-player spot after his .868 OPS in 20 MLB games last year.
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-4-daily_brief" placeholder="Edit content here...">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot
+**Freshness Tag:** UPCOMING
+**Tier:** 2
+**Assigned Platforms:** X Text Post
+**Priority Score:** 7
+
+**Summary (2-4 sentences):**
+With the core roster locked in, the Cubs have two key battles in Mesa. The fourth outfield spot features Alcantara, Dean, Carlson, McCormick, and now Conforto competing. The last bullpen vacancy has a deep list including Hodge, Brown, Little, and Assad. Moises Ballesteros is also pushing for the final position-player spot after his .868 OPS in 20 MLB games last year.
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-4-daily_brief" onclick="toggleExpand('story-4-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-4-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-4-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-4-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-4-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-4-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-4-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-4-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-4-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-4-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-4-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-4-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-5-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cade Horton Emerges as Opening Day Starter Favorite</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-5-daily_brief">
+                        <div class="card-content-text">Cade Horton Emerges as Opening Day Starter Favorite
+**Freshness Tag:** TRENDING
+**Tier:** 2
+**Assigned Platforms:** X Text Post
+**Priority Score:** 7
+
+**Summary (2-4 sentences):**
+Cade Horton is the favorite to get the Opening Day nod after a dominant second-half performance in 2025. The rotation is set with Horton, Imanaga, Taillon, Boyd, and Cabrera. Horton&#x27;s emergence from a rib injury recovery signals a breakout 2026 campaign ahead.
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-5-daily_brief" placeholder="Edit content here...">Cade Horton Emerges as Opening Day Starter Favorite
+**Freshness Tag:** TRENDING
+**Tier:** 2
+**Assigned Platforms:** X Text Post
+**Priority Score:** 7
+
+**Summary (2-4 sentences):**
+Cade Horton is the favorite to get the Opening Day nod after a dominant second-half performance in 2025. The rotation is set with Horton, Imanaga, Taillon, Boyd, and Cabrera. Horton&#x27;s emergence from a rib injury recovery signals a breakout 2026 campaign ahead.
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-5-daily_brief" onclick="toggleExpand('story-5-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-5-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-5-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-5-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-5-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-5-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-5-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-5-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-5-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-5-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-5-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-5-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-6-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Happ and Suzuki — No Extension Talks Yet with Cubs</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-6-daily_brief">
+                        <div class="card-content-text">Happ and Suzuki — No Extension Talks Yet with Cubs
+**Freshness Tag:** TODAY
+**Tier:** 2
+**Assigned Platforms:** X Text Post
+**Priority Score:** 6
+
+**Summary (2-4 sentences):**
+Both Ian Happ and Seiya Suzuki told the Chicago Sun-Times that they haven&#x27;t heard from the club about extensions. Along with Nico Hoerner, all three hit free agency after 2026. This sets up an intriguing subplot: will the Cubs lock up their core or let the market decide?
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-6-daily_brief" placeholder="Edit content here...">Happ and Suzuki — No Extension Talks Yet with Cubs
+**Freshness Tag:** TODAY
+**Tier:** 2
+**Assigned Platforms:** X Text Post
+**Priority Score:** 6
+
+**Summary (2-4 sentences):**
+Both Ian Happ and Seiya Suzuki told the Chicago Sun-Times that they haven&#x27;t heard from the club about extensions. Along with Nico Hoerner, all three hit free agency after 2026. This sets up an intriguing subplot: will the Cubs lock up their core or let the market decide?
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-6-daily_brief" onclick="toggleExpand('story-6-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-6-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-6-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-6-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-6-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-6-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-6-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-6-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-6-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-6-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-6-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-6-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-7-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose</div>
+                        <div><span class="fact-check-badge fact-check-warning" title="Some claims were removed or flagged for review">REVIEW FLAGS</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-7-daily_brief">
+                        <div class="card-content-text">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose
+**Freshness Tag:** EVERGREEN
+**Tier:** 3
+**Assigned Platforms:** X Text Post
+**Priority Score:** 5
+
+**Summary (2-4 sentences):**
+The Cardinals have traded away most of their veterans and entered full rebuild mode. Every projection system has them at the bottom of the NL Central. For Cubs fans, the historic rivalry has a new dynamic — St. Louis is no longer the measuring stick, it&#x27;s the punchline.
+
+---
+
+## Publishing Schedule
+
+**All times in CT:**
+
+| Time Slot | Story # | Content Type | Post Type |
+|-----------|---------|--------------|-----------|
+| 7:00 AM | Story 1 | Morning news / projection buzz | Informative — X Text Post |
+| 8:30 AM | Story 2 | Bold take / Steele hype | Bold/Passionate — X Text Post |
+| 9:00 AM | Story 1 | Thread: PECOTA deep dive | Informative — X Thread (3 tweets) |
+| 10:00 AM | Story 3 | Conforto signing news | Informative — X Text Post |
+| 11:30 AM | Story 7 | Cardinals rebuild jab | Humor/Rival Jab — X Text Post |
+| 1:00 PM | Story 4 | Roster battles preview | Informative — X Text Post |
+| 3:00 PM | Story 5 | Horton Opening Day take | Bold/Passionate — X Text Post |
+| 5:30 PM | Story 6 | Extension watch news | Informative — X Text Post |
+| 7:00 PM | Story 2 | Steele return hype thread | Bold/Passionate — X Thread (3 tweets) |
+| 8:30 PM | Story 5 | Horton bold take / witty closer | Humor — X Text Post |
+
+---
+
+## Content Tone &amp; Voice
+
+**Brand Voice Guidelines:** From Chicago Cubs Fan HQ brand-voice.md
+- 50/50 split: informative (news, stats, recaps) and bold/passionate/humor (takes, jabs, wit)
+- Passionate Cubs fan who can rattle off WAR stats AND roast the Cardinals
+- Rival hierarchy: Cardinals (sharp) &gt; Brewers (competitive) &gt; White Sox (playful)
+
+**Hashtag Strategy:** From brand-guide.md
+- Primary: #Cubs (every post)
+- Secondary pool: #GoCubs #FlyTheW #CubsBaseball #WrigleyField #MLB #NorthSiders #ChicagoCubs #CubNation
+- Exactly 3 hashtags per tweet</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-7-daily_brief" placeholder="Edit content here...">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose
+**Freshness Tag:** EVERGREEN
+**Tier:** 3
+**Assigned Platforms:** X Text Post
+**Priority Score:** 5
+
+**Summary (2-4 sentences):**
+The Cardinals have traded away most of their veterans and entered full rebuild mode. Every projection system has them at the bottom of the NL Central. For Cubs fans, the historic rivalry has a new dynamic — St. Louis is no longer the measuring stick, it&#x27;s the punchline.
+
+---
+
+## Publishing Schedule
+
+**All times in CT:**
+
+| Time Slot | Story # | Content Type | Post Type |
+|-----------|---------|--------------|-----------|
+| 7:00 AM | Story 1 | Morning news / projection buzz | Informative — X Text Post |
+| 8:30 AM | Story 2 | Bold take / Steele hype | Bold/Passionate — X Text Post |
+| 9:00 AM | Story 1 | Thread: PECOTA deep dive | Informative — X Thread (3 tweets) |
+| 10:00 AM | Story 3 | Conforto signing news | Informative — X Text Post |
+| 11:30 AM | Story 7 | Cardinals rebuild jab | Humor/Rival Jab — X Text Post |
+| 1:00 PM | Story 4 | Roster battles preview | Informative — X Text Post |
+| 3:00 PM | Story 5 | Horton Opening Day take | Bold/Passionate — X Text Post |
+| 5:30 PM | Story 6 | Extension watch news | Informative — X Text Post |
+| 7:00 PM | Story 2 | Steele return hype thread | Bold/Passionate — X Thread (3 tweets) |
+| 8:30 PM | Story 5 | Horton bold take / witty closer | Humor — X Text Post |
+
+---
+
+## Content Tone &amp; Voice
+
+**Brand Voice Guidelines:** From Chicago Cubs Fan HQ brand-voice.md
+- 50/50 split: informative (news, stats, recaps) and bold/passionate/humor (takes, jabs, wit)
+- Passionate Cubs fan who can rattle off WAR stats AND roast the Cardinals
+- Rival hierarchy: Cardinals (sharp) &gt; Brewers (competitive) &gt; White Sox (playful)
+
+**Hashtag Strategy:** From brand-guide.md
+- Primary: #Cubs (every post)
+- Secondary pool: #GoCubs #FlyTheW #CubsBaseball #WrigleyField #MLB #NorthSiders #ChicagoCubs #CubNation
+- Exactly 3 hashtags per tweet</textarea>
+                    <span class="expand-toggle" id="toggle-story-7-daily_brief" onclick="toggleExpand('story-7-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-7-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-7-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-7-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-7-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-7-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-7-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-7-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-7-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-7-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-7-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-7-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-1-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">PECOTA Projects Cubs to Run Away with NL Central</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-1-x_post">
+                        <div class="card-content-text">PECOTA Projects Cubs to Run Away with NL Central
+
+**Tier:** 1
+**Assigned Angles:** The Numbers Don&#x27;t Lie / Cardinals Collapse
+
+### Text Post
+
+```
+PECOTA projects the Cubs for 90.1 wins in 2026 — TEN games ahead of the Brewers.
+
+FanGraphs has them at 86 wins. ZiPS says Cubs by a game.
+
+Every system agrees: the NL Central belongs to Chicago.
+
+#Cubs #GoCubs #MLB
+```
+
+**[POSTING WINDOW: 7:00 AM CT]**
+**[CHARACTER COUNT: 215/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Retweets, Replies
+
+---
+
+### Thread (3 tweets)
+
+**Tweet 1 (Hook):**
+```
+The projection systems have spoken, and they&#x27;re not being subtle about it.
+
+PECOTA: Cubs win 90.1 games
+FanGraphs: Cubs win 86 games
+ZiPS: Cubs take the NL Central
+
+Every single model says this is Chicago&#x27;s division. Here&#x27;s why. (thread)
+
+#Cubs #NorthSiders #MLB
+```
+
+**[POSTING WINDOW: 9:00 AM CT]**
+**[CHARACTER COUNT: 262/280]**
+**[TYPE: Informative]**
+
+**Tweet 2 (Context):**
+```
+The rotation is the engine. Horton, Imanaga, Taillon, Boyd, and Cabrera — five deep before Steele even comes back from rehab.
+
+Add Bregman&#x27;s bat at third base ($175M investment), and you&#x27;ve got a roster built to win now.
+```
+
+**[POSTING WINDOW: 9:03 AM CT]**
+**[CHARACTER COUNT: 220/280]**
+
+**Tweet 3 (Closer):**
+```
+Meanwhile, the Cardinals are projected LAST in the NL Central after trading everyone.
+
+The Brewers are regressing from 97 wins to the low 80s.
+
+The path is clear. The Cubs haven&#x27;t had a division outlook this favorable in years.
+```
+
+**[POSTING WINDOW: 9:06 AM CT]**
+**[CHARACTER COUNT: 227/280]**
+
+**Thread Strategy:** Lead with the data, build context with roster strength, close with the rival angle. Three tweets keeps it tight and shareable.
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-1-x_post" placeholder="Edit content here...">PECOTA Projects Cubs to Run Away with NL Central
+
+**Tier:** 1
+**Assigned Angles:** The Numbers Don&#x27;t Lie / Cardinals Collapse
+
+### Text Post
+
+```
+PECOTA projects the Cubs for 90.1 wins in 2026 — TEN games ahead of the Brewers.
+
+FanGraphs has them at 86 wins. ZiPS says Cubs by a game.
+
+Every system agrees: the NL Central belongs to Chicago.
+
+#Cubs #GoCubs #MLB
+```
+
+**[POSTING WINDOW: 7:00 AM CT]**
+**[CHARACTER COUNT: 215/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Retweets, Replies
+
+---
+
+### Thread (3 tweets)
+
+**Tweet 1 (Hook):**
+```
+The projection systems have spoken, and they&#x27;re not being subtle about it.
+
+PECOTA: Cubs win 90.1 games
+FanGraphs: Cubs win 86 games
+ZiPS: Cubs take the NL Central
+
+Every single model says this is Chicago&#x27;s division. Here&#x27;s why. (thread)
+
+#Cubs #NorthSiders #MLB
+```
+
+**[POSTING WINDOW: 9:00 AM CT]**
+**[CHARACTER COUNT: 262/280]**
+**[TYPE: Informative]**
+
+**Tweet 2 (Context):**
+```
+The rotation is the engine. Horton, Imanaga, Taillon, Boyd, and Cabrera — five deep before Steele even comes back from rehab.
+
+Add Bregman&#x27;s bat at third base ($175M investment), and you&#x27;ve got a roster built to win now.
+```
+
+**[POSTING WINDOW: 9:03 AM CT]**
+**[CHARACTER COUNT: 220/280]**
+
+**Tweet 3 (Closer):**
+```
+Meanwhile, the Cardinals are projected LAST in the NL Central after trading everyone.
+
+The Brewers are regressing from 97 wins to the low 80s.
+
+The path is clear. The Cubs haven&#x27;t had a division outlook this favorable in years.
+```
+
+**[POSTING WINDOW: 9:06 AM CT]**
+**[CHARACTER COUNT: 227/280]**
+
+**Thread Strategy:** Lead with the data, build context with roster strength, close with the rival angle. Three tweets keeps it tight and shareable.
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-1-x_post" onclick="toggleExpand('story-1-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-1-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-1-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-1-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-1-x_post">Characters: 1701/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-1-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-1-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-1-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-1-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-1-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-1-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-1-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-1-x_post"></div>
+                </div>
+                <div class="card" data-id="story-2-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Justin Steele Rehab Ahead of Schedule, Targeting May Return</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-2-x_post">
+                        <div class="card-content-text">Justin Steele Rehab Ahead of Schedule, Targeting May Return
+
+**Tier:** 1
+**Assigned Angles:** Steele Return Hype / Best Rotation in Baseball
+
+### Text Post
+
+```
+Justin Steele says he&#x27;s AHEAD of schedule in his UCL rehab and targeting a May-June return.
+
+He&#x27;s throwing bullpens, feeling great, and working on new pitches.
+
+This rotation is about to get scary deep.
+
+#Cubs #CubsBaseball #MLB
+```
+
+**[POSTING WINDOW: 8:30 AM CT]**
+**[CHARACTER COUNT: 228/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Replies, Likes
+
+---
+
+### Thread (3 tweets)
+
+**Tweet 1 (Hook):**
+```
+Justin Steele update from Mesa, and it&#x27;s all good news:
+
+- Ahead of schedule in UCL rehab
+- Bullpen sessions progressing well
+- Targeting May-June return
+- Working on NEW pitches during recovery
+
+This man isn&#x27;t just coming back. He&#x27;s leveling up.
+
+#Cubs #GoCubs #CubsBaseball
+```
+
+**[POSTING WINDOW: 7:00 PM CT]**
+**[CHARACTER COUNT: 275/280]**
+**[TYPE: Bold/Passionate]**
+
+**Tweet 2 (Context):**
+```
+Steele was the Opening Day starter in 2025 before his elbow shut him down after four starts. His last outing? A 7-inning shutout against the Rangers.
+
+He&#x27;ll be on an innings limit when he returns, but even managed, he&#x27;s a front-end arm.
+```
+
+**[POSTING WINDOW: 7:03 PM CT]**
+**[CHARACTER COUNT: 236/280]**
+
+**Tweet 3 (Closer):**
+```
+The Cubs&#x27; rotation by June:
+
+Horton
+Imanaga
+Steele
+Taillon
+Boyd
+Cabrera
+
+That&#x27;s SIX legit starters on one team. Name a deeper rotation in the NL. Take your time.
+```
+
+**[POSTING WINDOW: 7:06 PM CT]**
+**[CHARACTER COUNT: 161/280]**
+
+**Thread Strategy:** Open with the update details, provide injury context, close with the &quot;six starters&quot; hook that invites debate.
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-2-x_post" placeholder="Edit content here...">Justin Steele Rehab Ahead of Schedule, Targeting May Return
+
+**Tier:** 1
+**Assigned Angles:** Steele Return Hype / Best Rotation in Baseball
+
+### Text Post
+
+```
+Justin Steele says he&#x27;s AHEAD of schedule in his UCL rehab and targeting a May-June return.
+
+He&#x27;s throwing bullpens, feeling great, and working on new pitches.
+
+This rotation is about to get scary deep.
+
+#Cubs #CubsBaseball #MLB
+```
+
+**[POSTING WINDOW: 8:30 AM CT]**
+**[CHARACTER COUNT: 228/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Replies, Likes
+
+---
+
+### Thread (3 tweets)
+
+**Tweet 1 (Hook):**
+```
+Justin Steele update from Mesa, and it&#x27;s all good news:
+
+- Ahead of schedule in UCL rehab
+- Bullpen sessions progressing well
+- Targeting May-June return
+- Working on NEW pitches during recovery
+
+This man isn&#x27;t just coming back. He&#x27;s leveling up.
+
+#Cubs #GoCubs #CubsBaseball
+```
+
+**[POSTING WINDOW: 7:00 PM CT]**
+**[CHARACTER COUNT: 275/280]**
+**[TYPE: Bold/Passionate]**
+
+**Tweet 2 (Context):**
+```
+Steele was the Opening Day starter in 2025 before his elbow shut him down after four starts. His last outing? A 7-inning shutout against the Rangers.
+
+He&#x27;ll be on an innings limit when he returns, but even managed, he&#x27;s a front-end arm.
+```
+
+**[POSTING WINDOW: 7:03 PM CT]**
+**[CHARACTER COUNT: 236/280]**
+
+**Tweet 3 (Closer):**
+```
+The Cubs&#x27; rotation by June:
+
+Horton
+Imanaga
+Steele
+Taillon
+Boyd
+Cabrera
+
+That&#x27;s SIX legit starters on one team. Name a deeper rotation in the NL. Take your time.
+```
+
+**[POSTING WINDOW: 7:06 PM CT]**
+**[CHARACTER COUNT: 161/280]**
+
+**Thread Strategy:** Open with the update details, provide injury context, close with the &quot;six starters&quot; hook that invites debate.
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-2-x_post" onclick="toggleExpand('story-2-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-2-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-2-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-2-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-2-x_post">Characters: 1680/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-2-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-2-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-2-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-2-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-2-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-2-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-2-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-2-x_post"></div>
+                </div>
+                <div class="card" data-id="story-3-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cubs Sign Michael Conforto to Minor League Deal</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-3-x_post">
+                        <div class="card-content-text">Cubs Sign Michael Conforto to Minor League Deal
+
+**Tier:** 2
+**Assigned Angles:** Low-Risk Depth Move
+
+### Text Post
+
+```
+Cubs sign former All-Star Michael Conforto to a minor league deal with a $2MM salary if selected.
+
+Adds a lefty bat to the fourth outfield race against Alcantara, Dean, Carlson, and McCormick.
+
+Smart depth move by the front office.
+
+#Cubs #ChicagoCubs #MLB
+```
+
+**[POSTING WINDOW: 10:00 AM CT]**
+**[CHARACTER COUNT: 256/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Likes, Replies
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-3-x_post" placeholder="Edit content here...">Cubs Sign Michael Conforto to Minor League Deal
+
+**Tier:** 2
+**Assigned Angles:** Low-Risk Depth Move
+
+### Text Post
+
+```
+Cubs sign former All-Star Michael Conforto to a minor league deal with a $2MM salary if selected.
+
+Adds a lefty bat to the fourth outfield race against Alcantara, Dean, Carlson, and McCormick.
+
+Smart depth move by the front office.
+
+#Cubs #ChicagoCubs #MLB
+```
+
+**[POSTING WINDOW: 10:00 AM CT]**
+**[CHARACTER COUNT: 256/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Likes, Replies
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-3-x_post" onclick="toggleExpand('story-3-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-3-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-3-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-3-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-3-x_post">Characters: 516/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-3-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-3-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-3-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-3-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-3-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-3-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-3-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-3-x_post"></div>
+                </div>
+                <div class="card" data-id="story-4-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-4-x_post">
+                        <div class="card-content-text">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot
+
+**Tier:** 2
+**Assigned Angles:** Contender&#x27;s Luxury — Too Much Depth
+
+### Text Post
+
+```
+The Cubs have five guys fighting for the fourth outfield spot and six arms battling for the last bullpen job.
+
+Moises Ballesteros hit .868 OPS in 20 MLB games last year and still might not crack the roster.
+
+Contender problems.
+
+#Cubs #CubsBaseball #NorthSiders
+```
+
+**[POSTING WINDOW: 1:00 PM CT]**
+**[CHARACTER COUNT: 261/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Replies, Debate
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-4-x_post" placeholder="Edit content here...">Spring Training Roster Battles — Fourth Outfielder and Last Bullpen Spot
+
+**Tier:** 2
+**Assigned Angles:** Contender&#x27;s Luxury — Too Much Depth
+
+### Text Post
+
+```
+The Cubs have five guys fighting for the fourth outfield spot and six arms battling for the last bullpen job.
+
+Moises Ballesteros hit .868 OPS in 20 MLB games last year and still might not crack the roster.
+
+Contender problems.
+
+#Cubs #CubsBaseball #NorthSiders
+```
+
+**[POSTING WINDOW: 1:00 PM CT]**
+**[CHARACTER COUNT: 261/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Replies, Debate
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-4-x_post" onclick="toggleExpand('story-4-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-4-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-4-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-4-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-4-x_post">Characters: 562/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-4-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-4-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-4-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-4-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-4-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-4-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-4-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-4-x_post"></div>
+                </div>
+                <div class="card" data-id="story-5-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cade Horton Emerges as Opening Day Starter Favorite</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-5-x_post">
+                        <div class="card-content-text">Cade Horton Emerges as Opening Day Starter Favorite
+
+**Tier:** 2
+**Assigned Angles:** Homegrown Ace Arrives / Bold Take
+
+### Text Post (Bold)
+
+```
+Cade Horton getting the Opening Day start.
+
+From top draft pick to staff ace. From rib injury to the best second half by any Cubs starter in years.
+
+This is what the plan looks like when it works.
+
+#Cubs #FlyTheW #CubsBaseball
+```
+
+**[POSTING WINDOW: 3:00 PM CT]**
+**[CHARACTER COUNT: 226/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Likes, Retweets
+
+---
+
+### Text Post 2 (Humor/Bold Closer)
+
+```
+Cade Horton is going to be a top-10 NL starter this year and the Cubs drafted him, developed him, and handed him the ball on Opening Day.
+
+Meanwhile, the Cardinals are developing a nice rebuild PowerPoint.
+
+#Cubs #GoCubs #NorthSiders
+```
+
+**[POSTING WINDOW: 8:30 PM CT]**
+**[CHARACTER COUNT: 233/280]**
+**[TYPE: Humor/Rival Jab]**
+
+**Engagement Target:** Retweets, Replies, Rivalry engagement
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-5-x_post" placeholder="Edit content here...">Cade Horton Emerges as Opening Day Starter Favorite
+
+**Tier:** 2
+**Assigned Angles:** Homegrown Ace Arrives / Bold Take
+
+### Text Post (Bold)
+
+```
+Cade Horton getting the Opening Day start.
+
+From top draft pick to staff ace. From rib injury to the best second half by any Cubs starter in years.
+
+This is what the plan looks like when it works.
+
+#Cubs #FlyTheW #CubsBaseball
+```
+
+**[POSTING WINDOW: 3:00 PM CT]**
+**[CHARACTER COUNT: 226/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Likes, Retweets
+
+---
+
+### Text Post 2 (Humor/Bold Closer)
+
+```
+Cade Horton is going to be a top-10 NL starter this year and the Cubs drafted him, developed him, and handed him the ball on Opening Day.
+
+Meanwhile, the Cardinals are developing a nice rebuild PowerPoint.
+
+#Cubs #GoCubs #NorthSiders
+```
+
+**[POSTING WINDOW: 8:30 PM CT]**
+**[CHARACTER COUNT: 233/280]**
+**[TYPE: Humor/Rival Jab]**
+
+**Engagement Target:** Retweets, Replies, Rivalry engagement
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-5-x_post" onclick="toggleExpand('story-5-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-5-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-5-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-5-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-5-x_post">Characters: 955/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-5-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-5-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-5-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-5-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-5-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-5-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-5-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-5-x_post"></div>
+                </div>
+                <div class="card" data-id="story-6-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Happ and Suzuki — No Extension Talks Yet with Cubs</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-6-x_post">
+                        <div class="card-content-text">Happ and Suzuki — No Extension Talks Yet with Cubs
+
+**Tier:** 2
+**Assigned Angles:** Three Core Players, One Offseason
+
+### Text Post
+
+```
+Ian Happ and Seiya Suzuki both say they haven&#x27;t had extension talks with the Cubs.
+
+With Nico Hoerner also heading to free agency after 2026, that&#x27;s three core players on the clock.
+
+Who gets the deal first?
+
+#Cubs #ChicagoCubs #CubNation
+```
+
+**[POSTING WINDOW: 5:30 PM CT]**
+**[CHARACTER COUNT: 238/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Replies, Poll engagement, Debate
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-6-x_post" placeholder="Edit content here...">Happ and Suzuki — No Extension Talks Yet with Cubs
+
+**Tier:** 2
+**Assigned Angles:** Three Core Players, One Offseason
+
+### Text Post
+
+```
+Ian Happ and Seiya Suzuki both say they haven&#x27;t had extension talks with the Cubs.
+
+With Nico Hoerner also heading to free agency after 2026, that&#x27;s three core players on the clock.
+
+Who gets the deal first?
+
+#Cubs #ChicagoCubs #CubNation
+```
+
+**[POSTING WINDOW: 5:30 PM CT]**
+**[CHARACTER COUNT: 238/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Replies, Poll engagement, Debate
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-6-x_post" onclick="toggleExpand('story-6-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-6-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-6-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-6-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-6-x_post">Characters: 532/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-6-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-6-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-6-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-6-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-6-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-6-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-6-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-6-x_post"></div>
+                </div>
+                <div class="card" data-id="story-7-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose</div>
+                        <div><span class="fact-check-badge fact-check-warning" title="Some claims were removed or flagged for review">REVIEW FLAGS</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-7-x_post">
+                        <div class="card-content-text">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose
+
+**Tier:** 3
+**Assigned Angles:** Rivalry Humor
+
+### Text Post
+
+```
+The Cardinals are projected LAST in the NL Central by every major system.
+
+They traded everyone, entered a full rebuild, and are now looking up at the Cubs, Brewers, Pirates, AND Reds.
+
+Best fans in baseball watching the worst team in the division.
+
+#Cubs #FlyTheW #MLB
+```
+
+**[POSTING WINDOW: 11:30 AM CT]**
+**[CHARACTER COUNT: 269/280]**
+**[TYPE: Humor/Rival Jab]**
+
+**Engagement Target:** Retweets, Replies, Rivalry banter
+
+---
+
+## Post Distribution Summary
+
+| # | Posting Window | Story | Post Type | Content Type |
+|---|---------------|-------|-----------|-------------|
+| 1 | 7:00 AM CT | Story 1 | Text Post | Informative |
+| 2 | 8:30 AM CT | Story 2 | Text Post | Bold/Passionate |
+| 3 | 9:00 AM CT | Story 1 | Thread (3 tweets) | Informative |
+| 4 | 10:00 AM CT | Story 3 | Text Post | Informative |
+| 5 | 11:30 AM CT | Story 7 | Text Post | Humor/Rival Jab |
+| 6 | 1:00 PM CT | Story 4 | Text Post | Informative |
+| 7 | 3:00 PM CT | Story 5 | Text Post | Bold/Passionate |
+| 8 | 5:30 PM CT | Story 6 | Text Post | Informative |
+| 9 | 7:00 PM CT | Story 2 | Thread (3 tweets) | Bold/Passionate |
+| 10 | 8:30 PM CT | Story 5 | Text Post | Humor/Rival Jab |
+
+**Total Standalone Tweets:** 10
+**Total Thread Tweets:** 6 (2 threads x 3 tweets each)
+**Grand Total Posts:** 10 standalone + 6 thread = 16 total posts
+
+**Content Mix Check:**
+- Informative: 5 posts (50%) — Stories 1, 3, 4, 6, and Story 1 thread
+- Bold/Passionate/Humor: 5 posts (50%) — Stories 2, 5 (x2), 7, and Story 2 thread
+
+---
+
+## Hashtag Distribution
+
+| Hashtag | Times Used |
+|---------|-----------|
+| #Cubs | 10 (every post) |
+| #MLB | 4 |
+| #GoCubs | 3 |
+| #CubsBaseball | 3 |
+| #FlyTheW | 2 |
+| #NorthSiders | 2 |
+| #ChicagoCubs | 2 |
+| #CubNation | 1 |
+
+All posts use exactly 3 hashtags. #Cubs appears in every post.
+
+---
+
+## BONUS TWEETS — Fan Sentiment-Driven (Reddit / Community)
+
+*Source: r/CHICubs hot posts (2026-02-25). These tweets tap into what fans are actually talking about and feeling right now. Mix into the schedule or use as alternates.*
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-7-x_post" placeholder="Edit content here...">Cardinals in Full Rebuild — NL Central Is Chicago&#x27;s to Lose
+
+**Tier:** 3
+**Assigned Angles:** Rivalry Humor
+
+### Text Post
+
+```
+The Cardinals are projected LAST in the NL Central by every major system.
+
+They traded everyone, entered a full rebuild, and are now looking up at the Cubs, Brewers, Pirates, AND Reds.
+
+Best fans in baseball watching the worst team in the division.
+
+#Cubs #FlyTheW #MLB
+```
+
+**[POSTING WINDOW: 11:30 AM CT]**
+**[CHARACTER COUNT: 269/280]**
+**[TYPE: Humor/Rival Jab]**
+
+**Engagement Target:** Retweets, Replies, Rivalry banter
+
+---
+
+## Post Distribution Summary
+
+| # | Posting Window | Story | Post Type | Content Type |
+|---|---------------|-------|-----------|-------------|
+| 1 | 7:00 AM CT | Story 1 | Text Post | Informative |
+| 2 | 8:30 AM CT | Story 2 | Text Post | Bold/Passionate |
+| 3 | 9:00 AM CT | Story 1 | Thread (3 tweets) | Informative |
+| 4 | 10:00 AM CT | Story 3 | Text Post | Informative |
+| 5 | 11:30 AM CT | Story 7 | Text Post | Humor/Rival Jab |
+| 6 | 1:00 PM CT | Story 4 | Text Post | Informative |
+| 7 | 3:00 PM CT | Story 5 | Text Post | Bold/Passionate |
+| 8 | 5:30 PM CT | Story 6 | Text Post | Informative |
+| 9 | 7:00 PM CT | Story 2 | Thread (3 tweets) | Bold/Passionate |
+| 10 | 8:30 PM CT | Story 5 | Text Post | Humor/Rival Jab |
+
+**Total Standalone Tweets:** 10
+**Total Thread Tweets:** 6 (2 threads x 3 tweets each)
+**Grand Total Posts:** 10 standalone + 6 thread = 16 total posts
+
+**Content Mix Check:**
+- Informative: 5 posts (50%) — Stories 1, 3, 4, 6, and Story 1 thread
+- Bold/Passionate/Humor: 5 posts (50%) — Stories 2, 5 (x2), 7, and Story 2 thread
+
+---
+
+## Hashtag Distribution
+
+| Hashtag | Times Used |
+|---------|-----------|
+| #Cubs | 10 (every post) |
+| #MLB | 4 |
+| #GoCubs | 3 |
+| #CubsBaseball | 3 |
+| #FlyTheW | 2 |
+| #NorthSiders | 2 |
+| #ChicagoCubs | 2 |
+| #CubNation | 1 |
+
+All posts use exactly 3 hashtags. #Cubs appears in every post.
+
+---
+
+## BONUS TWEETS — Fan Sentiment-Driven (Reddit / Community)
+
+*Source: r/CHICubs hot posts (2026-02-25). These tweets tap into what fans are actually talking about and feeling right now. Mix into the schedule or use as alternates.*
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-7-x_post" onclick="toggleExpand('story-7-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-7-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-7-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-7-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-7-x_post">Characters: 2164/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-7-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-7-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-7-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-7-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-7-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-7-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-7-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-7-x_post"></div>
+                </div>
+                <div class="card" data-id="story-8-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Pete Crow-Armstrong Calls Out Dodgers Fans</div>
+                        <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-8-x_post">
+                        <div class="card-content-text">Pete Crow-Armstrong Calls Out Dodgers Fans
+
+**Tier:** 1 (Reddit: 876 upvotes, 76 comments — biggest fan story of the week)
+**Assigned Angles:** PCA Is That Guy / Dodgers Rivalry Energy
+
+### Text Post (Bold)
+
+```
+Pete Crow-Armstrong didn&#x27;t hold back when asked about Dodgers fans.
+
+This 22-year-old center fielder has the bat, the glove, and apparently zero fear of LA&#x27;s fanbase.
+
+He&#x27;s not just a future star. He&#x27;s already a Cubs legend in the making.
+
+#Cubs #FlyTheW #GoCubs
+```
+
+**[POSTING WINDOW: Alternate 8:30 AM CT]**
+**[CHARACTER COUNT: 236/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Retweets, Replies, Quote tweets — Dodgers fans will interact
+
+---
+
+### Text Post 2 (Humor)
+
+```
+Pete Crow-Armstrong talking about Dodgers fans the way we&#x27;ve all wanted to for years.
+
+That&#x27;s my center fielder.
+
+#Cubs #GoCubs #MLB
+```
+
+**[POSTING WINDOW: Alternate 11:30 AM CT]**
+**[CHARACTER COUNT: 134/280]**
+**[TYPE: Humor]**
+
+**Engagement Target:** Massive RT potential, Dodgers-Cubs crossover engagement
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-8-x_post" placeholder="Edit content here...">Pete Crow-Armstrong Calls Out Dodgers Fans
+
+**Tier:** 1 (Reddit: 876 upvotes, 76 comments — biggest fan story of the week)
+**Assigned Angles:** PCA Is That Guy / Dodgers Rivalry Energy
+
+### Text Post (Bold)
+
+```
+Pete Crow-Armstrong didn&#x27;t hold back when asked about Dodgers fans.
+
+This 22-year-old center fielder has the bat, the glove, and apparently zero fear of LA&#x27;s fanbase.
+
+He&#x27;s not just a future star. He&#x27;s already a Cubs legend in the making.
+
+#Cubs #FlyTheW #GoCubs
+```
+
+**[POSTING WINDOW: Alternate 8:30 AM CT]**
+**[CHARACTER COUNT: 236/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Retweets, Replies, Quote tweets — Dodgers fans will interact
+
+---
+
+### Text Post 2 (Humor)
+
+```
+Pete Crow-Armstrong talking about Dodgers fans the way we&#x27;ve all wanted to for years.
+
+That&#x27;s my center fielder.
+
+#Cubs #GoCubs #MLB
+```
+
+**[POSTING WINDOW: Alternate 11:30 AM CT]**
+**[CHARACTER COUNT: 134/280]**
+**[TYPE: Humor]**
+
+**Engagement Target:** Massive RT potential, Dodgers-Cubs crossover engagement
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-8-x_post" onclick="toggleExpand('story-8-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-8-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-8-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-8-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-8-x_post">Characters: 1017/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-8-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-8-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-8-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-8-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-8-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-8-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-8-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-8-x_post"></div>
+                </div>
+                <div class="card" data-id="story-9-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">PCA Covers Chicago Magazine — The Face of the Cubs</div>
+                        <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-9-x_post">
+                        <div class="card-content-text">PCA Covers Chicago Magazine — The Face of the Cubs
+
+**Tier:** 2 (Reddit: 313 upvotes, 22 comments)
+**Assigned Angles:** New Face of the Franchise / Culture Content
+
+### Text Post
+
+```
+Pete Crow-Armstrong on the cover of Chicago magazine&#x27;s March edition.
+
+22 years old. Gold Glove defense. 30+ steal speed. And now the face of the franchise on newsstands.
+
+The Cubs&#x27; future isn&#x27;t coming. It&#x27;s already here.
+
+#Cubs #ChicagoCubs #NorthSiders
+```
+
+**[POSTING WINDOW: Alternate 10:00 AM CT]**
+**[CHARACTER COUNT: 234/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Likes, Retweets, fan pride shares
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-9-x_post" placeholder="Edit content here...">PCA Covers Chicago Magazine — The Face of the Cubs
+
+**Tier:** 2 (Reddit: 313 upvotes, 22 comments)
+**Assigned Angles:** New Face of the Franchise / Culture Content
+
+### Text Post
+
+```
+Pete Crow-Armstrong on the cover of Chicago magazine&#x27;s March edition.
+
+22 years old. Gold Glove defense. 30+ steal speed. And now the face of the franchise on newsstands.
+
+The Cubs&#x27; future isn&#x27;t coming. It&#x27;s already here.
+
+#Cubs #ChicagoCubs #NorthSiders
+```
+
+**[POSTING WINDOW: Alternate 10:00 AM CT]**
+**[CHARACTER COUNT: 234/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Likes, Retweets, fan pride shares
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-9-x_post" onclick="toggleExpand('story-9-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-9-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-9-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-9-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-9-x_post">Characters: 609/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-9-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-9-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-9-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-9-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-9-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-9-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-9-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-9-x_post"></div>
+                </div>
+                <div class="card" data-id="story-10-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Seiya Suzuki — Fan Favorite Energy</div>
+                        <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-10-x_post">
+                        <div class="card-content-text">Seiya Suzuki — Fan Favorite Energy
+
+**Tier:** 2 (Reddit: 561 upvotes on a Seiya appreciation post — fans adore this man)
+**Assigned Angles:** Seiya Love / Fan Culture
+
+### Text Post (Humor)
+
+```
+r/CHICubs got a Seiya Suzuki appreciation post to 560+ upvotes this week.
+
+No stats. No news. Just a photo of Seiya smiling.
+
+That&#x27;s how you know a player owns a city.
+
+#Cubs #GoCubs #CubNation
+```
+
+**[POSTING WINDOW: Alternate 3:00 PM CT]**
+**[CHARACTER COUNT: 204/280]**
+**[TYPE: Humor/Culture]**
+
+**Engagement Target:** Likes, fan engagement, quote tweets with Seiya stories
+
+---
+
+### Text Post 2 (Bold)
+
+```
+Seiya Suzuki hasn&#x27;t even gotten his extension yet and Cubs fans are already building statues.
+
+.280 hitter. 25+ HR power. That infectious smile.
+
+Pay. This. Man.
+
+#Cubs #CubsBaseball #MLB
+```
+
+**[POSTING WINDOW: Alternate 5:30 PM CT]**
+**[CHARACTER COUNT: 195/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Replies, extension debate, engagement from Suzuki fans
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-10-x_post" placeholder="Edit content here...">Seiya Suzuki — Fan Favorite Energy
+
+**Tier:** 2 (Reddit: 561 upvotes on a Seiya appreciation post — fans adore this man)
+**Assigned Angles:** Seiya Love / Fan Culture
+
+### Text Post (Humor)
+
+```
+r/CHICubs got a Seiya Suzuki appreciation post to 560+ upvotes this week.
+
+No stats. No news. Just a photo of Seiya smiling.
+
+That&#x27;s how you know a player owns a city.
+
+#Cubs #GoCubs #CubNation
+```
+
+**[POSTING WINDOW: Alternate 3:00 PM CT]**
+**[CHARACTER COUNT: 204/280]**
+**[TYPE: Humor/Culture]**
+
+**Engagement Target:** Likes, fan engagement, quote tweets with Seiya stories
+
+---
+
+### Text Post 2 (Bold)
+
+```
+Seiya Suzuki hasn&#x27;t even gotten his extension yet and Cubs fans are already building statues.
+
+.280 hitter. 25+ HR power. That infectious smile.
+
+Pay. This. Man.
+
+#Cubs #CubsBaseball #MLB
+```
+
+**[POSTING WINDOW: Alternate 5:30 PM CT]**
+**[CHARACTER COUNT: 195/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Replies, extension debate, engagement from Suzuki fans
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-10-x_post" onclick="toggleExpand('story-10-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-10-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-10-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-10-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-10-x_post">Characters: 985/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-10-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-10-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-10-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-10-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-10-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-10-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-10-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-10-x_post"></div>
+                </div>
+                <div class="card" data-id="story-11-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Moises Ballesteros Arrives at Camp Ready to Compete</div>
+                        <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-11-x_post">
+                        <div class="card-content-text">Moises Ballesteros Arrives at Camp Ready to Compete
+
+**Tier:** 2 (Reddit: 142 upvotes, 10 comments — fans are hyped on this kid)
+**Assigned Angles:** The Kid Is Ready / Prospect Hype
+
+### Text Post
+
+```
+Moises Ballesteros is in Mesa and ready to fight for a roster spot.
+
+He&#x27;s 21. He slashed .868 OPS in his first 20 MLB games. And the Cubs still might not have room for him.
+
+Imagine having THIS problem on your roster.
+
+#Cubs #CubsBaseball #NorthSiders
+```
+
+**[POSTING WINDOW: Alternate 1:00 PM CT]**
+**[CHARACTER COUNT: 247/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Replies, prospect debate, &quot;make room for him&quot; takes
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-11-x_post" placeholder="Edit content here...">Moises Ballesteros Arrives at Camp Ready to Compete
+
+**Tier:** 2 (Reddit: 142 upvotes, 10 comments — fans are hyped on this kid)
+**Assigned Angles:** The Kid Is Ready / Prospect Hype
+
+### Text Post
+
+```
+Moises Ballesteros is in Mesa and ready to fight for a roster spot.
+
+He&#x27;s 21. He slashed .868 OPS in his first 20 MLB games. And the Cubs still might not have room for him.
+
+Imagine having THIS problem on your roster.
+
+#Cubs #CubsBaseball #NorthSiders
+```
+
+**[POSTING WINDOW: Alternate 1:00 PM CT]**
+**[CHARACTER COUNT: 247/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Replies, prospect debate, &quot;make room for him&quot; takes
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-11-x_post" onclick="toggleExpand('story-11-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-11-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-11-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-11-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-11-x_post">Characters: 638/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-11-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-11-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-11-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-11-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-11-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-11-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-11-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-11-x_post"></div>
+                </div>
+                <div class="card" data-id="story-12-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Spring Training Win — Cubs 6, Padres 5</div>
+                        <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-12-x_post">
+                        <div class="card-content-text">Spring Training Win — Cubs 6, Padres 5
+
+**Tier:** 3 (Reddit: game thread active with 27 comments + 14 in postgame)
+**Assigned Angles:** Cactus League Vibes
+
+### Text Post
+
+```
+Cubs 6, Padres 5 in Cactus League play.
+
+Spring training doesn&#x27;t count. Except when you win. Then it counts a little.
+
+31 days until real baseball.
+
+#Cubs #GoCubs #MLB
+```
+
+**[POSTING WINDOW: Alternate 7:00 AM CT]**
+**[CHARACTER COUNT: 161/280]**
+**[TYPE: Humor]**
+
+**Engagement Target:** Likes, morning engagement, countdown hype
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-12-x_post" placeholder="Edit content here...">Spring Training Win — Cubs 6, Padres 5
+
+**Tier:** 3 (Reddit: game thread active with 27 comments + 14 in postgame)
+**Assigned Angles:** Cactus League Vibes
+
+### Text Post
+
+```
+Cubs 6, Padres 5 in Cactus League play.
+
+Spring training doesn&#x27;t count. Except when you win. Then it counts a little.
+
+31 days until real baseball.
+
+#Cubs #GoCubs #MLB
+```
+
+**[POSTING WINDOW: Alternate 7:00 AM CT]**
+**[CHARACTER COUNT: 161/280]**
+**[TYPE: Humor]**
+
+**Engagement Target:** Likes, morning engagement, countdown hype
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-12-x_post" onclick="toggleExpand('story-12-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-12-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-12-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-12-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-12-x_post">Characters: 511/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-12-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-12-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-12-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-12-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-12-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-12-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-12-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-12-x_post"></div>
+                </div>
+                <div class="card" data-id="story-13-x_post" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">One Month Until Opening Day — Cubs vs. Nationals</div>
+                        <div><span class="fact-check-badge fact-check-unverified" title="Content not yet fact-checked">NOT VERIFIED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+
+                    <div class="card-content collapsed" id="content-story-13-x_post">
+                        <div class="card-content-text">One Month Until Opening Day — Cubs vs. Nationals
+
+**Tier:** 3 (Reddit: r/baseball posted Opening Day schedule, Cubs open vs Nationals March 26)
+**Assigned Angles:** Countdown Hype / Season Opener Preview
+
+### Text Post
+
+```
+ONE MONTH from today, the Cubs open the 2026 season against the Nationals at Wrigley Field.
+
+Bregman in the lineup. Horton on the mound. A rotation built to dominate.
+
+This is the year.
+
+#Cubs #FlyTheW #WrigleyField
+```
+
+**[POSTING WINDOW: Alternate 8:30 PM CT]**
+**[CHARACTER COUNT: 219/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Retweets, hype engagement, countdown participation
+
+---
+
+### Text Post 2 (Informative)
+
+```
+March 26 at Wrigley Field. Cubs vs. Nationals. 2:20 PM CT.
+
+That&#x27;s the 2026 opener. 31 days away.
+
+The projected 90-win season starts in one month.
+
+#Cubs #ChicagoCubs #MLB
+```
+
+**[POSTING WINDOW: Alternate 10:00 PM CT]**
+**[CHARACTER COUNT: 174/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Likes, saves, calendar reminders
+
+---
+
+## Updated Distribution — With Bonus Tweets
+
+### Recommended Additions to Schedule
+
+| Alt Slot | Story | Post Type | Content Type | Why (Reddit Signal) |
+|----------|-------|-----------|-------------|---------------------|
+| 8:30 AM | Story 8 (PCA vs Dodgers) | Text Post | Bold | 876 upvotes — biggest fan story |
+| 11:30 AM | Story 8 (PCA one-liner) | Text Post | Humor | Crossover Dodgers engagement |
+| 10:00 AM | Story 9 (PCA magazine) | Text Post | Bold | 313 upvotes — fan pride moment |
+| 3:00 PM | Story 10 (Seiya love) | Text Post | Humor/Culture | 561 upvotes on appreciation |
+| 5:30 PM | Story 10 (Seiya extension) | Text Post | Bold | Ties into Story 6 extension talk |
+| 1:00 PM | Story 11 (Ballesteros) | Text Post | Informative | 142 upvotes — prospect hype |
+| 7:00 AM | Story 12 (Spring W) | Text Post | Humor | Active game threads |
+| 8:30 PM | Story 13 (Opening Day countdown) | Text Post | Bold | r/baseball countdown post |
+| 10:00 PM | Story 13 (Opener details) | Text Post | Informative | Schedule awareness |
+
+### Content Mix with Bonus Tweets
+
+**Original:** 5 informative / 5 bold-humor (50/50)
+**Bonus tweets:** 3 informative / 6 bold-humor
+**Combined pool of 19 standalone options:** 8 informative / 11 bold-humor — pick 10-12 best to maintain 50/50
+
+### Why These Work (Fan Sentiment Logic)
+
+- **PCA (Stories 8-9):** The sub is absolutely buzzing about Pete Crow-Armstrong. Two posts totaling 1,189 upvotes and 98 comments. He IS the fan energy story right now. Any PCA tweet will outperform today.
+- **Seiya (Story 10):** 561 upvotes on a pure appreciation post. Fans love this man unconditionally. Ties perfectly into the extension talk already in Story 6.
+- **Ballesteros (Story 11):** 142 upvotes on an arrival post. Fans want this kid on the roster. Prospect hype drives replies.
+- **Game/Countdown (Stories 12-13):** Lower engagement but consistent community rituals. Opening Day countdown is a daily fan touchpoint. Spring training results keep the daily conversation going.</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-13-x_post" placeholder="Edit content here...">One Month Until Opening Day — Cubs vs. Nationals
+
+**Tier:** 3 (Reddit: r/baseball posted Opening Day schedule, Cubs open vs Nationals March 26)
+**Assigned Angles:** Countdown Hype / Season Opener Preview
+
+### Text Post
+
+```
+ONE MONTH from today, the Cubs open the 2026 season against the Nationals at Wrigley Field.
+
+Bregman in the lineup. Horton on the mound. A rotation built to dominate.
+
+This is the year.
+
+#Cubs #FlyTheW #WrigleyField
+```
+
+**[POSTING WINDOW: Alternate 8:30 PM CT]**
+**[CHARACTER COUNT: 219/280]**
+**[TYPE: Bold/Passionate]**
+
+**Engagement Target:** Retweets, hype engagement, countdown participation
+
+---
+
+### Text Post 2 (Informative)
+
+```
+March 26 at Wrigley Field. Cubs vs. Nationals. 2:20 PM CT.
+
+That&#x27;s the 2026 opener. 31 days away.
+
+The projected 90-win season starts in one month.
+
+#Cubs #ChicagoCubs #MLB
+```
+
+**[POSTING WINDOW: Alternate 10:00 PM CT]**
+**[CHARACTER COUNT: 174/280]**
+**[TYPE: Informative]**
+
+**Engagement Target:** Likes, saves, calendar reminders
+
+---
+
+## Updated Distribution — With Bonus Tweets
+
+### Recommended Additions to Schedule
+
+| Alt Slot | Story | Post Type | Content Type | Why (Reddit Signal) |
+|----------|-------|-----------|-------------|---------------------|
+| 8:30 AM | Story 8 (PCA vs Dodgers) | Text Post | Bold | 876 upvotes — biggest fan story |
+| 11:30 AM | Story 8 (PCA one-liner) | Text Post | Humor | Crossover Dodgers engagement |
+| 10:00 AM | Story 9 (PCA magazine) | Text Post | Bold | 313 upvotes — fan pride moment |
+| 3:00 PM | Story 10 (Seiya love) | Text Post | Humor/Culture | 561 upvotes on appreciation |
+| 5:30 PM | Story 10 (Seiya extension) | Text Post | Bold | Ties into Story 6 extension talk |
+| 1:00 PM | Story 11 (Ballesteros) | Text Post | Informative | 142 upvotes — prospect hype |
+| 7:00 AM | Story 12 (Spring W) | Text Post | Humor | Active game threads |
+| 8:30 PM | Story 13 (Opening Day countdown) | Text Post | Bold | r/baseball countdown post |
+| 10:00 PM | Story 13 (Opener details) | Text Post | Informative | Schedule awareness |
+
+### Content Mix with Bonus Tweets
+
+**Original:** 5 informative / 5 bold-humor (50/50)
+**Bonus tweets:** 3 informative / 6 bold-humor
+**Combined pool of 19 standalone options:** 8 informative / 11 bold-humor — pick 10-12 best to maintain 50/50
+
+### Why These Work (Fan Sentiment Logic)
+
+- **PCA (Stories 8-9):** The sub is absolutely buzzing about Pete Crow-Armstrong. Two posts totaling 1,189 upvotes and 98 comments. He IS the fan energy story right now. Any PCA tweet will outperform today.
+- **Seiya (Story 10):** 561 upvotes on a pure appreciation post. Fans love this man unconditionally. Ties perfectly into the extension talk already in Story 6.
+- **Ballesteros (Story 11):** 142 upvotes on an arrival post. Fans want this kid on the roster. Prospect hype drives replies.
+- **Game/Countdown (Stories 12-13):** Lower engagement but consistent community rituals. Opening Day countdown is a daily fan touchpoint. Spring training results keep the daily conversation going.</textarea>
+                    <span class="expand-toggle" id="toggle-story-13-x_post" onclick="toggleExpand('story-13-x_post')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-13-x_post">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-13-x_post')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-13-x_post')">Cancel</button>
+                    </div>
+                    <div class="char-count warning" id="charcount-story-13-x_post">Characters: 3014/280  OVER LIMIT</div>
+                    
+
+                    <div class="card-actions" id="actions-story-13-x_post">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-13-x_post')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-13-x_post')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-13-x_post')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-13-x_post')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-13-x_post">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-13-x_post" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-13-x_post"></div>
+                </div>
+            </div>
+
+            <div class="empty-state" id="empty-state" style="display: none;">
+                <div class="empty-state-icon">No items match your filter</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule settings modal -->
+    <div class="schedule-overlay" id="schedule-overlay" onclick="closeSchedulePanel()"></div>
+    <div class="schedule-panel" id="schedule-panel">
+        <h3>Posting Schedule Settings</h3>
+        <div class="schedule-section">
+            <label>Post Date (defaults to content date)</label>
+            <input type="date" id="schedule-date" />
+        </div>
+        <div class="schedule-section">
+            <label>X / Twitter Time Slots</label>
+            <div class="time-slots" id="x-time-slots"></div>
+            <div style="margin-top:8px;">
+                <input type="time" id="new-x-time" style="width:auto;display:inline-block;margin-right:8px;" />
+                <span class="add-slot-btn" onclick="addTimeSlot('x')">+ Add Slot</span>
+            </div>
+        </div>
+        <div class="schedule-section">
+            <label>Facebook Time Slots</label>
+            <div class="time-slots" id="fb-time-slots"></div>
+            <div style="margin-top:8px;">
+                <input type="time" id="new-fb-time" style="width:auto;display:inline-block;margin-right:8px;" />
+                <span class="add-slot-btn" onclick="addTimeSlot('fb')">+ Add Slot</span>
+            </div>
+        </div>
+        <div class="schedule-section" style="background:#f9f9f9;padding:12px;border-radius:6px;font-size:12px;color:#666;">
+            Posts will be assigned to time slots in order. If you have more posts than slots, they wrap around. After downloading, upload the file directly to PostPlanner via Bulk Upload.
+        </div>
+        <div class="schedule-actions">
+            <button class="btn btn-secondary" onclick="closeSchedulePanel()">Cancel</button>
+            <button class="btn btn-csv" onclick="generateAndDownload()">Generate &amp; Download XLSX</button>
+        </div>
+    </div>
+
+    <!-- SheetJS for XLSX generation (loaded async so it doesn't block) -->
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+
+        const DATE = '2026-02-25';
+        const REVIEW_STORAGE_KEY = 'cubs-content-review';
+        const SCHEDULE_STORAGE_KEY = 'cubs-content-schedule-config';
+        const PHOTO_SOURCE = 'none';
+        let reviewData = {};
+        const allStories = [{"id": "story-1-daily_brief", "title": "PECOTA Projects Cubs to Run Away with NL Central", "content": "PECOTA Projects Cubs to Run Away with NL Central\n**Freshness Tag:** TRENDING\n**Tier:** 1\n**Assigned Platforms:** X Text Post + X Thread (3-4 tweets)\n**Priority Score:** 9\n\n**Summary (2-4 sentences):**\nMultiple projection systems now have the Cubs as clear NL Central favorites. PECOTA projects 90.1 wins \u2014 a staggering 10 games ahead of the Brewers. FanGraphs has them at 86 wins, three ahead of the Pirates. After the Bregman signing and a deep rotation, this is the most projected dominance for the Cubs in years.\n\n---", "type": "daily_brief"}, {"id": "story-2-daily_brief", "title": "Justin Steele Rehab Ahead of Schedule, Targeting May Return", "content": "Justin Steele Rehab Ahead of Schedule, Targeting May Return\n**Freshness Tag:** TODAY\n**Tier:** 1\n**Assigned Platforms:** X Text Post + X Thread (3-4 tweets)\n**Priority Score:** 9\n\n**Summary (2-4 sentences):**\nJustin Steele's recovery from left elbow UCL revision surgery is ahead of schedule. The ace lefty is throwing bullpen sessions and targeting a May-June return. He confirmed he'll be on an innings limit and pitch count initially. When healthy, Steele gives the Cubs arguably the best rotation in the NL.\n\n---", "type": "daily_brief"}, {"id": "story-3-daily_brief", "title": "Cubs Sign Michael Conforto to Minor League Deal", "content": "Cubs Sign Michael Conforto to Minor League Deal\n**Freshness Tag:** TODAY\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 8\n\n**Summary (2-4 sentences):**\nThe Cubs agreed to a minor league deal with outfielder Michael Conforto on February 23, with a $2MM salary if his contract is selected. Conforto adds depth and a left-handed bat to a right-heavy outfield mix. He's competing for the fourth outfielder role in a crowded spring training battle.\n\n---", "type": "daily_brief"}, {"id": "story-4-daily_brief", "title": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot", "content": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot\n**Freshness Tag:** UPCOMING\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 7\n\n**Summary (2-4 sentences):**\nWith the core roster locked in, the Cubs have two key battles in Mesa. The fourth outfield spot features Alcantara, Dean, Carlson, McCormick, and now Conforto competing. The last bullpen vacancy has a deep list including Hodge, Brown, Little, and Assad. Moises Ballesteros is also pushing for the final position-player spot after his .868 OPS in 20 MLB games last year.\n\n---", "type": "daily_brief"}, {"id": "story-5-daily_brief", "title": "Cade Horton Emerges as Opening Day Starter Favorite", "content": "Cade Horton Emerges as Opening Day Starter Favorite\n**Freshness Tag:** TRENDING\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 7\n\n**Summary (2-4 sentences):**\nCade Horton is the favorite to get the Opening Day nod after a dominant second-half performance in 2025. The rotation is set with Horton, Imanaga, Taillon, Boyd, and Cabrera. Horton's emergence from a rib injury recovery signals a breakout 2026 campaign ahead.\n\n---", "type": "daily_brief"}, {"id": "story-6-daily_brief", "title": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs", "content": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs\n**Freshness Tag:** TODAY\n**Tier:** 2\n**Assigned Platforms:** X Text Post\n**Priority Score:** 6\n\n**Summary (2-4 sentences):**\nBoth Ian Happ and Seiya Suzuki told the Chicago Sun-Times that they haven't heard from the club about extensions. Along with Nico Hoerner, all three hit free agency after 2026. This sets up an intriguing subplot: will the Cubs lock up their core or let the market decide?\n\n---", "type": "daily_brief"}, {"id": "story-7-daily_brief", "title": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose", "content": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose\n**Freshness Tag:** EVERGREEN\n**Tier:** 3\n**Assigned Platforms:** X Text Post\n**Priority Score:** 5\n\n**Summary (2-4 sentences):**\nThe Cardinals have traded away most of their veterans and entered full rebuild mode. Every projection system has them at the bottom of the NL Central. For Cubs fans, the historic rivalry has a new dynamic \u2014 St. Louis is no longer the measuring stick, it's the punchline.\n\n---\n\n## Publishing Schedule\n\n**All times in CT:**\n\n| Time Slot | Story # | Content Type | Post Type |\n|-----------|---------|--------------|-----------|\n| 7:00 AM | Story 1 | Morning news / projection buzz | Informative \u2014 X Text Post |\n| 8:30 AM | Story 2 | Bold take / Steele hype | Bold/Passionate \u2014 X Text Post |\n| 9:00 AM | Story 1 | Thread: PECOTA deep dive | Informative \u2014 X Thread (3 tweets) |\n| 10:00 AM | Story 3 | Conforto signing news | Informative \u2014 X Text Post |\n| 11:30 AM | Story 7 | Cardinals rebuild jab | Humor/Rival Jab \u2014 X Text Post |\n| 1:00 PM | Story 4 | Roster battles preview | Informative \u2014 X Text Post |\n| 3:00 PM | Story 5 | Horton Opening Day take | Bold/Passionate \u2014 X Text Post |\n| 5:30 PM | Story 6 | Extension watch news | Informative \u2014 X Text Post |\n| 7:00 PM | Story 2 | Steele return hype thread | Bold/Passionate \u2014 X Thread (3 tweets) |\n| 8:30 PM | Story 5 | Horton bold take / witty closer | Humor \u2014 X Text Post |\n\n---\n\n## Content Tone & Voice\n\n**Brand Voice Guidelines:** From Chicago Cubs Fan HQ brand-voice.md\n- 50/50 split: informative (news, stats, recaps) and bold/passionate/humor (takes, jabs, wit)\n- Passionate Cubs fan who can rattle off WAR stats AND roast the Cardinals\n- Rival hierarchy: Cardinals (sharp) > Brewers (competitive) > White Sox (playful)\n\n**Hashtag Strategy:** From brand-guide.md\n- Primary: #Cubs (every post)\n- Secondary pool: #GoCubs #FlyTheW #CubsBaseball #WrigleyField #MLB #NorthSiders #ChicagoCubs #CubNation\n- Exactly 3 hashtags per tweet", "type": "daily_brief"}, {"id": "story-1-x_post", "title": "PECOTA Projects Cubs to Run Away with NL Central", "content": "PECOTA Projects Cubs to Run Away with NL Central\n\n**Tier:** 1\n**Assigned Angles:** The Numbers Don't Lie / Cardinals Collapse\n\n### Text Post\n\n```\nPECOTA projects the Cubs for 90.1 wins in 2026 \u2014 TEN games ahead of the Brewers.\n\nFanGraphs has them at 86 wins. ZiPS says Cubs by a game.\n\nEvery system agrees: the NL Central belongs to Chicago.\n\n#Cubs #GoCubs #MLB\n```\n\n**[POSTING WINDOW: 7:00 AM CT]**\n**[CHARACTER COUNT: 215/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Retweets, Replies\n\n---\n\n### Thread (3 tweets)\n\n**Tweet 1 (Hook):**\n```\nThe projection systems have spoken, and they're not being subtle about it.\n\nPECOTA: Cubs win 90.1 games\nFanGraphs: Cubs win 86 games\nZiPS: Cubs take the NL Central\n\nEvery single model says this is Chicago's division. Here's why. (thread)\n\n#Cubs #NorthSiders #MLB\n```\n\n**[POSTING WINDOW: 9:00 AM CT]**\n**[CHARACTER COUNT: 262/280]**\n**[TYPE: Informative]**\n\n**Tweet 2 (Context):**\n```\nThe rotation is the engine. Horton, Imanaga, Taillon, Boyd, and Cabrera \u2014 five deep before Steele even comes back from rehab.\n\nAdd Bregman's bat at third base ($175M investment), and you've got a roster built to win now.\n```\n\n**[POSTING WINDOW: 9:03 AM CT]**\n**[CHARACTER COUNT: 220/280]**\n\n**Tweet 3 (Closer):**\n```\nMeanwhile, the Cardinals are projected LAST in the NL Central after trading everyone.\n\nThe Brewers are regressing from 97 wins to the low 80s.\n\nThe path is clear. The Cubs haven't had a division outlook this favorable in years.\n```\n\n**[POSTING WINDOW: 9:06 AM CT]**\n**[CHARACTER COUNT: 227/280]**\n\n**Thread Strategy:** Lead with the data, build context with roster strength, close with the rival angle. Three tweets keeps it tight and shareable.\n\n---", "type": "x_post"}, {"id": "story-2-x_post", "title": "Justin Steele Rehab Ahead of Schedule, Targeting May Return", "content": "Justin Steele Rehab Ahead of Schedule, Targeting May Return\n\n**Tier:** 1\n**Assigned Angles:** Steele Return Hype / Best Rotation in Baseball\n\n### Text Post\n\n```\nJustin Steele says he's AHEAD of schedule in his UCL rehab and targeting a May-June return.\n\nHe's throwing bullpens, feeling great, and working on new pitches.\n\nThis rotation is about to get scary deep.\n\n#Cubs #CubsBaseball #MLB\n```\n\n**[POSTING WINDOW: 8:30 AM CT]**\n**[CHARACTER COUNT: 228/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Replies, Likes\n\n---\n\n### Thread (3 tweets)\n\n**Tweet 1 (Hook):**\n```\nJustin Steele update from Mesa, and it's all good news:\n\n- Ahead of schedule in UCL rehab\n- Bullpen sessions progressing well\n- Targeting May-June return\n- Working on NEW pitches during recovery\n\nThis man isn't just coming back. He's leveling up.\n\n#Cubs #GoCubs #CubsBaseball\n```\n\n**[POSTING WINDOW: 7:00 PM CT]**\n**[CHARACTER COUNT: 275/280]**\n**[TYPE: Bold/Passionate]**\n\n**Tweet 2 (Context):**\n```\nSteele was the Opening Day starter in 2025 before his elbow shut him down after four starts. His last outing? A 7-inning shutout against the Rangers.\n\nHe'll be on an innings limit when he returns, but even managed, he's a front-end arm.\n```\n\n**[POSTING WINDOW: 7:03 PM CT]**\n**[CHARACTER COUNT: 236/280]**\n\n**Tweet 3 (Closer):**\n```\nThe Cubs' rotation by June:\n\nHorton\nImanaga\nSteele\nTaillon\nBoyd\nCabrera\n\nThat's SIX legit starters on one team. Name a deeper rotation in the NL. Take your time.\n```\n\n**[POSTING WINDOW: 7:06 PM CT]**\n**[CHARACTER COUNT: 161/280]**\n\n**Thread Strategy:** Open with the update details, provide injury context, close with the \"six starters\" hook that invites debate.\n\n---", "type": "x_post"}, {"id": "story-3-x_post", "title": "Cubs Sign Michael Conforto to Minor League Deal", "content": "Cubs Sign Michael Conforto to Minor League Deal\n\n**Tier:** 2\n**Assigned Angles:** Low-Risk Depth Move\n\n### Text Post\n\n```\nCubs sign former All-Star Michael Conforto to a minor league deal with a $2MM salary if selected.\n\nAdds a lefty bat to the fourth outfield race against Alcantara, Dean, Carlson, and McCormick.\n\nSmart depth move by the front office.\n\n#Cubs #ChicagoCubs #MLB\n```\n\n**[POSTING WINDOW: 10:00 AM CT]**\n**[CHARACTER COUNT: 256/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Likes, Replies\n\n---", "type": "x_post"}, {"id": "story-4-x_post", "title": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot", "content": "Spring Training Roster Battles \u2014 Fourth Outfielder and Last Bullpen Spot\n\n**Tier:** 2\n**Assigned Angles:** Contender's Luxury \u2014 Too Much Depth\n\n### Text Post\n\n```\nThe Cubs have five guys fighting for the fourth outfield spot and six arms battling for the last bullpen job.\n\nMoises Ballesteros hit .868 OPS in 20 MLB games last year and still might not crack the roster.\n\nContender problems.\n\n#Cubs #CubsBaseball #NorthSiders\n```\n\n**[POSTING WINDOW: 1:00 PM CT]**\n**[CHARACTER COUNT: 261/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Replies, Debate\n\n---", "type": "x_post"}, {"id": "story-5-x_post", "title": "Cade Horton Emerges as Opening Day Starter Favorite", "content": "Cade Horton Emerges as Opening Day Starter Favorite\n\n**Tier:** 2\n**Assigned Angles:** Homegrown Ace Arrives / Bold Take\n\n### Text Post (Bold)\n\n```\nCade Horton getting the Opening Day start.\n\nFrom top draft pick to staff ace. From rib injury to the best second half by any Cubs starter in years.\n\nThis is what the plan looks like when it works.\n\n#Cubs #FlyTheW #CubsBaseball\n```\n\n**[POSTING WINDOW: 3:00 PM CT]**\n**[CHARACTER COUNT: 226/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Likes, Retweets\n\n---\n\n### Text Post 2 (Humor/Bold Closer)\n\n```\nCade Horton is going to be a top-10 NL starter this year and the Cubs drafted him, developed him, and handed him the ball on Opening Day.\n\nMeanwhile, the Cardinals are developing a nice rebuild PowerPoint.\n\n#Cubs #GoCubs #NorthSiders\n```\n\n**[POSTING WINDOW: 8:30 PM CT]**\n**[CHARACTER COUNT: 233/280]**\n**[TYPE: Humor/Rival Jab]**\n\n**Engagement Target:** Retweets, Replies, Rivalry engagement\n\n---", "type": "x_post"}, {"id": "story-6-x_post", "title": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs", "content": "Happ and Suzuki \u2014 No Extension Talks Yet with Cubs\n\n**Tier:** 2\n**Assigned Angles:** Three Core Players, One Offseason\n\n### Text Post\n\n```\nIan Happ and Seiya Suzuki both say they haven't had extension talks with the Cubs.\n\nWith Nico Hoerner also heading to free agency after 2026, that's three core players on the clock.\n\nWho gets the deal first?\n\n#Cubs #ChicagoCubs #CubNation\n```\n\n**[POSTING WINDOW: 5:30 PM CT]**\n**[CHARACTER COUNT: 238/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Replies, Poll engagement, Debate\n\n---", "type": "x_post"}, {"id": "story-7-x_post", "title": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose", "content": "Cardinals in Full Rebuild \u2014 NL Central Is Chicago's to Lose\n\n**Tier:** 3\n**Assigned Angles:** Rivalry Humor\n\n### Text Post\n\n```\nThe Cardinals are projected LAST in the NL Central by every major system.\n\nThey traded everyone, entered a full rebuild, and are now looking up at the Cubs, Brewers, Pirates, AND Reds.\n\nBest fans in baseball watching the worst team in the division.\n\n#Cubs #FlyTheW #MLB\n```\n\n**[POSTING WINDOW: 11:30 AM CT]**\n**[CHARACTER COUNT: 269/280]**\n**[TYPE: Humor/Rival Jab]**\n\n**Engagement Target:** Retweets, Replies, Rivalry banter\n\n---\n\n## Post Distribution Summary\n\n| # | Posting Window | Story | Post Type | Content Type |\n|---|---------------|-------|-----------|-------------|\n| 1 | 7:00 AM CT | Story 1 | Text Post | Informative |\n| 2 | 8:30 AM CT | Story 2 | Text Post | Bold/Passionate |\n| 3 | 9:00 AM CT | Story 1 | Thread (3 tweets) | Informative |\n| 4 | 10:00 AM CT | Story 3 | Text Post | Informative |\n| 5 | 11:30 AM CT | Story 7 | Text Post | Humor/Rival Jab |\n| 6 | 1:00 PM CT | Story 4 | Text Post | Informative |\n| 7 | 3:00 PM CT | Story 5 | Text Post | Bold/Passionate |\n| 8 | 5:30 PM CT | Story 6 | Text Post | Informative |\n| 9 | 7:00 PM CT | Story 2 | Thread (3 tweets) | Bold/Passionate |\n| 10 | 8:30 PM CT | Story 5 | Text Post | Humor/Rival Jab |\n\n**Total Standalone Tweets:** 10\n**Total Thread Tweets:** 6 (2 threads x 3 tweets each)\n**Grand Total Posts:** 10 standalone + 6 thread = 16 total posts\n\n**Content Mix Check:**\n- Informative: 5 posts (50%) \u2014 Stories 1, 3, 4, 6, and Story 1 thread\n- Bold/Passionate/Humor: 5 posts (50%) \u2014 Stories 2, 5 (x2), 7, and Story 2 thread\n\n---\n\n## Hashtag Distribution\n\n| Hashtag | Times Used |\n|---------|-----------|\n| #Cubs | 10 (every post) |\n| #MLB | 4 |\n| #GoCubs | 3 |\n| #CubsBaseball | 3 |\n| #FlyTheW | 2 |\n| #NorthSiders | 2 |\n| #ChicagoCubs | 2 |\n| #CubNation | 1 |\n\nAll posts use exactly 3 hashtags. #Cubs appears in every post.\n\n---\n\n## BONUS TWEETS \u2014 Fan Sentiment-Driven (Reddit / Community)\n\n*Source: r/CHICubs hot posts (2026-02-25). These tweets tap into what fans are actually talking about and feeling right now. Mix into the schedule or use as alternates.*\n\n---", "type": "x_post"}, {"id": "story-8-x_post", "title": "Pete Crow-Armstrong Calls Out Dodgers Fans", "content": "Pete Crow-Armstrong Calls Out Dodgers Fans\n\n**Tier:** 1 (Reddit: 876 upvotes, 76 comments \u2014 biggest fan story of the week)\n**Assigned Angles:** PCA Is That Guy / Dodgers Rivalry Energy\n\n### Text Post (Bold)\n\n```\nPete Crow-Armstrong didn't hold back when asked about Dodgers fans.\n\nThis 22-year-old center fielder has the bat, the glove, and apparently zero fear of LA's fanbase.\n\nHe's not just a future star. He's already a Cubs legend in the making.\n\n#Cubs #FlyTheW #GoCubs\n```\n\n**[POSTING WINDOW: Alternate 8:30 AM CT]**\n**[CHARACTER COUNT: 236/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Retweets, Replies, Quote tweets \u2014 Dodgers fans will interact\n\n---\n\n### Text Post 2 (Humor)\n\n```\nPete Crow-Armstrong talking about Dodgers fans the way we've all wanted to for years.\n\nThat's my center fielder.\n\n#Cubs #GoCubs #MLB\n```\n\n**[POSTING WINDOW: Alternate 11:30 AM CT]**\n**[CHARACTER COUNT: 134/280]**\n**[TYPE: Humor]**\n\n**Engagement Target:** Massive RT potential, Dodgers-Cubs crossover engagement\n\n---", "type": "x_post"}, {"id": "story-9-x_post", "title": "PCA Covers Chicago Magazine \u2014 The Face of the Cubs", "content": "PCA Covers Chicago Magazine \u2014 The Face of the Cubs\n\n**Tier:** 2 (Reddit: 313 upvotes, 22 comments)\n**Assigned Angles:** New Face of the Franchise / Culture Content\n\n### Text Post\n\n```\nPete Crow-Armstrong on the cover of Chicago magazine's March edition.\n\n22 years old. Gold Glove defense. 30+ steal speed. And now the face of the franchise on newsstands.\n\nThe Cubs' future isn't coming. It's already here.\n\n#Cubs #ChicagoCubs #NorthSiders\n```\n\n**[POSTING WINDOW: Alternate 10:00 AM CT]**\n**[CHARACTER COUNT: 234/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Likes, Retweets, fan pride shares\n\n---", "type": "x_post"}, {"id": "story-10-x_post", "title": "Seiya Suzuki \u2014 Fan Favorite Energy", "content": "Seiya Suzuki \u2014 Fan Favorite Energy\n\n**Tier:** 2 (Reddit: 561 upvotes on a Seiya appreciation post \u2014 fans adore this man)\n**Assigned Angles:** Seiya Love / Fan Culture\n\n### Text Post (Humor)\n\n```\nr/CHICubs got a Seiya Suzuki appreciation post to 560+ upvotes this week.\n\nNo stats. No news. Just a photo of Seiya smiling.\n\nThat's how you know a player owns a city.\n\n#Cubs #GoCubs #CubNation\n```\n\n**[POSTING WINDOW: Alternate 3:00 PM CT]**\n**[CHARACTER COUNT: 204/280]**\n**[TYPE: Humor/Culture]**\n\n**Engagement Target:** Likes, fan engagement, quote tweets with Seiya stories\n\n---\n\n### Text Post 2 (Bold)\n\n```\nSeiya Suzuki hasn't even gotten his extension yet and Cubs fans are already building statues.\n\n.280 hitter. 25+ HR power. That infectious smile.\n\nPay. This. Man.\n\n#Cubs #CubsBaseball #MLB\n```\n\n**[POSTING WINDOW: Alternate 5:30 PM CT]**\n**[CHARACTER COUNT: 195/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Replies, extension debate, engagement from Suzuki fans\n\n---", "type": "x_post"}, {"id": "story-11-x_post", "title": "Moises Ballesteros Arrives at Camp Ready to Compete", "content": "Moises Ballesteros Arrives at Camp Ready to Compete\n\n**Tier:** 2 (Reddit: 142 upvotes, 10 comments \u2014 fans are hyped on this kid)\n**Assigned Angles:** The Kid Is Ready / Prospect Hype\n\n### Text Post\n\n```\nMoises Ballesteros is in Mesa and ready to fight for a roster spot.\n\nHe's 21. He slashed .868 OPS in his first 20 MLB games. And the Cubs still might not have room for him.\n\nImagine having THIS problem on your roster.\n\n#Cubs #CubsBaseball #NorthSiders\n```\n\n**[POSTING WINDOW: Alternate 1:00 PM CT]**\n**[CHARACTER COUNT: 247/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Replies, prospect debate, \"make room for him\" takes\n\n---", "type": "x_post"}, {"id": "story-12-x_post", "title": "Spring Training Win \u2014 Cubs 6, Padres 5", "content": "Spring Training Win \u2014 Cubs 6, Padres 5\n\n**Tier:** 3 (Reddit: game thread active with 27 comments + 14 in postgame)\n**Assigned Angles:** Cactus League Vibes\n\n### Text Post\n\n```\nCubs 6, Padres 5 in Cactus League play.\n\nSpring training doesn't count. Except when you win. Then it counts a little.\n\n31 days until real baseball.\n\n#Cubs #GoCubs #MLB\n```\n\n**[POSTING WINDOW: Alternate 7:00 AM CT]**\n**[CHARACTER COUNT: 161/280]**\n**[TYPE: Humor]**\n\n**Engagement Target:** Likes, morning engagement, countdown hype\n\n---", "type": "x_post"}, {"id": "story-13-x_post", "title": "One Month Until Opening Day \u2014 Cubs vs. Nationals", "content": "One Month Until Opening Day \u2014 Cubs vs. Nationals\n\n**Tier:** 3 (Reddit: r/baseball posted Opening Day schedule, Cubs open vs Nationals March 26)\n**Assigned Angles:** Countdown Hype / Season Opener Preview\n\n### Text Post\n\n```\nONE MONTH from today, the Cubs open the 2026 season against the Nationals at Wrigley Field.\n\nBregman in the lineup. Horton on the mound. A rotation built to dominate.\n\nThis is the year.\n\n#Cubs #FlyTheW #WrigleyField\n```\n\n**[POSTING WINDOW: Alternate 8:30 PM CT]**\n**[CHARACTER COUNT: 219/280]**\n**[TYPE: Bold/Passionate]**\n\n**Engagement Target:** Retweets, hype engagement, countdown participation\n\n---\n\n### Text Post 2 (Informative)\n\n```\nMarch 26 at Wrigley Field. Cubs vs. Nationals. 2:20 PM CT.\n\nThat's the 2026 opener. 31 days away.\n\nThe projected 90-win season starts in one month.\n\n#Cubs #ChicagoCubs #MLB\n```\n\n**[POSTING WINDOW: Alternate 10:00 PM CT]**\n**[CHARACTER COUNT: 174/280]**\n**[TYPE: Informative]**\n\n**Engagement Target:** Likes, saves, calendar reminders\n\n---\n\n## Updated Distribution \u2014 With Bonus Tweets\n\n### Recommended Additions to Schedule\n\n| Alt Slot | Story | Post Type | Content Type | Why (Reddit Signal) |\n|----------|-------|-----------|-------------|---------------------|\n| 8:30 AM | Story 8 (PCA vs Dodgers) | Text Post | Bold | 876 upvotes \u2014 biggest fan story |\n| 11:30 AM | Story 8 (PCA one-liner) | Text Post | Humor | Crossover Dodgers engagement |\n| 10:00 AM | Story 9 (PCA magazine) | Text Post | Bold | 313 upvotes \u2014 fan pride moment |\n| 3:00 PM | Story 10 (Seiya love) | Text Post | Humor/Culture | 561 upvotes on appreciation |\n| 5:30 PM | Story 10 (Seiya extension) | Text Post | Bold | Ties into Story 6 extension talk |\n| 1:00 PM | Story 11 (Ballesteros) | Text Post | Informative | 142 upvotes \u2014 prospect hype |\n| 7:00 AM | Story 12 (Spring W) | Text Post | Humor | Active game threads |\n| 8:30 PM | Story 13 (Opening Day countdown) | Text Post | Bold | r/baseball countdown post |\n| 10:00 PM | Story 13 (Opener details) | Text Post | Informative | Schedule awareness |\n\n### Content Mix with Bonus Tweets\n\n**Original:** 5 informative / 5 bold-humor (50/50)\n**Bonus tweets:** 3 informative / 6 bold-humor\n**Combined pool of 19 standalone options:** 8 informative / 11 bold-humor \u2014 pick 10-12 best to maintain 50/50\n\n### Why These Work (Fan Sentiment Logic)\n\n- **PCA (Stories 8-9):** The sub is absolutely buzzing about Pete Crow-Armstrong. Two posts totaling 1,189 upvotes and 98 comments. He IS the fan energy story right now. Any PCA tweet will outperform today.\n- **Seiya (Story 10):** 561 upvotes on a pure appreciation post. Fans love this man unconditionally. Ties perfectly into the extension talk already in Story 6.\n- **Ballesteros (Story 11):** 142 upvotes on an arrival post. Fans want this kid on the roster. Prospect hype drives replies.\n- **Game/Countdown (Stories 12-13):** Lower engagement but consistent community rituals. Opening Day countdown is a daily fan touchpoint. Spring training results keep the daily conversation going.", "type": "x_post"}];
+        const imageManifest = {};
+        let imageURLs = {}; // Runtime store: {'1_x_image': 'url', '1_facebook_image': 'url', ...}
+
+        // Image URL management
+        function updateImageURL(inputEl) {
+            var story = inputEl.dataset.story;
+            var platform = inputEl.dataset.platform;
+            var url = inputEl.value.trim();
+            var key = story + '_' + platform;
+            imageURLs[key] = url;
+
+            // Update preview thumbnail
+            var preview = document.getElementById('img-preview-' + story + '-' + platform);
+            if (preview) {
+                if (url) {
+                    preview.src = url;
+                    preview.classList.add('loaded');
+                    preview.onerror = function() { this.classList.remove('loaded'); };
+                } else {
+                    preview.src = '';
+                    preview.classList.remove('loaded');
+                }
+            }
+        }
+
+        function getImageURLForStory(storyTitle, platform) {
+            // Try runtime imageURLs first (user-pasted)
+            // Extract story number from title
+            for (var key in imageURLs) {
+                if (imageURLs[key] && key.endsWith('_' + platform)) {
+                    var storyNum = key.split('_')[0];
+                    // Check if this story matches by looking at allStories
+                    for (var i = 0; i < allStories.length; i++) {
+                        if (allStories[i].title === storyTitle &&
+                            allStories[i].id.indexOf('story-' + storyNum) !== -1) {
+                            return imageURLs[key];
+                        }
+                    }
+                }
+            }
+
+            // Try manifest data
+            for (var num in imageManifest) {
+                var mdata = imageManifest[num];
+                if (mdata && mdata[platform] && mdata[platform].exported_url) {
+                    // Check if this story number matches
+                    for (var j = 0; j < allStories.length; j++) {
+                        if (allStories[j].title === storyTitle &&
+                            allStories[j].id.indexOf('story-' + num) !== -1) {
+                            return mdata[platform].exported_url;
+                        }
+                    }
+                }
+            }
+
+            return '';
+        }
+
+        function initializeApp() {
+            const saved = localStorage.getItem(REVIEW_STORAGE_KEY + '-' + DATE);
+            if (saved) {
+                try {
+                    reviewData = JSON.parse(saved);
+                } catch (e) {
+                    reviewData = {};
+                }
+            }
+
+            allStories.forEach(function(story) {
+                if (!reviewData[story.id]) {
+                    reviewData[story.id] = {
+                        id: story.id,
+                        type: story.type,
+                        status: 'unreviewed',
+                        notes: '',
+                        content: story.content,
+                        editedContent: null
+                    };
+                }
+                // Migrate old data: ensure editedContent field exists
+                if (reviewData[story.id].editedContent === undefined) {
+                    reviewData[story.id].editedContent = null;
+                }
+            });
+
+            // Restore UI state
+            Object.keys(reviewData).forEach(function(storyId) {
+                var data = reviewData[storyId];
+                var card = document.querySelector('[data-id="' + storyId + '"]');
+                if (card) {
+                    card.setAttribute('data-status', data.status);
+                    var textarea = document.getElementById('textarea-' + storyId);
+                    if (textarea) textarea.value = data.notes || '';
+                    // If content was edited, update the display and editor
+                    if (data.editedContent) {
+                        var contentText = card.querySelector('.card-content-text');
+                        if (contentText) contentText.textContent = data.editedContent;
+                        var editor = document.getElementById('editor-' + storyId);
+                        if (editor) editor.value = data.editedContent;
+                    }
+                    updateCardVisuals(storyId, data.status, !!data.editedContent);
+                }
+            });
+
+            updateProgress();
+            filterByStatus('all');
+        }
+
+        function toggleExpand(storyId) {
+            var content = document.getElementById('content-' + storyId);
+            var toggle = document.getElementById('toggle-' + storyId);
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                content.classList.add('expanded');
+                toggle.textContent = 'Collapse';
+            } else {
+                content.classList.remove('expanded');
+                content.classList.add('collapsed');
+                toggle.textContent = 'Show Full Content';
+            }
+        }
+
+        function startEdit(storyId) {
+            var card = document.querySelector('[data-id="' + storyId + '"]');
+            if (!card) return;
+            card.classList.add('editing');
+            var editor = document.getElementById('editor-' + storyId);
+            if (editor) {
+                // If previously edited, load edited content; otherwise load original
+                var data = reviewData[storyId];
+                if (data && data.editedContent) {
+                    editor.value = data.editedContent;
+                }
+                editor.focus();
+                // Auto-resize for articles
+                editor.style.minHeight = Math.max(300, editor.scrollHeight) + 'px';
+            }
+        }
+
+        function saveAndApprove(storyId) {
+            var editor = document.getElementById('editor-' + storyId);
+            if (!editor) return;
+            var newContent = editor.value;
+
+            // Save the edited content
+            if (!reviewData[storyId]) {
+                reviewData[storyId] = { id: storyId, status: 'approved', notes: '', content: '', editedContent: null };
+            }
+            reviewData[storyId].editedContent = newContent;
+
+            // Update the display text
+            var card = document.querySelector('[data-id="' + storyId + '"]');
+            var contentText = card ? card.querySelector('.card-content-text') : null;
+            if (contentText) contentText.textContent = newContent;
+
+            // Exit edit mode
+            if (card) card.classList.remove('editing');
+
+            // Approve
+            setStatus(storyId, 'approved');
+            updateCardVisuals(storyId, 'approved', true);
+
+            // Update char count for X posts
+            updateCharCount(storyId, newContent);
+        }
+
+        function cancelEdit(storyId) {
+            var card = document.querySelector('[data-id="' + storyId + '"]');
+            if (card) card.classList.remove('editing');
+        }
+
+        function updateCharCount(storyId, text) {
+            var el = document.getElementById('charcount-' + storyId);
+            if (!el) return;
+            // Remove URLs for Twitter count
+            var textNoUrls = text.replace(/https?:\/\/\S+/g, '');
+            var count = textNoUrls.trim().length;
+            el.textContent = 'Characters: ' + count + '/280' + (count > 280 ? '  OVER LIMIT' : '');
+            el.className = count > 280 ? 'char-count warning' : 'char-count';
+        }
+
+        function approveCard(storyId) {
+            setStatus(storyId, 'approved');
+            document.getElementById('notes-' + storyId).classList.remove('show');
+        }
+
+        function rejectCard(storyId) {
+            setStatus(storyId, 'rejected');
+            document.getElementById('notes-' + storyId).classList.add('show');
+        }
+
+        function setStatus(storyId, status) {
+            if (!reviewData[storyId]) {
+                var story = allStories.find(function(s) { return s.id === storyId; });
+                reviewData[storyId] = {
+                    id: storyId,
+                    type: story ? story.type : '',
+                    status: status,
+                    notes: '',
+                    content: story ? story.content : '',
+                    editedContent: null
+                };
+            }
+
+            reviewData[storyId].status = status;
+
+            var textarea = document.getElementById('textarea-' + storyId);
+            if (textarea) reviewData[storyId].notes = textarea.value;
+
+            localStorage.setItem(REVIEW_STORAGE_KEY + '-' + DATE, JSON.stringify(reviewData));
+
+            var card = document.querySelector('[data-id="' + storyId + '"]');
+            if (card) card.setAttribute('data-status', status);
+            updateCardVisuals(storyId, status, !!(reviewData[storyId] && reviewData[storyId].editedContent));
+            updateProgress();
+        }
+
+        function updateCardVisuals(storyId, status, wasEdited) {
+            var card = document.querySelector('[data-id="' + storyId + '"]');
+            if (!card) return;
+
+            card.classList.remove('approved', 'needs-edit', 'rejected');
+            if (status !== 'unreviewed') card.classList.add(status);
+
+            var statusLabel = document.getElementById('status-' + storyId);
+            if (statusLabel) {
+                statusLabel.className = 'status-label';
+                if (status === 'approved' && wasEdited) {
+                    statusLabel.textContent = 'APPROVED (EDITED)';
+                    statusLabel.classList.add('status-edited');
+                } else if (status === 'approved') {
+                    statusLabel.textContent = 'APPROVED';
+                    statusLabel.classList.add('status-approved');
+                } else if (status === 'needs-edit') {
+                    statusLabel.textContent = 'NEEDS EDIT';
+                    statusLabel.classList.add('status-needs-edit');
+                } else if (status === 'rejected') {
+                    statusLabel.textContent = 'REJECTED';
+                    statusLabel.classList.add('status-rejected');
+                } else {
+                    statusLabel.textContent = '';
+                }
+            }
+        }
+
+        function updateProgress() {
+            var approved = 0, rejected = 0, unreviewed = 0;
+            allStories.forEach(function(story) {
+                var data = reviewData[story.id];
+                if (!data || data.status === 'unreviewed') unreviewed++;
+                else if (data.status === 'approved') approved++;
+                else if (data.status === 'rejected') rejected++;
+                else unreviewed++;
+            });
+            var reviewed = approved + rejected;
+            var total = allStories.length;
+            var percentage = total > 0 ? (reviewed / total * 100) : 0;
+            document.getElementById('reviewed-count').textContent = reviewed;
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('progress-fill').style.width = percentage + '%';
+            // Update stat chips
+            document.getElementById('stat-approved-count').textContent = approved;
+            document.getElementById('stat-rejected-count').textContent = rejected;
+            document.getElementById('stat-unreviewed-count').textContent = unreviewed;
+            // Update CSV button
+            var csvBtn = document.getElementById('btn-csv');
+            if (csvBtn) {
+                var socialApproved = countApprovedSocialPosts();
+                if (socialApproved > 0) {
+                    csvBtn.disabled = false;
+                    csvBtn.textContent = 'PostPlanner Upload (' + socialApproved + ' posts)';
+                } else {
+                    csvBtn.disabled = true;
+                    csvBtn.textContent = 'PostPlanner Upload (0 approved)';
+                }
+            }
+        }
+
+        function countApprovedSocialPosts() {
+            var count = 0;
+            allStories.forEach(function(story) {
+                var data = reviewData[story.id];
+                if (data && data.status === 'approved' && (story.type === 'x_post' || story.type === 'facebook')) {
+                    count++;
+                }
+            });
+            return count;
+        }
+
+        function escapeCSVField(text) {
+            if (!text) return '';
+            // If field contains comma, quote, or newline, wrap in quotes and escape inner quotes
+            if (text.indexOf(',') !== -1 || text.indexOf('"') !== -1 || text.indexOf('\n') !== -1) {
+                return '"' + text.replace(/"/g, '""') + '"';
+            }
+            return text;
+        }
+
+        function extractHashtags(text) {
+            if (!text) return '';
+            var matches = text.match(/#\w+/g);
+            return matches ? matches.join(' ') : '';
+        }
+
+        // ========== POSTING SCHEDULE SYSTEM ==========
+        var defaultXSlots = ['09:00', '12:00', '15:00', '18:00', '21:00'];
+        var defaultFBSlots = ['10:00', '13:00', '17:00'];
+
+        function getScheduleConfig() {
+            var saved = localStorage.getItem(SCHEDULE_STORAGE_KEY);
+            if (saved) {
+                try { return JSON.parse(saved); } catch(e) {}
+            }
+            return { xSlots: defaultXSlots.slice(), fbSlots: defaultFBSlots.slice() };
+        }
+
+        function saveScheduleConfig(config) {
+            localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(config));
+        }
+
+        function renderTimeSlots() {
+            var config = getScheduleConfig();
+            var xContainer = document.getElementById('x-time-slots');
+            var fbContainer = document.getElementById('fb-time-slots');
+
+            xContainer.innerHTML = config.xSlots.map(function(t, i) {
+                return '<span class="time-slot">' + t + ' <span class="remove-slot" onclick="removeTimeSlot(\x27x\x27,' + i + ')">&times;</span></span>';
+            }).join('');
+
+            fbContainer.innerHTML = config.fbSlots.map(function(t, i) {
+                return '<span class="time-slot">' + t + ' <span class="remove-slot" onclick="removeTimeSlot(\x27fb\x27,' + i + ')">&times;</span></span>';
+            }).join('');
+        }
+
+        function addTimeSlot(platform) {
+            var inputId = platform === 'x' ? 'new-x-time' : 'new-fb-time';
+            var val = document.getElementById(inputId).value;
+            if (!val) return;
+            var config = getScheduleConfig();
+            var arr = platform === 'x' ? config.xSlots : config.fbSlots;
+            if (arr.indexOf(val) === -1) {
+                arr.push(val);
+                arr.sort();
+            }
+            saveScheduleConfig(config);
+            renderTimeSlots();
+            document.getElementById(inputId).value = '';
+        }
+
+        function removeTimeSlot(platform, index) {
+            var config = getScheduleConfig();
+            var arr = platform === 'x' ? config.xSlots : config.fbSlots;
+            arr.splice(index, 1);
+            saveScheduleConfig(config);
+            renderTimeSlots();
+        }
+
+        function downloadPostPlannerCSV() {
+            // Open schedule panel instead of direct download
+            openSchedulePanel();
+        }
+
+        function openSchedulePanel() {
+            document.getElementById('schedule-date').value = DATE;
+            renderTimeSlots();
+            document.getElementById('schedule-panel').classList.add('show');
+            document.getElementById('schedule-overlay').classList.add('show');
+        }
+
+        function closeSchedulePanel() {
+            document.getElementById('schedule-panel').classList.remove('show');
+            document.getElementById('schedule-overlay').classList.remove('show');
+        }
+
+        function formatTimeForPostPlanner(time24) {
+            // Convert 24h time to 12h AM/PM format
+            var parts = time24.split(':');
+            var h = parseInt(parts[0], 10);
+            var m = parts[1];
+            var ampm = h >= 12 ? 'PM' : 'AM';
+            if (h === 0) h = 12;
+            else if (h > 12) h = h - 12;
+            return h + ':' + m + ' ' + ampm;
+        }
+
+        function generateAndDownload() {
+            var config = getScheduleConfig();
+            var postDate = document.getElementById('schedule-date').value || DATE;
+
+            var xRows = [];
+            var fbRows = [];
+
+            allStories.forEach(function(story) {
+                var data = reviewData[story.id];
+                if (!data || data.status !== 'approved') return;
+                var finalContent = data.editedContent || story.content;
+
+                if (story.type === 'x_post') {
+                    var sections = parseXPostContent(finalContent, story.title);
+                    sections.forEach(function(post) {
+                        xRows.push({
+                            content: post.text,
+                            type: post.type,
+                            hashtags: extractHashtags(post.text),
+                            story: story.title
+                        });
+                    });
+                } else if (story.type === 'facebook') {
+                    var fbPost = parseFacebookContent(finalContent, story.title);
+                    if (fbPost) {
+                        fbRows.push(fbPost);
+                    }
+                }
+            });
+
+            if (xRows.length === 0 && fbRows.length === 0) {
+                alert('No approved social posts to export.');
+                return;
+            }
+
+            // Posting window to time mapping
+            var windowToTime = {
+                'Morning': '09:00',
+                'Midday': '12:00',
+                'Afternoon': '15:00',
+                'Evening': '18:00',
+                'Late Night': '21:00'
+            };
+
+            // Assign times: use posting window if available, otherwise round-robin
+            function assignTimes(rows, slots) {
+                if (slots.length === 0) slots = ['12:00'];
+                return rows.map(function(row, i) {
+                    row.date = postDate;
+                    // Check if content has a posting window tag
+                    var windowMatch = row.content ? row.content.match(/\[POSTING WINDOW:\s*([^\]]+)\]/) : null;
+                    if (windowMatch && windowToTime[windowMatch[1].trim()]) {
+                        row.time = windowToTime[windowMatch[1].trim()];
+                    } else {
+                        row.time = slots[i % slots.length];
+                    }
+                    return row;
+                });
+            }
+
+            xRows = assignTimes(xRows, config.xSlots);
+            fbRows = assignTimes(fbRows, config.fbSlots);
+
+            // Generate XLSX using SheetJS
+            if (typeof XLSX === 'undefined') {
+                alert('SheetJS library not loaded. Falling back to CSV download.');
+                fallbackCSVDownload(xRows, fbRows, postDate);
+                return;
+            }
+
+            var wb = XLSX.utils.book_new();
+
+            // Twitter sheet
+            if (xRows.length > 0) {
+                var xData = [['Date', 'Time', 'Text', 'Image URL', 'Link', 'Type', 'Hashtags', 'Story']];
+                xRows.forEach(function(row) {
+                    xData.push([
+                        row.date,
+                        formatTimeForPostPlanner(row.time),
+                        cleanMarkdownForPost(row.content),
+                        getImageURLForStory(row.story, 'x_image'),
+                        '',
+                        row.type,
+                        row.hashtags,
+                        row.story
+                    ]);
+                });
+                var xSheet = XLSX.utils.aoa_to_sheet(xData);
+                xSheet['!cols'] = [
+                    {wch: 12}, {wch: 10}, {wch: 60}, {wch: 30}, {wch: 30}, {wch: 14}, {wch: 30}, {wch: 30}
+                ];
+                XLSX.utils.book_append_sheet(wb, xSheet, 'Twitter');
+            }
+
+            // Facebook sheet
+            if (fbRows.length > 0) {
+                var fbData = [['Date', 'Time', 'Text', 'Image URL', 'Link', 'Image Caption', 'Story']];
+                fbRows.forEach(function(row) {
+                    fbData.push([
+                        row.date,
+                        formatTimeForPostPlanner(row.time),
+                        cleanMarkdownForPost(row.content),
+                        getImageURLForStory(row.story, 'facebook_image'),
+                        '',
+                        row.image_caption || '',
+                        row.story
+                    ]);
+                });
+                var fbSheet = XLSX.utils.aoa_to_sheet(fbData);
+                fbSheet['!cols'] = [
+                    {wch: 12}, {wch: 10}, {wch: 60}, {wch: 30}, {wch: 30}, {wch: 40}, {wch: 30}
+                ];
+                XLSX.utils.book_append_sheet(wb, fbSheet, 'Facebook');
+            }
+
+            // Download
+            XLSX.writeFile(wb, 'postplanner-upload-' + postDate + '.xlsx');
+            closeSchedulePanel();
+
+            var msg = 'Downloaded postplanner-upload-' + postDate + '.xlsx with ';
+            var parts = [];
+            if (xRows.length > 0) parts.push(xRows.length + ' X posts');
+            if (fbRows.length > 0) parts.push(fbRows.length + ' Facebook posts');
+            alert(msg + parts.join(' and ') + '.\n\nUpload this file to PostPlanner via Bulk Upload.');
+        }
+
+        function cleanMarkdownForPost(text) {
+            // Strip markdown formatting that shouldn't appear in social posts
+            if (!text) return '';
+            return text
+                .replace(/\*\*([^*]+)\*\*/g, '$1')
+                .replace(/\*([^*]+)\*/g, '$1')
+                .replace(/^#+\s+/gm, '')
+                .replace(/^[-*]\s+/gm, '')
+                .trim();
+        }
+
+        function fallbackCSVDownload(xRows, fbRows, postDate) {
+            // Fallback if SheetJS fails to load
+            if (xRows.length > 0) {
+                var csv = 'Date,Time,Text,Image URL,Link,Type,Hashtags,Story\n';
+                xRows.forEach(function(row) {
+                    csv += escapeCSVField(row.date) + ',' +
+                           escapeCSVField(formatTimeForPostPlanner(row.time)) + ',' +
+                           escapeCSVField(cleanMarkdownForPost(row.content)) + ',' +
+                           ',,' +
+                           escapeCSVField(row.type) + ',' +
+                           escapeCSVField(row.hashtags) + ',' +
+                           escapeCSVField(row.story) + '\n';
+                });
+                downloadFile(csv, 'twitter-posts-' + postDate + '.csv', 'text/csv');
+            }
+            if (fbRows.length > 0) {
+                setTimeout(function() {
+                    var csv = 'Date,Time,Text,Image URL,Link,Image Caption,Story\n';
+                    fbRows.forEach(function(row) {
+                        csv += escapeCSVField(row.date) + ',' +
+                               escapeCSVField(formatTimeForPostPlanner(row.time)) + ',' +
+                               escapeCSVField(cleanMarkdownForPost(row.content)) + ',' +
+                               ',,' +
+                               escapeCSVField(row.image_caption || '') + ',' +
+                               escapeCSVField(row.story) + '\n';
+                    });
+                    downloadFile(csv, 'facebook-posts-' + postDate + '.csv', 'text/csv');
+                }, 500);
+            }
+            closeSchedulePanel();
+        }
+
+        function parseXPostContent(content, storyTitle) {
+            var posts = [];
+            var lines = content.split('\n');
+
+            var inTextPost = false;
+            var inThread = false;
+            var currentTweetNum = 0;
+            var currentText = [];
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                var trimmed = line.trim();
+
+                if (trimmed.match(/^###\s+Text Post/i)) {
+                    flushPost();
+                    inTextPost = true;
+                    inThread = false;
+                    currentText = [];
+                    continue;
+                }
+                if (trimmed.match(/^###\s+Thread Concept/i)) {
+                    flushPost();
+                    inTextPost = false;
+                    inThread = true;
+                    currentText = [];
+                    currentTweetNum = 0;
+                    continue;
+                }
+                if (trimmed.match(/^###\s+Image Post/i)) {
+                    flushPost();
+                    inTextPost = false;
+                    inThread = false;
+                    continue;
+                }
+                if (trimmed.match(/^###\s/)) {
+                    flushPost();
+                    inTextPost = false;
+                    inThread = false;
+                    continue;
+                }
+
+                if (inThread && trimmed.match(/^\*\*Tweet\s+\d+/i)) {
+                    flushPost();
+                    currentTweetNum++;
+                    currentText = [];
+                    continue;
+                }
+
+                if (inTextPost || (inThread && currentTweetNum > 0)) {
+                    if (trimmed !== '') {
+                        currentText.push(line);
+                    }
+                }
+            }
+            flushPost();
+
+            function flushPost() {
+                if (currentText.length === 0) return;
+                var text = currentText.join('\n').trim();
+                if (!text) return;
+
+                if (inTextPost) {
+                    posts.push({ text: text, type: 'text' });
+                } else if (inThread && currentTweetNum > 0) {
+                    posts.push({
+                        text: text,
+                        type: currentTweetNum === 1 ? 'thread_start' : 'thread_reply'
+                    });
+                }
+                currentText = [];
+            }
+
+            return posts;
+        }
+
+        function parseFacebookContent(content, storyTitle) {
+            var lines = content.split('\n');
+            var inLongForm = false;
+            var inImagePost = false;
+            var longFormLines = [];
+            var imageCaption = '';
+
+            for (var i = 0; i < lines.length; i++) {
+                var trimmed = lines[i].trim();
+
+                if (trimmed.match(/^###\s+Long-Form Post/i)) {
+                    inLongForm = true;
+                    inImagePost = false;
+                    longFormLines = [];
+                    continue;
+                }
+                if (trimmed.match(/^###\s+Image Post Caption/i) || trimmed.match(/^###\s+Image Post/i)) {
+                    inLongForm = false;
+                    inImagePost = true;
+                    continue;
+                }
+                if (trimmed.match(/^###\s/) || trimmed.match(/^---/)) {
+                    inLongForm = false;
+                    inImagePost = false;
+                    continue;
+                }
+
+                if (inLongForm) {
+                    longFormLines.push(lines[i]);
+                }
+                if (inImagePost && trimmed !== '') {
+                    imageCaption = trimmed;
+                    inImagePost = false;
+                }
+            }
+
+            var longForm = longFormLines.join('\n').trim();
+            if (!longForm) return null;
+
+            return {
+                content: longForm,
+                image_caption: imageCaption,
+                story: storyTitle
+            };
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            var blob = new Blob([content], { type: mimeType });
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        var currentStatusFilter = 'all';
+        var currentTypeFilter = 'all';
+
+        function filterByStatus(status) {
+            currentStatusFilter = status;
+            applyFilters();
+            document.querySelectorAll('.filter-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+                if (btn.textContent.trim().toLowerCase().replace(/\s+/g, '') === status.replace('-', '').toLowerCase() ||
+                    (status === 'all' && btn.textContent.trim() === 'All') ||
+                    (status === 'needs-edit' && btn.textContent.trim() === 'Needs Edit')) {
+                    btn.classList.add('active');
+                }
+            });
+            document.querySelectorAll('.sidebar .nav-item').forEach(function(item) { item.classList.remove('active'); });
+        }
+
+        function filterByType(type) {
+            currentTypeFilter = type;
+            currentStatusFilter = 'all';
+            applyFilters();
+            document.querySelectorAll('.sidebar .nav-item').forEach(function(item) { item.classList.remove('active'); });
+            document.querySelectorAll('.filter-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+                if (btn.textContent.trim() === 'All') btn.classList.add('active');
+            });
+        }
+
+        function applyFilters() {
+            var cards = document.querySelectorAll('.card');
+            var visibleCount = 0;
+            cards.forEach(function(card) {
+                var cardStatus = card.getAttribute('data-status');
+                var cardType = card.getAttribute('data-type');
+                var matchesStatus = (currentStatusFilter === 'all') || (cardStatus === currentStatusFilter);
+                var matchesType = (currentTypeFilter === 'all') || (cardType === currentTypeFilter);
+                if (matchesStatus && matchesType) {
+                    card.classList.add('show');
+                    visibleCount++;
+                } else {
+                    card.classList.remove('show');
+                }
+            });
+            document.getElementById('empty-state').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        function approveAll() {
+            if (!confirm('Approve all ' + allStories.length + ' items?')) return;
+            allStories.forEach(function(story) { setStatus(story.id, 'approved'); });
+        }
+
+        function resetAll() {
+            if (confirm('Reset all reviews? This cannot be undone.')) {
+                localStorage.removeItem(REVIEW_STORAGE_KEY + '-' + DATE);
+                location.reload();
+            }
+        }
+
+        function copyContent(storyId) {
+            var data = reviewData[storyId];
+            var story = allStories.find(function(s) { return s.id === storyId; });
+            var text = (data && data.editedContent) ? data.editedContent : (story ? story.content : '');
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[data-id="' + storyId + '"] .btn-copy');
+                if (btn) { var orig = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function() { btn.textContent = orig; }, 1500); }
+            });
+        }
+
+        function exportApprovals() {
+            var items = [];
+            allStories.forEach(function(story) {
+                var data = reviewData[story.id] || {};
+                items.push({
+                    id: story.id,
+                    type: story.type,
+                    title: story.title,
+                    status: data.status || 'unreviewed',
+                    notes: data.notes || '',
+                    content: story.content,
+                    editedContent: data.editedContent || null,
+                    finalContent: data.editedContent || story.content
+                });
+            });
+
+            var exportData = {
+                date: DATE,
+                reviewed_by: '',
+                reviewed_at: new Date().toISOString(),
+                items: items
+            };
+
+            var dataStr = JSON.stringify(exportData, null, 2);
+            var dataBlob = new Blob([dataStr], { type: 'application/json' });
+            var url = URL.createObjectURL(dataBlob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = 'approvals-' + DATE + '.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Auto-save notes as you type
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('notes-textarea')) {
+                var storyId = e.target.id.replace('textarea-', '');
+                if (reviewData[storyId]) {
+                    reviewData[storyId].notes = e.target.value;
+                    localStorage.setItem(REVIEW_STORAGE_KEY + '-' + DATE, JSON.stringify(reviewData));
+                }
+            }
+        });
+
+        initializeApp();
+
+    </script>
+</body>
+</html>
