@@ -1,0 +1,2397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chicago Cubs Fan HQ — Content Review Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #1a1a2e;
+            color: white;
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .sidebar h1 { font-size: 18px; margin-bottom: 10px; color: #FF8A00; font-weight: 700; }
+        .sidebar-date { font-size: 12px; color: #aaa; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #333; }
+        .sidebar-section { margin-bottom: 25px; }
+        .sidebar-section-title { font-size: 12px; text-transform: uppercase; color: #999; margin-bottom: 12px; font-weight: 600; letter-spacing: 1px; }
+
+        .nav-item {
+            display: block; padding: 12px 15px; margin-bottom: 8px; border-radius: 6px;
+            cursor: pointer; transition: all 0.3s ease; font-size: 14px; color: #ddd; user-select: none;
+        }
+        .nav-item:hover { background: #2d2d44; color: #FF8A00; }
+        .nav-item.active { background: #FF8A00; color: white; }
+        .nav-item-count { float: right; background: rgba(255, 107, 53, 0.3); padding: 2px 8px; border-radius: 3px; font-size: 12px; }
+        .nav-item.active .nav-item-count { background: rgba(0, 0, 0, 0.2); }
+
+        .main-content { margin-left: 280px; flex: 1; display: flex; flex-direction: column; }
+
+        .header {
+            background: white; padding: 25px 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-bottom: 3px solid #FF8A00;
+        }
+        .header h1 { font-size: 28px; color: #1a1a2e; margin-bottom: 10px; }
+        .header-meta { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .progress-bar { flex: 1; min-width: 200px; }
+        .progress-label { font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 500; }
+        .progress-container { width: 100%; height: 8px; background: #ddd; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #FF8A00, #E53935); transition: width 0.3s ease; }
+        .header-actions { display: flex; gap: 10px; }
+
+        .btn {
+            padding: 10px 16px; border: none; border-radius: 6px; font-size: 14px;
+            font-weight: 600; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;
+        }
+        .btn-primary { background: #FF8A00; color: white; }
+        .btn-primary:hover { background: #E53935; }
+        .btn-secondary { background: #f0f0f0; color: #333; }
+        .btn-secondary:hover { background: #e0e0e0; }
+
+        .filter-bar {
+            background: white; padding: 20px 40px; display: flex;
+            gap: 10px; flex-wrap: wrap; border-bottom: 1px solid #eee;
+        }
+        .filter-btn {
+            padding: 8px 14px; border: 1px solid #ddd; background: white;
+            border-radius: 5px; cursor: pointer; font-size: 13px; transition: all 0.3s ease;
+        }
+        .filter-btn:hover { border-color: #FF8A00; color: #FF8A00; }
+        .filter-btn.active { background: #FF8A00; color: white; border-color: #FF8A00; }
+
+        .content { flex: 1; padding: 30px 40px; overflow-y: auto; }
+
+        .cards-container { display: flex; flex-direction: column; gap: 20px; max-width: 900px; }
+
+        .card {
+            background: white; border-radius: 8px; padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease;
+            border-left: 5px solid #ccc; display: none;
+        }
+        .card.show { display: block; }
+        .card.approved { border-left-color: #22c55e; }
+        .card.needs-edit { border-left-color: #eab308; }
+        .card.rejected { border-left-color: #ef4444; }
+        .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+        .card-title { font-size: 16px; font-weight: 600; color: #1a1a2e; flex: 1; margin-right: 10px; }
+
+        .card-badge {
+            display: inline-block; padding: 4px 10px; border-radius: 4px;
+            font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .badge-x-post { background: #1da1f2; color: white; }
+        .badge-facebook { background: #4267b2; color: white; }
+        .badge-article { background: #9333ea; color: white; }
+        .badge-image { background: #06b6d4; color: white; }
+        .badge-brief { background: #10b981; color: white; }
+
+        .fact-check-badge {
+            display: inline-block; padding: 3px 8px; border-radius: 4px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+            margin-left: 6px;
+        }
+        .fact-check-verified { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .fact-check-warning { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+        .fact-check-unverified { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        /* Content area — preview (collapsed) and full (expanded) */
+        .card-content {
+            background: #f9f9f9; padding: 15px; border-radius: 6px;
+            margin-bottom: 15px; font-size: 13px; line-height: 1.6; color: #555;
+            position: relative;
+        }
+        .card-content-text {
+            white-space: pre-wrap; word-break: break-word;
+        }
+
+        /* Collapsed state: limit height with fade */
+        .card-content.collapsed {
+            max-height: 200px; overflow: hidden;
+        }
+        .card-content.collapsed::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+            background: linear-gradient(transparent, #f9f9f9);
+            pointer-events: none;
+        }
+
+        /* Expanded state: no limit */
+        .card-content.expanded {
+            max-height: none; overflow: visible;
+        }
+        .card-content.expanded::after { display: none; }
+
+        .expand-toggle {
+            display: inline-block; margin-bottom: 12px; padding: 6px 14px;
+            background: #eee; border: 1px solid #ddd; border-radius: 4px;
+            cursor: pointer; font-size: 12px; font-weight: 600; color: #555;
+            transition: all 0.2s ease;
+        }
+        .expand-toggle:hover { background: #ddd; color: #333; }
+
+        /* Inline editing */
+        .edit-textarea {
+            width: 100%; padding: 15px; border: 2px solid #FF8A00;
+            border-radius: 6px; font-size: 13px; font-family: inherit;
+            line-height: 1.6; resize: vertical; min-height: 200px;
+            background: #fffef5; color: #333; display: none;
+        }
+        .edit-textarea:focus {
+            outline: none; box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.15);
+        }
+        .card.editing .card-content { display: none; }
+        .card.editing .edit-textarea { display: block; }
+        .card.editing .expand-toggle { display: none; }
+
+        .edit-bar {
+            display: none; gap: 8px; margin-bottom: 12px; padding: 10px;
+            background: #fff8f0; border: 1px solid #ffcc99; border-radius: 6px;
+            align-items: center;
+        }
+        .card.editing .edit-bar { display: flex; }
+        .edit-bar-label { font-size: 12px; font-weight: 600; color: #cc6600; flex: 1; }
+        .edit-bar .btn { padding: 7px 14px; font-size: 12px; }
+
+        .tweet-meta-bar {
+            display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; padding: 0;
+        }
+        .tweet-meta-badge {
+            display: inline-block; padding: 4px 10px; border-radius: 4px;
+            font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+        }
+        .tweet-meta-label { background: #e0e7ff; color: #3730a3; }
+        .tweet-meta-time { background: #fef3c7; color: #92400e; }
+        .tweet-meta-type { background: #d1fae5; color: #065f46; }
+        .tweet-meta-tier { background: #f3e8ff; color: #6b21a8; }
+        .tweet-meta-hashtags { background: #dbeafe; color: #1e40af; font-family: monospace; }
+
+        .char-count {
+            font-size: 12px; margin: 0 0 10px 0; padding: 8px;
+            background: #f0f0f0; border-radius: 4px;
+        }
+        .char-count.warning { background: #fee2e2; color: #991b1b; }
+
+        .card-actions { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .action-btn {
+            flex: 1; padding: 10px; border: none; border-radius: 5px;
+            cursor: pointer; font-size: 13px; font-weight: 600;
+            transition: all 0.3s ease; white-space: nowrap; min-width: 100px;
+        }
+        .btn-approve { background: #e8f5e9; color: #22c55e; border: 1px solid #22c55e; }
+        .btn-approve:hover { background: #22c55e; color: white; }
+        .btn-edit { background: #fff3e0; color: #e65100; border: 1px solid #ff9800; }
+        .btn-edit:hover { background: #ff9800; color: white; }
+        .btn-reject { background: #fee2e2; color: #ef4444; border: 1px solid #ef4444; }
+        .btn-reject:hover { background: #ef4444; color: white; }
+        .btn-copy { background: #f0f0f0; color: #333; border: 1px solid #ddd; }
+        .btn-copy:hover { background: #e0e0e0; }
+
+        .notes-section { display: none; margin-bottom: 12px; }
+        .notes-section.show { display: block; }
+        .notes-label { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 6px; }
+        .notes-textarea {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;
+            font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px;
+        }
+        .notes-textarea:focus { outline: none; border-color: #FF8A00; box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1); }
+
+        .status-label {
+            font-size: 11px; font-weight: 600; text-transform: uppercase;
+            padding: 4px 8px; border-radius: 3px; margin-top: 10px; display: inline-block;
+        }
+        .status-approved { background: #e8f5e9; color: #22c55e; }
+        .status-needs-edit { background: #fffbeb; color: #f59e0b; }
+        .status-rejected { background: #fee2e2; color: #ef4444; }
+        .status-edited { background: #e3f2fd; color: #1565c0; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: #999; }
+        .empty-state-icon { font-size: 48px; margin-bottom: 15px; }
+
+        /* Approval stats bar */
+        .approval-stats {
+            display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap;
+        }
+        .stat-chip {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: 600;
+        }
+        .stat-approved { background: #dcfce7; color: #16a34a; }
+        .stat-rejected { background: #fee2e2; color: #dc2626; }
+        .stat-unreviewed { background: #f3f4f6; color: #6b7280; }
+        .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .stat-approved .stat-dot { background: #22c55e; }
+        .stat-rejected .stat-dot { background: #ef4444; }
+        .stat-unreviewed .stat-dot { background: #9ca3af; }
+
+        /* PostPlanner XLSX button */
+        .btn-csv { background: #7c3aed; color: white; }
+        .btn-csv:hover { background: #6d28d9; }
+        .btn-csv:disabled { background: #c4b5fd; cursor: not-allowed; }
+
+        /* Schedule settings panel */
+        .schedule-panel {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; border-radius: 12px; padding: 30px; z-index: 1000;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); width: 500px; max-width: 90vw; max-height: 80vh; overflow-y: auto;
+        }
+        .schedule-panel.show { display: block; }
+        .schedule-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+        .schedule-overlay.show { display: block; }
+        .schedule-panel h3 { color: #1a1a2e; margin-bottom: 20px; font-size: 18px; }
+        .schedule-section { margin-bottom: 20px; }
+        .schedule-section label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
+        .schedule-section input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .schedule-section input:focus { outline: none; border-color: #7c3aed; }
+        .time-slots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .time-slot {
+            display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+            background: #f3f0ff; border: 1px solid #c4b5fd; border-radius: 20px; font-size: 13px;
+        }
+        .time-slot .remove-slot { cursor: pointer; color: #999; font-weight: bold; }
+        .time-slot .remove-slot:hover { color: #ef4444; }
+        .add-slot-btn {
+            padding: 6px 14px; background: #f3f0ff; border: 1px dashed #7c3aed; border-radius: 20px;
+            cursor: pointer; font-size: 13px; color: #7c3aed;
+        }
+        .add-slot-btn:hover { background: #ede9fe; }
+        .schedule-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+        /* Photo search links for image concepts */
+        .photo-section {
+            margin-bottom: 15px; padding: 12px; background: #f0f9ff;
+            border: 1px solid #bae6fd; border-radius: 6px;
+        }
+        .photo-section-title {
+            font-size: 12px; font-weight: 700; color: #0369a1; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 8px;
+        }
+        .photo-links { display: flex; flex-wrap: wrap; gap: 6px; }
+        .photo-link {
+            display: inline-block; padding: 6px 12px; background: #0ea5e9;
+            color: white; border-radius: 4px; font-size: 12px; font-weight: 500;
+            text-decoration: none; transition: all 0.2s ease; cursor: pointer;
+        }
+        .photo-link:hover { background: #0284c7; }
+
+        /* Image URL input and preview for image concepts */
+        .image-url-section {
+            margin-bottom: 15px; padding: 12px; background: #f0fdf4;
+            border: 1px solid #bbf7d0; border-radius: 6px;
+        }
+        .image-url-section label {
+            display: block; font-size: 12px; font-weight: 700; color: #166534;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+        }
+        .image-url-input {
+            width: 100%; padding: 8px 10px; border: 1px solid #86efac;
+            border-radius: 4px; font-size: 13px; font-family: monospace;
+            background: white; box-sizing: border-box;
+        }
+        .image-url-input:focus { outline: none; border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34,197,94,0.2); }
+        .image-url-hint {
+            font-size: 11px; color: #6b7280; margin-top: 4px;
+        }
+        .image-preview {
+            margin-top: 8px; text-align: center;
+        }
+        .image-preview img {
+            max-width: 100%; max-height: 200px; border-radius: 4px;
+            border: 1px solid #d1d5db; display: none;
+        }
+        .image-preview img.loaded { display: inline-block; }
+
+        /* Image production status badges */
+        .image-badge {
+            display: inline-block; padding: 2px 8px; border-radius: 3px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-left: 6px;
+        }
+        .image-exported { background: #dcfce7; color: #166534; }
+        .image-in-progress { background: #fef3c7; color: #92400e; }
+        .image-not-started { background: #f3f4f6; color: #6b7280; }
+
+        /* Text overlay preview for image concepts */
+        .overlay-section {
+            margin-bottom: 15px; padding: 15px; background: #1a1a2e;
+            border-radius: 6px; text-align: center;
+        }
+        .overlay-line {
+            font-family: 'Bebas Neue', Impact, 'Arial Black', sans-serif;
+            color: #ffd700; font-size: 18px; font-weight: 700; line-height: 1.4;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .overlay-line.sub { color: #ffffff; font-size: 14px; font-weight: 400; letter-spacing: 0; text-transform: none; }
+
+        /* Article content rendered as HTML */
+        .article-frame {
+            width: 100%; border: 1px solid #ddd; border-radius: 6px;
+            background: white; min-height: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; padding: 20px; }
+            .main-content { margin-left: 0; }
+            .content { padding: 20px; }
+            .header { padding: 15px 20px; }
+            .header h1 { font-size: 20px; }
+            .filter-bar { padding: 15px 20px; }
+            .header-meta { flex-direction: column; align-items: stretch; }
+            .progress-bar { min-width: auto; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>Chicago Cubs Fan HQ</h1>
+        <div class="sidebar-date">Review Dashboard<br>2026-03-01</div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Content Types</div>
+            <div class="nav-item" onclick="filterByType('daily_brief')">
+                Daily Brief
+                <span class="nav-item-count">7</span>
+            </div>
+            <div class="nav-item" onclick="filterByType('x_post')">
+                X / Twitter Posts
+                <span class="nav-item-count">10</span>
+            </div>
+
+            <div class="nav-item" onclick="filterByType('all')">
+                All Items
+                <span class="nav-item-count">17</span>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Status Filter</div>
+            <div class="nav-item" onclick="filterByStatus('all')">All</div>
+            <div class="nav-item" onclick="filterByStatus('unreviewed')">Unreviewed</div>
+            <div class="nav-item" onclick="filterByStatus('approved')">Approved</div>
+            <div class="nav-item" onclick="filterByStatus('needs-edit')">Needs Edit</div>
+            <div class="nav-item" onclick="filterByStatus('rejected')">Rejected</div>
+        </div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-section-title">Actions</div>
+            <div class="nav-item" onclick="approveAll()" style="color: #22c55e;">
+                Approve All
+            </div>
+            <div class="nav-item" onclick="exportApprovals()" style="color: #FF8A00;">
+                Export Results JSON
+            </div>
+            <div class="nav-item" onclick="downloadPostPlannerCSV()" style="color: #a78bfa;">
+                PostPlanner Upload
+            </div>
+            <div class="nav-item" onclick="downloadTOBIExport()" style="color: #f472b6;">
+                TOBI Upload
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>Chicago Cubs Fan HQ — Content Review Dashboard</h1>
+            <div class="header-meta">
+                <div class="progress-bar">
+                    <div class="progress-label">
+                        <span id="reviewed-count">0</span> of <span id="total-count">17</span> items reviewed
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="approval-stats" id="approval-stats">
+                        <span class="stat-chip stat-approved"><span class="stat-dot"></span> <span id="stat-approved-count">0</span> approved</span>
+                        <span class="stat-chip stat-rejected"><span class="stat-dot"></span> <span id="stat-rejected-count">0</span> rejected</span>
+                        <span class="stat-chip stat-unreviewed"><span class="stat-dot"></span> <span id="stat-unreviewed-count">0</span> unreviewed</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="resetAll()">Reset All</button>
+                    <button class="btn btn-csv" id="btn-csv" onclick="downloadPostPlannerCSV()" disabled>PostPlanner Upload (0 approved)</button>
+                    <button class="btn btn-csv" id="btn-tobi" onclick="downloadTOBIExport()" disabled style="background: #831843; border-color: #f472b6;">TOBI Upload (0 approved)</button>
+                    <button class="btn btn-primary" onclick="exportApprovals()">Export JSON</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterByStatus('all')">All</button>
+            <button class="filter-btn" onclick="filterByStatus('unreviewed')">Unreviewed</button>
+            <button class="filter-btn" onclick="filterByStatus('approved')">Approved</button>
+            <button class="filter-btn" onclick="filterByStatus('needs-edit')">Needs Edit</button>
+            <button class="filter-btn" onclick="filterByStatus('rejected')">Rejected</button>
+        </div>
+
+        <div class="content">
+            <div class="cards-container" id="cards-container">
+                <div class="card" data-id="story-1-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Justin Steele Cleared by Surgeon — Back to 100%</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+                    
+
+                    <div class="card-content collapsed" id="content-story-1-daily_brief">
+                        <div class="card-content-text">Justin Steele Cleared by Surgeon — Back to 100%
+**Freshness Tag:** TODAY
+**Tier:** 1
+**Assigned Platforms:** X (2 text posts)
+**Priority Score:** 10
+
+**Summary:** Justin Steele has been cleared by elbow surgeon Dr. Keith Meister to resume full-intent throwing, announcing Saturday that he&#x27;s &quot;back to 100%.&quot; The left-hander underwent internal brace UCL revision surgery last April 18 and could return to the rotation as early as April with no setbacks. He&#x27;ll need extended spring training and minor league rehab starts first, but the Cubs won&#x27;t rush him given the rotation&#x27;s current depth.
+
+**Decision:** FOLLOW UP (from 2026-02-28 Story #5: Steele Throws from the Mound; 2026-02-25 Story #2: Steele Rehab Ahead of Schedule)
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-1-daily_brief" placeholder="Edit content here...">Justin Steele Cleared by Surgeon — Back to 100%
+**Freshness Tag:** TODAY
+**Tier:** 1
+**Assigned Platforms:** X (2 text posts)
+**Priority Score:** 10
+
+**Summary:** Justin Steele has been cleared by elbow surgeon Dr. Keith Meister to resume full-intent throwing, announcing Saturday that he&#x27;s &quot;back to 100%.&quot; The left-hander underwent internal brace UCL revision surgery last April 18 and could return to the rotation as early as April with no setbacks. He&#x27;ll need extended spring training and minor league rehab starts first, but the Cubs won&#x27;t rush him given the rotation&#x27;s current depth.
+
+**Decision:** FOLLOW UP (from 2026-02-28 Story #5: Steele Throws from the Mound; 2026-02-25 Story #2: Steele Rehab Ahead of Schedule)
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-1-daily_brief" onclick="toggleExpand('story-1-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-1-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-1-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-1-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-1-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-1-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-1-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-1-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-1-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-1-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-1-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-1-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-2-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cubs Beat Dodgers 6-2 — Rea, Brown, Assad Throw 8 Scoreless</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+                    
+
+                    <div class="card-content collapsed" id="content-story-2-daily_brief">
+                        <div class="card-content-text">Cubs Beat Dodgers 6-2 — Rea, Brown, Assad Throw 8 Scoreless
+**Freshness Tag:** TODAY
+**Tier:** 1
+**Assigned Platforms:** X (2 text posts)
+**Priority Score:** 9
+
+**Summary:** The Cubs beat the defending champion Dodgers 6-2 at Camelback Ranch on Saturday, powered by three outstanding pitching performances. Colin Rea threw 3 scoreless innings against LA&#x27;s Opening Day lineup, Ben Brown followed with 2 scoreless frames and 3 strikeouts, and Javier Assad added 3 more scoreless innings. The offense scored on a wild pitch (5th), Pedro Ramirez single (7th), Brett Bateman two-run single (8th), Kane Kepley RBI triple, and Owen Miller sac fly (9th). Cubs&#x27; spring record improves to 4-5.
+
+**Decision:** FOLLOW UP (from 2026-02-28 Story #4: Cubs at Dodgers Today)
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-2-daily_brief" placeholder="Edit content here...">Cubs Beat Dodgers 6-2 — Rea, Brown, Assad Throw 8 Scoreless
+**Freshness Tag:** TODAY
+**Tier:** 1
+**Assigned Platforms:** X (2 text posts)
+**Priority Score:** 9
+
+**Summary:** The Cubs beat the defending champion Dodgers 6-2 at Camelback Ranch on Saturday, powered by three outstanding pitching performances. Colin Rea threw 3 scoreless innings against LA&#x27;s Opening Day lineup, Ben Brown followed with 2 scoreless frames and 3 strikeouts, and Javier Assad added 3 more scoreless innings. The offense scored on a wild pitch (5th), Pedro Ramirez single (7th), Brett Bateman two-run single (8th), Kane Kepley RBI triple, and Owen Miller sac fly (9th). Cubs&#x27; spring record improves to 4-5.
+
+**Decision:** FOLLOW UP (from 2026-02-28 Story #4: Cubs at Dodgers Today)
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-2-daily_brief" onclick="toggleExpand('story-2-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-2-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-2-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-2-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-2-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-2-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-2-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-2-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-2-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-2-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-2-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-2-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-3-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cubs vs White Sox Today — 2:05 PM CT at Sloan Park</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+                    
+
+                    <div class="card-content collapsed" id="content-story-3-daily_brief">
+                        <div class="card-content-text">Cubs vs White Sox Today — 2:05 PM CT at Sloan Park
+**Freshness Tag:** TODAY
+**Tier:** 2
+**Assigned Platforms:** X (1 text post)
+**Priority Score:** 8
+
+**Summary:** The Cubs host the White Sox at Sloan Park today at 2:05 PM CT in a Cactus League city rivalry matchup, broadcast on Marquee Sports Network. This is the second meeting between the crosstown rivals this spring after the White Sox won the opener 8-1 on February 20.
+
+**Decision:** NEW STORY
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-3-daily_brief" placeholder="Edit content here...">Cubs vs White Sox Today — 2:05 PM CT at Sloan Park
+**Freshness Tag:** TODAY
+**Tier:** 2
+**Assigned Platforms:** X (1 text post)
+**Priority Score:** 8
+
+**Summary:** The Cubs host the White Sox at Sloan Park today at 2:05 PM CT in a Cactus League city rivalry matchup, broadcast on Marquee Sports Network. This is the second meeting between the crosstown rivals this spring after the White Sox won the opener 8-1 on February 20.
+
+**Decision:** NEW STORY
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-3-daily_brief" onclick="toggleExpand('story-3-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-3-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-3-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-3-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-3-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-3-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-3-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-3-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-3-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-3-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-3-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-3-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-4-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Conforto Driven by 2025 Disappointment — Comeback Quest</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+                    
+
+                    <div class="card-content collapsed" id="content-story-4-daily_brief">
+                        <div class="card-content-text">Conforto Driven by 2025 Disappointment — Comeback Quest
+**Freshness Tag:** TRENDING
+**Tier:** 2
+**Assigned Platforms:** X (2 text posts)
+**Priority Score:** 7
+
+**Summary:** Michael Conforto is using his miserable 2025 as fuel. The former All-Star hit a career-worst .199 with the Dodgers and was left off their postseason roster, watching the World Series run from the outside. &quot;Super-bittersweet, super-conflicting feeling,&quot; he said. Now in Cubs camp on a minor league deal, Conforto homered during live batting practice and appears in a strong position to claim a roster spot as the fourth outfielder.
+
+**Decision:** FOLLOW UP (from 2026-02-27 Story #4: Conforto Looks Like a Good Bet; 2026-02-25 Story #3: Cubs Sign Michael Conforto)
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-4-daily_brief" placeholder="Edit content here...">Conforto Driven by 2025 Disappointment — Comeback Quest
+**Freshness Tag:** TRENDING
+**Tier:** 2
+**Assigned Platforms:** X (2 text posts)
+**Priority Score:** 7
+
+**Summary:** Michael Conforto is using his miserable 2025 as fuel. The former All-Star hit a career-worst .199 with the Dodgers and was left off their postseason roster, watching the World Series run from the outside. &quot;Super-bittersweet, super-conflicting feeling,&quot; he said. Now in Cubs camp on a minor league deal, Conforto homered during live batting practice and appears in a strong position to claim a roster spot as the fourth outfielder.
+
+**Decision:** FOLLOW UP (from 2026-02-27 Story #4: Conforto Looks Like a Good Bet; 2026-02-25 Story #3: Cubs Sign Michael Conforto)
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-4-daily_brief" onclick="toggleExpand('story-4-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-4-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-4-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-4-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-4-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-4-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-4-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-4-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-4-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-4-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-4-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-4-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-5-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Jonathon Long Elbow Recovery Slower Than Expected</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+                    
+
+                    <div class="card-content collapsed" id="content-story-5-daily_brief">
+                        <div class="card-content-text">Jonathon Long Elbow Recovery Slower Than Expected
+**Freshness Tag:** TODAY
+**Tier:** 2
+**Assigned Platforms:** X (1 text post)
+**Priority Score:** 6
+
+**Summary:** First base prospect Jonathon Long&#x27;s recovery from his left elbow strain is going more slowly than expected. He&#x27;s still sore when swinging a bat, prompting the Cubs to back off his activity. Long withdrew from Team Chinese Taipei&#x27;s WBC roster, saying &quot;to fly across the world, not knowing if I could swing a bat... it just didn&#x27;t make sense.&quot; The 24-year-old was injured February 21 when Mark Canha hyperextended his arm during a play at first base.
+
+**Decision:** FOLLOW UP (from 2026-02-27 Story #3: Jonathon Long Withdraws from WBC)
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-5-daily_brief" placeholder="Edit content here...">Jonathon Long Elbow Recovery Slower Than Expected
+**Freshness Tag:** TODAY
+**Tier:** 2
+**Assigned Platforms:** X (1 text post)
+**Priority Score:** 6
+
+**Summary:** First base prospect Jonathon Long&#x27;s recovery from his left elbow strain is going more slowly than expected. He&#x27;s still sore when swinging a bat, prompting the Cubs to back off his activity. Long withdrew from Team Chinese Taipei&#x27;s WBC roster, saying &quot;to fly across the world, not knowing if I could swing a bat... it just didn&#x27;t make sense.&quot; The 24-year-old was injured February 21 when Mark Canha hyperextended his arm during a play at first base.
+
+**Decision:** FOLLOW UP (from 2026-02-27 Story #3: Jonathon Long Withdraws from WBC)
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-5-daily_brief" onclick="toggleExpand('story-5-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-5-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-5-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-5-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-5-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-5-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-5-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-5-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-5-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-5-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-5-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-5-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-6-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">WBC Countdown — 13 Cubs Headed to National Teams This Week</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+                    
+
+                    <div class="card-content collapsed" id="content-story-6-daily_brief">
+                        <div class="card-content-text">WBC Countdown — 13 Cubs Headed to National Teams This Week
+**Freshness Tag:** UPCOMING
+**Tier:** 2
+**Assigned Platforms:** X (1 text post)
+**Priority Score:** 7
+
+**Summary:** With the World Baseball Classic pool play opening March 5-6, Cubs players are departing for their national teams. Team USA (Bregman, Crow-Armstrong, Boyd) opens Pool B against Brazil on March 6 at Daikin Park in Houston. Suzuki joins Japan in Tokyo, Taillon represents Canada, and Amaya plays for Panama. 13 Cubs total will participate, leaving spring camp with a noticeably different roster for the next 2-3 weeks.
+
+**Decision:** FOLLOW UP (from 2026-02-28 Story #6: Bregman Motivated by USA Hockey Gold; 2026-02-26 Story #5: 13 Cubs Head to WBC)
+
+---</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-6-daily_brief" placeholder="Edit content here...">WBC Countdown — 13 Cubs Headed to National Teams This Week
+**Freshness Tag:** UPCOMING
+**Tier:** 2
+**Assigned Platforms:** X (1 text post)
+**Priority Score:** 7
+
+**Summary:** With the World Baseball Classic pool play opening March 5-6, Cubs players are departing for their national teams. Team USA (Bregman, Crow-Armstrong, Boyd) opens Pool B against Brazil on March 6 at Daikin Park in Houston. Suzuki joins Japan in Tokyo, Taillon represents Canada, and Amaya plays for Panama. 13 Cubs total will participate, leaving spring camp with a noticeably different roster for the next 2-3 weeks.
+
+**Decision:** FOLLOW UP (from 2026-02-28 Story #6: Bregman Motivated by USA Hockey Gold; 2026-02-26 Story #5: 13 Cubs Head to WBC)
+
+---</textarea>
+                    <span class="expand-toggle" id="toggle-story-6-daily_brief" onclick="toggleExpand('story-6-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-6-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-6-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-6-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-6-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-6-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-6-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-6-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-6-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-6-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-6-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-6-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-7-daily_brief" data-type="daily_brief" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cubs Rotation 7 Deep — Steele&#x27;s Return Makes It Even Deeper</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-brief">BRIEF</span></div>
+                    </div>
+                    
+
+                    <div class="card-content collapsed" id="content-story-7-daily_brief">
+                        <div class="card-content-text">Cubs Rotation 7 Deep — Steele&#x27;s Return Makes It Even Deeper
+**Freshness Tag:** TRENDING
+**Tier:** 3
+**Assigned Platforms:** X (1 text post)
+**Priority Score:** 5
+
+**Summary:** The Cubs&#x27; rotation depth is approaching absurd levels. The front five of Horton, Imanaga, Boyd, Cabrera, and Taillon are all healthy. Justin Steele just got cleared as the sixth option. And Colin Rea — the seventh starter — just threw 3 scoreless innings against the Dodgers&#x27; Opening Day lineup. Plus Ben Brown and Javier Assad as long relief options. This is arguably the deepest pitching staff in the NL Central.
+
+**Decision:** FOLLOW UP (from 2026-02-28 Story #7: Cubs Rotation Taking Shape; 2026-02-28 Story #1: Edward Cabrera Dominates)
+
+---
+
+## Publishing Schedule
+
+| Time Slot | Story # | Post Type | Tone |
+|-----------|---------|-----------|------|
+| 7:00 AM CT | Story 1 (Post 1) | X Text Post | Informative |
+| 8:30 AM CT | Story 1 (Post 2) | X Text Post | Bold Take |
+| 10:00 AM CT | Story 2 (Post 1) | X Text Post | Informative |
+| 11:30 AM CT | Story 3 | X Text Post | Humor/Rivalry |
+| 1:00 PM CT | Story 2 (Post 2) | X Text Post | Bold Take |
+| 3:00 PM CT | Story 4 (Post 1) | X Text Post | Passionate |
+| 5:30 PM CT | Story 5 | X Text Post | Informative |
+| 7:00 PM CT | Story 6 | X Text Post | Informative/Hype |
+| 8:30 PM CT | Story 4 (Post 2) | X Text Post | Bold Take |
+| 10:00 PM CT | Story 7 | X Text Post | Bold/Witty |
+
+**Total Daily X Posts:** 10</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-7-daily_brief" placeholder="Edit content here...">Cubs Rotation 7 Deep — Steele&#x27;s Return Makes It Even Deeper
+**Freshness Tag:** TRENDING
+**Tier:** 3
+**Assigned Platforms:** X (1 text post)
+**Priority Score:** 5
+
+**Summary:** The Cubs&#x27; rotation depth is approaching absurd levels. The front five of Horton, Imanaga, Boyd, Cabrera, and Taillon are all healthy. Justin Steele just got cleared as the sixth option. And Colin Rea — the seventh starter — just threw 3 scoreless innings against the Dodgers&#x27; Opening Day lineup. Plus Ben Brown and Javier Assad as long relief options. This is arguably the deepest pitching staff in the NL Central.
+
+**Decision:** FOLLOW UP (from 2026-02-28 Story #7: Cubs Rotation Taking Shape; 2026-02-28 Story #1: Edward Cabrera Dominates)
+
+---
+
+## Publishing Schedule
+
+| Time Slot | Story # | Post Type | Tone |
+|-----------|---------|-----------|------|
+| 7:00 AM CT | Story 1 (Post 1) | X Text Post | Informative |
+| 8:30 AM CT | Story 1 (Post 2) | X Text Post | Bold Take |
+| 10:00 AM CT | Story 2 (Post 1) | X Text Post | Informative |
+| 11:30 AM CT | Story 3 | X Text Post | Humor/Rivalry |
+| 1:00 PM CT | Story 2 (Post 2) | X Text Post | Bold Take |
+| 3:00 PM CT | Story 4 (Post 1) | X Text Post | Passionate |
+| 5:30 PM CT | Story 5 | X Text Post | Informative |
+| 7:00 PM CT | Story 6 | X Text Post | Informative/Hype |
+| 8:30 PM CT | Story 4 (Post 2) | X Text Post | Bold Take |
+| 10:00 PM CT | Story 7 | X Text Post | Bold/Witty |
+
+**Total Daily X Posts:** 10</textarea>
+                    <span class="expand-toggle" id="toggle-story-7-daily_brief" onclick="toggleExpand('story-7-daily_brief')">Show Full Content</span>
+                    
+                    <div class="edit-bar" id="editbar-story-7-daily_brief">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-7-daily_brief')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-7-daily_brief')">Cancel</button>
+                    </div>
+                    
+                    
+
+                    <div class="card-actions" id="actions-story-7-daily_brief">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-7-daily_brief')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-7-daily_brief')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-7-daily_brief')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-7-daily_brief')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-7-daily_brief">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-7-daily_brief" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-7-daily_brief"></div>
+                </div>
+                <div class="card" data-id="story-1-x_post-1" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Justin Steele Cleared by Surgeon — Back to 100%</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Tweet 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #CubsBaseball</span></div>
+
+                    <div class="card-content expanded" id="content-story-1-x_post-1">
+                        <div class="card-content-text">Justin Steele has been CLEARED by his surgeon — he&#x27;s back to 100%. 🔥
+
+Dr. Keith Meister gave the green light for full-intent throwing. With no setbacks, Steele could rejoin the rotation as early as April.
+
+#Cubs #GoCubs #CubsBaseball</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-1-x_post-1" placeholder="Edit content here...">Justin Steele has been CLEARED by his surgeon — he&#x27;s back to 100%. 🔥
+
+Dr. Keith Meister gave the green light for full-intent throwing. With no setbacks, Steele could rejoin the rotation as early as April.
+
+#Cubs #GoCubs #CubsBaseball</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-1-x_post-1">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-1-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-1-x_post-1')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-1-x_post-1">Characters: 233/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-1-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-1-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-1-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-1-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-1-x_post-1')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-1-x_post-1">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-1-x_post-1" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-1-x_post-1"></div>
+                </div>
+                <div class="card" data-id="story-1-x_post-2" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Justin Steele Cleared by Surgeon — Back to 100%</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Tweet 2</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #NorthSiders #MLB</span></div>
+
+                    <div class="card-content expanded" id="content-story-1-x_post-2">
+                        <div class="card-content-text">The Cubs already have seven healthy starters. Now add Justin Steele to the equation. 💪
+
+This rotation might be the deepest in baseball by May. And they haven&#x27;t even played a real game yet.
+
+#Cubs #NorthSiders #MLB</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-1-x_post-2" placeholder="Edit content here...">The Cubs already have seven healthy starters. Now add Justin Steele to the equation. 💪
+
+This rotation might be the deepest in baseball by May. And they haven&#x27;t even played a real game yet.
+
+#Cubs #NorthSiders #MLB</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-1-x_post-2">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-1-x_post-2')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-1-x_post-2')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-1-x_post-2">Characters: 213/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-1-x_post-2">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-1-x_post-2')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-1-x_post-2')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-1-x_post-2')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-1-x_post-2')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-1-x_post-2">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-1-x_post-2" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-1-x_post-2"></div>
+                </div>
+                <div class="card" data-id="story-2-x_post-1" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cubs Beat Dodgers 6-2 — Rea, Brown, Assad Throw 8 Scoreless</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Tweet 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #FlyTheW</span></div>
+
+                    <div class="card-content expanded" id="content-story-2-x_post-1">
+                        <div class="card-content-text">Cubs 6, Dodgers 2. ⚾
+
+Colin Rea, Ben Brown, and Javier Assad combined for 8 scoreless innings against LA&#x27;s Opening Day lineup. Brown struck out three. The pitching depth is showing up early.
+
+#Cubs #GoCubs #FlyTheW</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-2-x_post-1" placeholder="Edit content here...">Cubs 6, Dodgers 2. ⚾
+
+Colin Rea, Ben Brown, and Javier Assad combined for 8 scoreless innings against LA&#x27;s Opening Day lineup. Brown struck out three. The pitching depth is showing up early.
+
+#Cubs #GoCubs #FlyTheW</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-2-x_post-1">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-2-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-2-x_post-1')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-2-x_post-1">Characters: 214/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-2-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-2-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-2-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-2-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-2-x_post-1')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-2-x_post-1">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-2-x_post-1" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-2-x_post-1"></div>
+                </div>
+                <div class="card" data-id="story-2-x_post-2" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cubs Beat Dodgers 6-2 — Rea, Brown, Assad Throw 8 Scoreless</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Tweet 2</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #CubsBaseball #MLB</span></div>
+
+                    <div class="card-content expanded" id="content-story-2-x_post-2">
+                        <div class="card-content-text">Colin Rea shut down the Dodgers&#x27; Opening Day lineup for three innings yesterday. He&#x27;s the Cubs&#x27; SEVENTH starter. 🔥
+
+Most teams would kill for one ace. The Cubs are stacking them like they&#x27;re going out of style.
+
+#Cubs #CubsBaseball #MLB</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-2-x_post-2" placeholder="Edit content here...">Colin Rea shut down the Dodgers&#x27; Opening Day lineup for three innings yesterday. He&#x27;s the Cubs&#x27; SEVENTH starter. 🔥
+
+Most teams would kill for one ace. The Cubs are stacking them like they&#x27;re going out of style.
+
+#Cubs #CubsBaseball #MLB</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-2-x_post-2">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-2-x_post-2')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-2-x_post-2')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-2-x_post-2">Characters: 236/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-2-x_post-2">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-2-x_post-2')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-2-x_post-2')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-2-x_post-2')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-2-x_post-2')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-2-x_post-2">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-2-x_post-2" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-2-x_post-2"></div>
+                </div>
+                <div class="card" data-id="story-3-x_post-1" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cubs vs White Sox Today — 2:05 PM CT at Sloan Park</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Tweet 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #ChicagoCubs</span></div>
+
+                    <div class="card-content expanded" id="content-story-3-x_post-1">
+                        <div class="card-content-text">Cubs vs White Sox today at 2:05 PM CT on Marquee. City rivalry, Cactus League edition. 🏟️
+
+South Side won the first one 8-1. Time to even things up — because even spring training bragging rights matter on the Red Line.
+
+#Cubs #GoCubs #ChicagoCubs</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-3-x_post-1" placeholder="Edit content here...">Cubs vs White Sox today at 2:05 PM CT on Marquee. City rivalry, Cactus League edition. 🏟️
+
+South Side won the first one 8-1. Time to even things up — because even spring training bragging rights matter on the Red Line.
+
+#Cubs #GoCubs #ChicagoCubs</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-3-x_post-1">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-3-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-3-x_post-1')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-3-x_post-1">Characters: 246/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-3-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-3-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-3-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-3-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-3-x_post-1')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-3-x_post-1">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-3-x_post-1" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-3-x_post-1"></div>
+                </div>
+                <div class="card" data-id="story-4-x_post-1" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Conforto Driven by 2025 Disappointment — Comeback Quest</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Tweet 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #CubsBaseball</span></div>
+
+                    <div class="card-content expanded" id="content-story-4-x_post-1">
+                        <div class="card-content-text">Michael Conforto watched the Dodgers win the World Series after they left him off the postseason roster.
+
+&quot;Super-bittersweet. Super-conflicting feeling.&quot;
+
+Now he&#x27;s in Cubs camp on a mission — and he homered in live BP this week. 💪
+
+#Cubs #GoCubs #CubsBaseball</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-4-x_post-1" placeholder="Edit content here...">Michael Conforto watched the Dodgers win the World Series after they left him off the postseason roster.
+
+&quot;Super-bittersweet. Super-conflicting feeling.&quot;
+
+Now he&#x27;s in Cubs camp on a mission — and he homered in live BP this week. 💪
+
+#Cubs #GoCubs #CubsBaseball</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-4-x_post-1">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-4-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-4-x_post-1')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-4-x_post-1">Characters: 259/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-4-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-4-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-4-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-4-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-4-x_post-1')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-4-x_post-1">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-4-x_post-1" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-4-x_post-1"></div>
+                </div>
+                <div class="card" data-id="story-4-x_post-2" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Conforto Driven by 2025 Disappointment — Comeback Quest</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Tweet 2</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #CubsBaseball</span></div>
+
+                    <div class="card-content expanded" id="content-story-4-x_post-2">
+                        <div class="card-content-text">Conforto hit .199 last year. He&#x27;s 33 and on a minor league deal.
+
+But this dude was an All-Star, hit 33 homers in 2019, and just launched one in live BP. Comeback season is real. 👀
+
+#Cubs #GoCubs #CubsBaseball</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-4-x_post-2" placeholder="Edit content here...">Conforto hit .199 last year. He&#x27;s 33 and on a minor league deal.
+
+But this dude was an All-Star, hit 33 homers in 2019, and just launched one in live BP. Comeback season is real. 👀
+
+#Cubs #GoCubs #CubsBaseball</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-4-x_post-2">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-4-x_post-2')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-4-x_post-2')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-4-x_post-2">Characters: 209/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-4-x_post-2">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-4-x_post-2')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-4-x_post-2')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-4-x_post-2')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-4-x_post-2')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-4-x_post-2">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-4-x_post-2" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-4-x_post-2"></div>
+                </div>
+                <div class="card" data-id="story-5-x_post-1" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Jonathon Long Elbow Recovery Slower Than Expected</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Tweet 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #CubsBaseball #MLB</span></div>
+
+                    <div class="card-content expanded" id="content-story-5-x_post-1">
+                        <div class="card-content-text">Jonathon Long&#x27;s elbow recovery is going slower than expected. Still sore swinging a bat — Cubs are backing off. ⚾
+
+He withdrew from the WBC with Chinese Taipei. &quot;It didn&#x27;t make sense to fly across the world not knowing if I could swing.&quot;
+
+#Cubs #CubsBaseball #MLB</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-5-x_post-1" placeholder="Edit content here...">Jonathon Long&#x27;s elbow recovery is going slower than expected. Still sore swinging a bat — Cubs are backing off. ⚾
+
+He withdrew from the WBC with Chinese Taipei. &quot;It didn&#x27;t make sense to fly across the world not knowing if I could swing.&quot;
+
+#Cubs #CubsBaseball #MLB</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-5-x_post-1">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-5-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-5-x_post-1')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-5-x_post-1">Characters: 263/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-5-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-5-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-5-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-5-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-5-x_post-1')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-5-x_post-1">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-5-x_post-1" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-5-x_post-1"></div>
+                </div>
+                <div class="card" data-id="story-6-x_post-1" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">WBC Countdown — 13 Cubs Headed to National Teams This Week</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Tweet 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #GoCubs #MLB</span></div>
+
+                    <div class="card-content expanded" id="content-story-6-x_post-1">
+                        <div class="card-content-text">Five days until the World Baseball Classic. 13 Cubs are headed to their national teams. 🌍
+
+Bregman, PCA, and Boyd open Pool B for Team USA on March 6 in Houston. Suzuki joins Japan in Tokyo. Taillon suits up for Canada.
+
+#Cubs #GoCubs #MLB</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-6-x_post-1" placeholder="Edit content here...">Five days until the World Baseball Classic. 13 Cubs are headed to their national teams. 🌍
+
+Bregman, PCA, and Boyd open Pool B for Team USA on March 6 in Houston. Suzuki joins Japan in Tokyo. Taillon suits up for Canada.
+
+#Cubs #GoCubs #MLB</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-6-x_post-1">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-6-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-6-x_post-1')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-6-x_post-1">Characters: 239/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-6-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-6-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-6-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-6-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-6-x_post-1')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-6-x_post-1">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-6-x_post-1" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-6-x_post-1"></div>
+                </div>
+                <div class="card" data-id="story-7-x_post-1" data-type="x_post" data-status="unreviewed">
+                    <div class="card-header">
+                        <div class="card-title">Cubs Rotation 7 Deep — Steele&#x27;s Return Makes It Even Deeper</div>
+                        <div><span class="fact-check-badge fact-check-verified" title="All factual claims verified against sources">FACT-CHECKED</span><span class="card-badge badge-x-post">X POST</span></div>
+                    </div>
+                    <div class="tweet-meta-bar"><span class="tweet-meta-badge tweet-meta-label">Tweet 1</span><span class="tweet-meta-badge tweet-meta-hashtags">#Cubs #NorthSiders #MLB</span></div>
+
+                    <div class="card-content expanded" id="content-story-7-x_post-1">
+                        <div class="card-content-text">Cubs rotation depth chart right now:
+
+Horton. Imanaga. Boyd. Cabrera. Taillon.
+
+Steele (cleared). Rea (just blanked the Dodgers).
+
+The NL Central isn&#x27;t ready for this. 😤
+
+#Cubs #NorthSiders #MLB</div>
+                    </div>
+                    <textarea class="edit-textarea" id="editor-story-7-x_post-1" placeholder="Edit content here...">Cubs rotation depth chart right now:
+
+Horton. Imanaga. Boyd. Cabrera. Taillon.
+
+Steele (cleared). Rea (just blanked the Dodgers).
+
+The NL Central isn&#x27;t ready for this. 😤
+
+#Cubs #NorthSiders #MLB</textarea>
+                    
+                    
+                    <div class="edit-bar" id="editbar-story-7-x_post-1">
+                        <span class="edit-bar-label">Editing mode — make your changes above</span>
+                        <button class="btn btn-primary" onclick="saveAndApprove('story-7-x_post-1')">Save &amp; Approve</button>
+                        <button class="btn btn-secondary" onclick="cancelEdit('story-7-x_post-1')">Cancel</button>
+                    </div>
+                    <div class="char-count" id="charcount-story-7-x_post-1">Characters: 194/280</div>
+                    
+
+                    <div class="card-actions" id="actions-story-7-x_post-1">
+                        <button class="action-btn btn-approve" onclick="approveCard('story-7-x_post-1')">Approve</button>
+                        <button class="action-btn btn-edit" onclick="startEdit('story-7-x_post-1')">Edit</button>
+                        <button class="action-btn btn-reject" onclick="rejectCard('story-7-x_post-1')">Reject</button>
+                        <button class="action-btn btn-copy" onclick="copyContent('story-7-x_post-1')">Copy</button>
+                    </div>
+
+                    <div class="notes-section" id="notes-story-7-x_post-1">
+                        <div class="notes-label">Reviewer Notes:</div>
+                        <textarea class="notes-textarea" id="textarea-story-7-x_post-1" placeholder="Add reviewer notes..."></textarea>
+                    </div>
+
+                    <div class="status-label" id="status-story-7-x_post-1"></div>
+                </div>
+            </div>
+
+            <div class="empty-state" id="empty-state" style="display: none;">
+                <div class="empty-state-icon">No items match your filter</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule settings modal -->
+    <div class="schedule-overlay" id="schedule-overlay" onclick="closeSchedulePanel()"></div>
+    <div class="schedule-panel" id="schedule-panel">
+        <h3>Posting Schedule Settings</h3>
+        <div class="schedule-section">
+            <label>Post Date (defaults to content date)</label>
+            <input type="date" id="schedule-date" />
+        </div>
+        <div class="schedule-section">
+            <label>X / Twitter Time Slots</label>
+            <div class="time-slots" id="x-time-slots"></div>
+            <div style="margin-top:8px;">
+                <input type="time" id="new-x-time" style="width:auto;display:inline-block;margin-right:8px;" />
+                <span class="add-slot-btn" onclick="addTimeSlot('x')">+ Add Slot</span>
+            </div>
+        </div>
+        <div class="schedule-section">
+            <label>Facebook Time Slots</label>
+            <div class="time-slots" id="fb-time-slots"></div>
+            <div style="margin-top:8px;">
+                <input type="time" id="new-fb-time" style="width:auto;display:inline-block;margin-right:8px;" />
+                <span class="add-slot-btn" onclick="addTimeSlot('fb')">+ Add Slot</span>
+            </div>
+        </div>
+        <div class="schedule-section" style="background:#f9f9f9;padding:12px;border-radius:6px;font-size:12px;color:#666;">
+            Posts will be assigned to time slots in order. If you have more posts than slots, they wrap around. After downloading, upload the file directly to PostPlanner via Bulk Upload.
+        </div>
+        <div class="schedule-actions">
+            <button class="btn btn-secondary" onclick="closeSchedulePanel()">Cancel</button>
+            <button class="btn btn-csv" onclick="generateAndDownload()">Generate &amp; Download XLSX</button>
+        </div>
+    </div>
+
+    <!-- SheetJS for XLSX generation (loaded async so it doesn't block) -->
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+
+        const DATE = '2026-03-01';
+        const BRAND_NAME = 'Chicago Cubs Fan HQ';
+        const REVIEW_STORAGE_KEY = 'cubs-content-review';
+        const SCHEDULE_STORAGE_KEY = 'cubs-content-schedule-config';
+        const PHOTO_SOURCE = 'none';
+        let reviewData = {};
+        const allStories = [{"id": "story-1-daily_brief", "title": "Justin Steele Cleared by Surgeon \u2014 Back to 100%", "content": "Justin Steele Cleared by Surgeon \u2014 Back to 100%\n**Freshness Tag:** TODAY\n**Tier:** 1\n**Assigned Platforms:** X (2 text posts)\n**Priority Score:** 10\n\n**Summary:** Justin Steele has been cleared by elbow surgeon Dr. Keith Meister to resume full-intent throwing, announcing Saturday that he's \"back to 100%.\" The left-hander underwent internal brace UCL revision surgery last April 18 and could return to the rotation as early as April with no setbacks. He'll need extended spring training and minor league rehab starts first, but the Cubs won't rush him given the rotation's current depth.\n\n**Decision:** FOLLOW UP (from 2026-02-28 Story #5: Steele Throws from the Mound; 2026-02-25 Story #2: Steele Rehab Ahead of Schedule)\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-2-daily_brief", "title": "Cubs Beat Dodgers 6-2 \u2014 Rea, Brown, Assad Throw 8 Scoreless", "content": "Cubs Beat Dodgers 6-2 \u2014 Rea, Brown, Assad Throw 8 Scoreless\n**Freshness Tag:** TODAY\n**Tier:** 1\n**Assigned Platforms:** X (2 text posts)\n**Priority Score:** 9\n\n**Summary:** The Cubs beat the defending champion Dodgers 6-2 at Camelback Ranch on Saturday, powered by three outstanding pitching performances. Colin Rea threw 3 scoreless innings against LA's Opening Day lineup, Ben Brown followed with 2 scoreless frames and 3 strikeouts, and Javier Assad added 3 more scoreless innings. The offense scored on a wild pitch (5th), Pedro Ramirez single (7th), Brett Bateman two-run single (8th), Kane Kepley RBI triple, and Owen Miller sac fly (9th). Cubs' spring record improves to 4-5.\n\n**Decision:** FOLLOW UP (from 2026-02-28 Story #4: Cubs at Dodgers Today)\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-3-daily_brief", "title": "Cubs vs White Sox Today \u2014 2:05 PM CT at Sloan Park", "content": "Cubs vs White Sox Today \u2014 2:05 PM CT at Sloan Park\n**Freshness Tag:** TODAY\n**Tier:** 2\n**Assigned Platforms:** X (1 text post)\n**Priority Score:** 8\n\n**Summary:** The Cubs host the White Sox at Sloan Park today at 2:05 PM CT in a Cactus League city rivalry matchup, broadcast on Marquee Sports Network. This is the second meeting between the crosstown rivals this spring after the White Sox won the opener 8-1 on February 20.\n\n**Decision:** NEW STORY\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-4-daily_brief", "title": "Conforto Driven by 2025 Disappointment \u2014 Comeback Quest", "content": "Conforto Driven by 2025 Disappointment \u2014 Comeback Quest\n**Freshness Tag:** TRENDING\n**Tier:** 2\n**Assigned Platforms:** X (2 text posts)\n**Priority Score:** 7\n\n**Summary:** Michael Conforto is using his miserable 2025 as fuel. The former All-Star hit a career-worst .199 with the Dodgers and was left off their postseason roster, watching the World Series run from the outside. \"Super-bittersweet, super-conflicting feeling,\" he said. Now in Cubs camp on a minor league deal, Conforto homered during live batting practice and appears in a strong position to claim a roster spot as the fourth outfielder.\n\n**Decision:** FOLLOW UP (from 2026-02-27 Story #4: Conforto Looks Like a Good Bet; 2026-02-25 Story #3: Cubs Sign Michael Conforto)\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-5-daily_brief", "title": "Jonathon Long Elbow Recovery Slower Than Expected", "content": "Jonathon Long Elbow Recovery Slower Than Expected\n**Freshness Tag:** TODAY\n**Tier:** 2\n**Assigned Platforms:** X (1 text post)\n**Priority Score:** 6\n\n**Summary:** First base prospect Jonathon Long's recovery from his left elbow strain is going more slowly than expected. He's still sore when swinging a bat, prompting the Cubs to back off his activity. Long withdrew from Team Chinese Taipei's WBC roster, saying \"to fly across the world, not knowing if I could swing a bat... it just didn't make sense.\" The 24-year-old was injured February 21 when Mark Canha hyperextended his arm during a play at first base.\n\n**Decision:** FOLLOW UP (from 2026-02-27 Story #3: Jonathon Long Withdraws from WBC)\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-6-daily_brief", "title": "WBC Countdown \u2014 13 Cubs Headed to National Teams This Week", "content": "WBC Countdown \u2014 13 Cubs Headed to National Teams This Week\n**Freshness Tag:** UPCOMING\n**Tier:** 2\n**Assigned Platforms:** X (1 text post)\n**Priority Score:** 7\n\n**Summary:** With the World Baseball Classic pool play opening March 5-6, Cubs players are departing for their national teams. Team USA (Bregman, Crow-Armstrong, Boyd) opens Pool B against Brazil on March 6 at Daikin Park in Houston. Suzuki joins Japan in Tokyo, Taillon represents Canada, and Amaya plays for Panama. 13 Cubs total will participate, leaving spring camp with a noticeably different roster for the next 2-3 weeks.\n\n**Decision:** FOLLOW UP (from 2026-02-28 Story #6: Bregman Motivated by USA Hockey Gold; 2026-02-26 Story #5: 13 Cubs Head to WBC)\n\n---", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-7-daily_brief", "title": "Cubs Rotation 7 Deep \u2014 Steele's Return Makes It Even Deeper", "content": "Cubs Rotation 7 Deep \u2014 Steele's Return Makes It Even Deeper\n**Freshness Tag:** TRENDING\n**Tier:** 3\n**Assigned Platforms:** X (1 text post)\n**Priority Score:** 5\n\n**Summary:** The Cubs' rotation depth is approaching absurd levels. The front five of Horton, Imanaga, Boyd, Cabrera, and Taillon are all healthy. Justin Steele just got cleared as the sixth option. And Colin Rea \u2014 the seventh starter \u2014 just threw 3 scoreless innings against the Dodgers' Opening Day lineup. Plus Ben Brown and Javier Assad as long relief options. This is arguably the deepest pitching staff in the NL Central.\n\n**Decision:** FOLLOW UP (from 2026-02-28 Story #7: Cubs Rotation Taking Shape; 2026-02-28 Story #1: Edward Cabrera Dominates)\n\n---\n\n## Publishing Schedule\n\n| Time Slot | Story # | Post Type | Tone |\n|-----------|---------|-----------|------|\n| 7:00 AM CT | Story 1 (Post 1) | X Text Post | Informative |\n| 8:30 AM CT | Story 1 (Post 2) | X Text Post | Bold Take |\n| 10:00 AM CT | Story 2 (Post 1) | X Text Post | Informative |\n| 11:30 AM CT | Story 3 | X Text Post | Humor/Rivalry |\n| 1:00 PM CT | Story 2 (Post 2) | X Text Post | Bold Take |\n| 3:00 PM CT | Story 4 (Post 1) | X Text Post | Passionate |\n| 5:30 PM CT | Story 5 | X Text Post | Informative |\n| 7:00 PM CT | Story 6 | X Text Post | Informative/Hype |\n| 8:30 PM CT | Story 4 (Post 2) | X Text Post | Bold Take |\n| 10:00 PM CT | Story 7 | X Text Post | Bold/Witty |\n\n**Total Daily X Posts:** 10", "type": "daily_brief", "posting_window": "", "tweet_type": "", "hashtags": "", "tweet_label": ""}, {"id": "story-1-x_post-1", "title": "Justin Steele Cleared by Surgeon \u2014 Back to 100%", "content": "Justin Steele has been CLEARED by his surgeon \u2014 he's back to 100%. \ud83d\udd25\n\nDr. Keith Meister gave the green light for full-intent throwing. With no setbacks, Steele could rejoin the rotation as early as April.\n\n#Cubs #GoCubs #CubsBaseball", "type": "x_post", "posting_window": "", "tweet_type": "", "hashtags": "#Cubs #GoCubs #CubsBaseball", "tweet_label": "Tweet 1"}, {"id": "story-1-x_post-2", "title": "Justin Steele Cleared by Surgeon \u2014 Back to 100%", "content": "The Cubs already have seven healthy starters. Now add Justin Steele to the equation. \ud83d\udcaa\n\nThis rotation might be the deepest in baseball by May. And they haven't even played a real game yet.\n\n#Cubs #NorthSiders #MLB", "type": "x_post", "posting_window": "", "tweet_type": "", "hashtags": "#Cubs #NorthSiders #MLB", "tweet_label": "Tweet 2"}, {"id": "story-2-x_post-1", "title": "Cubs Beat Dodgers 6-2 \u2014 Rea, Brown, Assad Throw 8 Scoreless", "content": "Cubs 6, Dodgers 2. \u26be\n\nColin Rea, Ben Brown, and Javier Assad combined for 8 scoreless innings against LA's Opening Day lineup. Brown struck out three. The pitching depth is showing up early.\n\n#Cubs #GoCubs #FlyTheW", "type": "x_post", "posting_window": "", "tweet_type": "", "hashtags": "#Cubs #GoCubs #FlyTheW", "tweet_label": "Tweet 1"}, {"id": "story-2-x_post-2", "title": "Cubs Beat Dodgers 6-2 \u2014 Rea, Brown, Assad Throw 8 Scoreless", "content": "Colin Rea shut down the Dodgers' Opening Day lineup for three innings yesterday. He's the Cubs' SEVENTH starter. \ud83d\udd25\n\nMost teams would kill for one ace. The Cubs are stacking them like they're going out of style.\n\n#Cubs #CubsBaseball #MLB", "type": "x_post", "posting_window": "", "tweet_type": "", "hashtags": "#Cubs #CubsBaseball #MLB", "tweet_label": "Tweet 2"}, {"id": "story-3-x_post-1", "title": "Cubs vs White Sox Today \u2014 2:05 PM CT at Sloan Park", "content": "Cubs vs White Sox today at 2:05 PM CT on Marquee. City rivalry, Cactus League edition. \ud83c\udfdf\ufe0f\n\nSouth Side won the first one 8-1. Time to even things up \u2014 because even spring training bragging rights matter on the Red Line.\n\n#Cubs #GoCubs #ChicagoCubs", "type": "x_post", "posting_window": "", "tweet_type": "", "hashtags": "#Cubs #GoCubs #ChicagoCubs", "tweet_label": "Tweet 1"}, {"id": "story-4-x_post-1", "title": "Conforto Driven by 2025 Disappointment \u2014 Comeback Quest", "content": "Michael Conforto watched the Dodgers win the World Series after they left him off the postseason roster.\n\n\"Super-bittersweet. Super-conflicting feeling.\"\n\nNow he's in Cubs camp on a mission \u2014 and he homered in live BP this week. \ud83d\udcaa\n\n#Cubs #GoCubs #CubsBaseball", "type": "x_post", "posting_window": "", "tweet_type": "", "hashtags": "#Cubs #GoCubs #CubsBaseball", "tweet_label": "Tweet 1"}, {"id": "story-4-x_post-2", "title": "Conforto Driven by 2025 Disappointment \u2014 Comeback Quest", "content": "Conforto hit .199 last year. He's 33 and on a minor league deal.\n\nBut this dude was an All-Star, hit 33 homers in 2019, and just launched one in live BP. Comeback season is real. \ud83d\udc40\n\n#Cubs #GoCubs #CubsBaseball", "type": "x_post", "posting_window": "", "tweet_type": "", "hashtags": "#Cubs #GoCubs #CubsBaseball", "tweet_label": "Tweet 2"}, {"id": "story-5-x_post-1", "title": "Jonathon Long Elbow Recovery Slower Than Expected", "content": "Jonathon Long's elbow recovery is going slower than expected. Still sore swinging a bat \u2014 Cubs are backing off. \u26be\n\nHe withdrew from the WBC with Chinese Taipei. \"It didn't make sense to fly across the world not knowing if I could swing.\"\n\n#Cubs #CubsBaseball #MLB", "type": "x_post", "posting_window": "", "tweet_type": "", "hashtags": "#Cubs #CubsBaseball #MLB", "tweet_label": "Tweet 1"}, {"id": "story-6-x_post-1", "title": "WBC Countdown \u2014 13 Cubs Headed to National Teams This Week", "content": "Five days until the World Baseball Classic. 13 Cubs are headed to their national teams. \ud83c\udf0d\n\nBregman, PCA, and Boyd open Pool B for Team USA on March 6 in Houston. Suzuki joins Japan in Tokyo. Taillon suits up for Canada.\n\n#Cubs #GoCubs #MLB", "type": "x_post", "posting_window": "", "tweet_type": "", "hashtags": "#Cubs #GoCubs #MLB", "tweet_label": "Tweet 1"}, {"id": "story-7-x_post-1", "title": "Cubs Rotation 7 Deep \u2014 Steele's Return Makes It Even Deeper", "content": "Cubs rotation depth chart right now:\n\nHorton. Imanaga. Boyd. Cabrera. Taillon.\n\nSteele (cleared). Rea (just blanked the Dodgers).\n\nThe NL Central isn't ready for this. \ud83d\ude24\n\n#Cubs #NorthSiders #MLB", "type": "x_post", "posting_window": "", "tweet_type": "", "hashtags": "#Cubs #NorthSiders #MLB", "tweet_label": "Tweet 1"}];
+        const imageManifest = {};
+        let imageURLs = {}; // Runtime store: {'1_x_image': 'url', '1_facebook_image': 'url', ...}
+
+        // Image URL management
+        function updateImageURL(inputEl) {
+            var story = inputEl.dataset.story;
+            var platform = inputEl.dataset.platform;
+            var url = inputEl.value.trim();
+            var key = story + '_' + platform;
+            imageURLs[key] = url;
+
+            // Update preview thumbnail
+            var preview = document.getElementById('img-preview-' + story + '-' + platform);
+            if (preview) {
+                if (url) {
+                    preview.src = url;
+                    preview.classList.add('loaded');
+                    preview.onerror = function() { this.classList.remove('loaded'); };
+                } else {
+                    preview.src = '';
+                    preview.classList.remove('loaded');
+                }
+            }
+        }
+
+        function getImageURLForStory(storyTitle, platform) {
+            // Try runtime imageURLs first (user-pasted)
+            // Extract story number from title
+            for (var key in imageURLs) {
+                if (imageURLs[key] && key.endsWith('_' + platform)) {
+                    var storyNum = key.split('_')[0];
+                    // Check if this story matches by looking at allStories
+                    for (var i = 0; i < allStories.length; i++) {
+                        if (allStories[i].title === storyTitle &&
+                            allStories[i].id.indexOf('story-' + storyNum) !== -1) {
+                            return imageURLs[key];
+                        }
+                    }
+                }
+            }
+
+            // Try manifest data
+            for (var num in imageManifest) {
+                var mdata = imageManifest[num];
+                if (mdata && mdata[platform] && mdata[platform].exported_url) {
+                    // Check if this story number matches
+                    for (var j = 0; j < allStories.length; j++) {
+                        if (allStories[j].title === storyTitle &&
+                            allStories[j].id.indexOf('story-' + num) !== -1) {
+                            return mdata[platform].exported_url;
+                        }
+                    }
+                }
+            }
+
+            return '';
+        }
+
+        function initializeApp() {
+            const saved = localStorage.getItem(REVIEW_STORAGE_KEY + '-' + DATE);
+            if (saved) {
+                try {
+                    reviewData = JSON.parse(saved);
+                } catch (e) {
+                    reviewData = {};
+                }
+            }
+
+            allStories.forEach(function(story) {
+                if (!reviewData[story.id]) {
+                    reviewData[story.id] = {
+                        id: story.id,
+                        type: story.type,
+                        status: 'unreviewed',
+                        notes: '',
+                        content: story.content,
+                        editedContent: null
+                    };
+                }
+                // Migrate old data: ensure editedContent field exists
+                if (reviewData[story.id].editedContent === undefined) {
+                    reviewData[story.id].editedContent = null;
+                }
+            });
+
+            // Restore UI state
+            Object.keys(reviewData).forEach(function(storyId) {
+                var data = reviewData[storyId];
+                var card = document.querySelector('[data-id="' + storyId + '"]');
+                if (card) {
+                    card.setAttribute('data-status', data.status);
+                    var textarea = document.getElementById('textarea-' + storyId);
+                    if (textarea) textarea.value = data.notes || '';
+                    // If content was edited, update the display and editor
+                    if (data.editedContent) {
+                        var contentText = card.querySelector('.card-content-text');
+                        if (contentText) contentText.textContent = data.editedContent;
+                        var editor = document.getElementById('editor-' + storyId);
+                        if (editor) editor.value = data.editedContent;
+                    }
+                    updateCardVisuals(storyId, data.status, !!data.editedContent);
+                }
+            });
+
+            updateProgress();
+            filterByStatus('all');
+        }
+
+        function toggleExpand(storyId) {
+            var content = document.getElementById('content-' + storyId);
+            var toggle = document.getElementById('toggle-' + storyId);
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                content.classList.add('expanded');
+                toggle.textContent = 'Collapse';
+            } else {
+                content.classList.remove('expanded');
+                content.classList.add('collapsed');
+                toggle.textContent = 'Show Full Content';
+            }
+        }
+
+        function startEdit(storyId) {
+            var card = document.querySelector('[data-id="' + storyId + '"]');
+            if (!card) return;
+            card.classList.add('editing');
+            var editor = document.getElementById('editor-' + storyId);
+            if (editor) {
+                // If previously edited, load edited content; otherwise load original
+                var data = reviewData[storyId];
+                if (data && data.editedContent) {
+                    editor.value = data.editedContent;
+                }
+                editor.focus();
+                // Auto-resize for articles
+                editor.style.minHeight = Math.max(300, editor.scrollHeight) + 'px';
+            }
+        }
+
+        function saveAndApprove(storyId) {
+            var editor = document.getElementById('editor-' + storyId);
+            if (!editor) return;
+            var newContent = editor.value;
+
+            // Save the edited content
+            if (!reviewData[storyId]) {
+                reviewData[storyId] = { id: storyId, status: 'approved', notes: '', content: '', editedContent: null };
+            }
+            reviewData[storyId].editedContent = newContent;
+
+            // Update the display text
+            var card = document.querySelector('[data-id="' + storyId + '"]');
+            var contentText = card ? card.querySelector('.card-content-text') : null;
+            if (contentText) contentText.textContent = newContent;
+
+            // Exit edit mode
+            if (card) card.classList.remove('editing');
+
+            // Approve
+            setStatus(storyId, 'approved');
+            updateCardVisuals(storyId, 'approved', true);
+
+            // Update char count for X posts
+            updateCharCount(storyId, newContent);
+        }
+
+        function cancelEdit(storyId) {
+            var card = document.querySelector('[data-id="' + storyId + '"]');
+            if (card) card.classList.remove('editing');
+        }
+
+        function updateCharCount(storyId, text) {
+            var el = document.getElementById('charcount-' + storyId);
+            if (!el) return;
+            // Strip metadata tags before counting
+            var clean = text.replace(/\[CHARACTER COUNT:.*?\]/gi, '');
+            clean = clean.replace(/\[CHAR COUNT:.*?\]/gi, '');
+            clean = clean.replace(/\[\d+\/280\]/g, '');
+            // Remove URLs for Twitter count
+            var textNoUrls = clean.replace(/https?:\/\/\S+/g, '');
+            var count = textNoUrls.trim().length;
+            el.textContent = 'Characters: ' + count + '/280' + (count > 280 ? '  OVER LIMIT' : '');
+            el.className = count > 280 ? 'char-count warning' : 'char-count';
+        }
+
+        function approveCard(storyId) {
+            setStatus(storyId, 'approved');
+            document.getElementById('notes-' + storyId).classList.remove('show');
+        }
+
+        function rejectCard(storyId) {
+            setStatus(storyId, 'rejected');
+            document.getElementById('notes-' + storyId).classList.add('show');
+        }
+
+        function setStatus(storyId, status) {
+            if (!reviewData[storyId]) {
+                var story = allStories.find(function(s) { return s.id === storyId; });
+                reviewData[storyId] = {
+                    id: storyId,
+                    type: story ? story.type : '',
+                    status: status,
+                    notes: '',
+                    content: story ? story.content : '',
+                    editedContent: null
+                };
+            }
+
+            reviewData[storyId].status = status;
+
+            var textarea = document.getElementById('textarea-' + storyId);
+            if (textarea) reviewData[storyId].notes = textarea.value;
+
+            localStorage.setItem(REVIEW_STORAGE_KEY + '-' + DATE, JSON.stringify(reviewData));
+
+            var card = document.querySelector('[data-id="' + storyId + '"]');
+            if (card) card.setAttribute('data-status', status);
+            updateCardVisuals(storyId, status, !!(reviewData[storyId] && reviewData[storyId].editedContent));
+            updateProgress();
+        }
+
+        function updateCardVisuals(storyId, status, wasEdited) {
+            var card = document.querySelector('[data-id="' + storyId + '"]');
+            if (!card) return;
+
+            card.classList.remove('approved', 'needs-edit', 'rejected');
+            if (status !== 'unreviewed') card.classList.add(status);
+
+            var statusLabel = document.getElementById('status-' + storyId);
+            if (statusLabel) {
+                statusLabel.className = 'status-label';
+                if (status === 'approved' && wasEdited) {
+                    statusLabel.textContent = 'APPROVED (EDITED)';
+                    statusLabel.classList.add('status-edited');
+                } else if (status === 'approved') {
+                    statusLabel.textContent = 'APPROVED';
+                    statusLabel.classList.add('status-approved');
+                } else if (status === 'needs-edit') {
+                    statusLabel.textContent = 'NEEDS EDIT';
+                    statusLabel.classList.add('status-needs-edit');
+                } else if (status === 'rejected') {
+                    statusLabel.textContent = 'REJECTED';
+                    statusLabel.classList.add('status-rejected');
+                } else {
+                    statusLabel.textContent = '';
+                }
+            }
+        }
+
+        function updateProgress() {
+            var approved = 0, rejected = 0, unreviewed = 0;
+            allStories.forEach(function(story) {
+                var data = reviewData[story.id];
+                if (!data || data.status === 'unreviewed') unreviewed++;
+                else if (data.status === 'approved') approved++;
+                else if (data.status === 'rejected') rejected++;
+                else unreviewed++;
+            });
+            var reviewed = approved + rejected;
+            var total = allStories.length;
+            var percentage = total > 0 ? (reviewed / total * 100) : 0;
+            document.getElementById('reviewed-count').textContent = reviewed;
+            document.getElementById('total-count').textContent = total;
+            document.getElementById('progress-fill').style.width = percentage + '%';
+            // Update stat chips
+            document.getElementById('stat-approved-count').textContent = approved;
+            document.getElementById('stat-rejected-count').textContent = rejected;
+            document.getElementById('stat-unreviewed-count').textContent = unreviewed;
+            // Update CSV button
+            var csvBtn = document.getElementById('btn-csv');
+            var tobiBtn = document.getElementById('btn-tobi');
+            var socialApproved = countApprovedSocialPosts();
+            if (csvBtn) {
+                if (socialApproved > 0) {
+                    csvBtn.disabled = false;
+                    csvBtn.textContent = 'PostPlanner Upload (' + socialApproved + ' posts)';
+                } else {
+                    csvBtn.disabled = true;
+                    csvBtn.textContent = 'PostPlanner Upload (0 approved)';
+                }
+            }
+            // Update TOBI button (counts only X/Twitter text posts)
+            if (tobiBtn) {
+                var xApproved = countApprovedXPosts();
+                if (xApproved > 0) {
+                    tobiBtn.disabled = false;
+                    tobiBtn.textContent = 'TOBI Upload (' + xApproved + ' posts)';
+                } else {
+                    tobiBtn.disabled = true;
+                    tobiBtn.textContent = 'TOBI Upload (0 approved)';
+                }
+            }
+        }
+
+        function countApprovedSocialPosts() {
+            var count = 0;
+            allStories.forEach(function(story) {
+                var data = reviewData[story.id];
+                if (data && data.status === 'approved' && (story.type === 'x_post' || story.type === 'facebook')) {
+                    count++;
+                }
+            });
+            return count;
+        }
+
+        function countApprovedXPosts() {
+            var count = 0;
+            allStories.forEach(function(story) {
+                var data = reviewData[story.id];
+                if (data && data.status === 'approved' && story.type === 'x_post') {
+                    count++;
+                }
+            });
+            return count;
+        }
+
+        function escapeCSVField(text) {
+            if (!text) return '';
+            // If field contains comma, quote, or newline, wrap in quotes and escape inner quotes
+            if (text.indexOf(',') !== -1 || text.indexOf('"') !== -1 || text.indexOf('\n') !== -1) {
+                return '"' + text.replace(/"/g, '""') + '"';
+            }
+            return text;
+        }
+
+        function extractHashtags(text) {
+            if (!text) return '';
+            var matches = text.match(/#\w+/g);
+            return matches ? matches.join(' ') : '';
+        }
+
+        // ========== POSTING SCHEDULE SYSTEM ==========
+        var defaultXSlots = ['09:00', '12:00', '15:00', '18:00', '21:00'];
+        var defaultFBSlots = ['10:00', '13:00', '17:00'];
+
+        function getScheduleConfig() {
+            var saved = localStorage.getItem(SCHEDULE_STORAGE_KEY);
+            if (saved) {
+                try { return JSON.parse(saved); } catch(e) {}
+            }
+            return { xSlots: defaultXSlots.slice(), fbSlots: defaultFBSlots.slice() };
+        }
+
+        function saveScheduleConfig(config) {
+            localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(config));
+        }
+
+        function renderTimeSlots() {
+            var config = getScheduleConfig();
+            var xContainer = document.getElementById('x-time-slots');
+            var fbContainer = document.getElementById('fb-time-slots');
+
+            xContainer.innerHTML = config.xSlots.map(function(t, i) {
+                return '<span class="time-slot">' + t + ' <span class="remove-slot" onclick="removeTimeSlot(\x27x\x27,' + i + ')">&times;</span></span>';
+            }).join('');
+
+            fbContainer.innerHTML = config.fbSlots.map(function(t, i) {
+                return '<span class="time-slot">' + t + ' <span class="remove-slot" onclick="removeTimeSlot(\x27fb\x27,' + i + ')">&times;</span></span>';
+            }).join('');
+        }
+
+        function addTimeSlot(platform) {
+            var inputId = platform === 'x' ? 'new-x-time' : 'new-fb-time';
+            var val = document.getElementById(inputId).value;
+            if (!val) return;
+            var config = getScheduleConfig();
+            var arr = platform === 'x' ? config.xSlots : config.fbSlots;
+            if (arr.indexOf(val) === -1) {
+                arr.push(val);
+                arr.sort();
+            }
+            saveScheduleConfig(config);
+            renderTimeSlots();
+            document.getElementById(inputId).value = '';
+        }
+
+        function removeTimeSlot(platform, index) {
+            var config = getScheduleConfig();
+            var arr = platform === 'x' ? config.xSlots : config.fbSlots;
+            arr.splice(index, 1);
+            saveScheduleConfig(config);
+            renderTimeSlots();
+        }
+
+        function downloadPostPlannerCSV() {
+            // Open schedule panel instead of direct download
+            openSchedulePanel();
+        }
+
+        function openSchedulePanel() {
+            document.getElementById('schedule-date').value = DATE;
+            renderTimeSlots();
+            document.getElementById('schedule-panel').classList.add('show');
+            document.getElementById('schedule-overlay').classList.add('show');
+        }
+
+        function closeSchedulePanel() {
+            document.getElementById('schedule-panel').classList.remove('show');
+            document.getElementById('schedule-overlay').classList.remove('show');
+        }
+
+        function formatTimeForPostPlanner(time24, dateStr) {
+            // Output PostPlanner V2 format: MM/DD/YYYY  HH:MM (24hr)
+            var parts = dateStr.split('-');
+            return parts[1] + '/' + parts[2] + '/' + parts[0] + '  ' + time24;
+        }
+
+        function redistributeTimes(rows) {
+            // Ensure all post times are at least 30 min from now,
+            // evenly spaced through the rest of the day.
+            if (rows.length === 0) return rows;
+
+            var now = new Date();
+            var nowMinutes = now.getHours() * 60 + now.getMinutes();
+            var floorMinutes = nowMinutes + 30;
+            var endMinutes = 22 * 60; // 10:00 PM cutoff
+
+            // Check if ANY post times have already passed
+            var anyPast = rows.some(function(row) {
+                var parts = row.time.split(':');
+                var rowMin = parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+                return rowMin < floorMinutes;
+            });
+
+            if (!anyPast) return rows; // all times are in the future, keep them
+
+            if (floorMinutes >= endMinutes) {
+                alert('It is past 9:30 PM — not enough time remaining to schedule all posts today. Posts will use original times.');
+                return rows;
+            }
+
+            var availableMinutes = endMinutes - floorMinutes;
+            var spacing = Math.floor(availableMinutes / rows.length);
+            if (spacing < 15) spacing = 15; // minimum 15 min gap
+            if (spacing > 90) spacing = 90; // maximum 90 min gap
+
+            rows.forEach(function(row, i) {
+                var postMinutes = floorMinutes + (i * spacing);
+                if (postMinutes >= 24 * 60) postMinutes = 23 * 60 + 45;
+                var h = Math.floor(postMinutes / 60);
+                var m = postMinutes % 60;
+                row.time = (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+            });
+
+            var firstTime = rows[0].time;
+            var lastTime = rows[rows.length - 1].time;
+            console.log('PostPlanner export: redistributed ' + rows.length + ' posts from ' + firstTime + ' to ' + lastTime + ' (' + spacing + ' min apart)');
+            return rows;
+        }
+
+        function generateAndDownload() {
+            var config = getScheduleConfig();
+            var postDate = document.getElementById('schedule-date').value || DATE;
+
+            var xRows = [];
+            var fbRows = [];
+
+            allStories.forEach(function(story) {
+                var data = reviewData[story.id];
+                if (!data || data.status !== 'approved') return;
+                var finalContent = data.editedContent || story.content;
+
+                if (story.type === 'x_post') {
+                    // If this is an individual tweet card (has tweet_label), use directly
+                    if (story.tweet_label) {
+                        xRows.push({
+                            content: finalContent,
+                            type: story.tweet_type || 'text',
+                            hashtags: story.hashtags || extractHashtags(finalContent),
+                            story: story.title,
+                            posting_window: story.posting_window || ''
+                        });
+                    } else {
+                        // Legacy: parse full story markdown for individual tweets
+                        var sections = parseXPostContent(finalContent, story.title);
+                        sections.forEach(function(post) {
+                            xRows.push({
+                                content: post.text,
+                                type: post.type,
+                                hashtags: extractHashtags(post.text),
+                                story: story.title
+                            });
+                        });
+                    }
+                } else if (story.type === 'facebook') {
+                    var fbPost = parseFacebookContent(finalContent, story.title);
+                    if (fbPost) {
+                        fbRows.push(fbPost);
+                    }
+                }
+            });
+
+            if (xRows.length === 0 && fbRows.length === 0) {
+                alert('No approved social posts to export.');
+                return;
+            }
+
+            // Parse actual time from posting_window string like "7:00 AM CT" -> "07:00"
+            function parsePostingTime(timeStr) {
+                if (!timeStr) return null;
+                var m = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+                if (!m) return null;
+                var h = parseInt(m[1], 10);
+                var min = m[2];
+                var ampm = m[3].toUpperCase();
+                if (ampm === 'PM' && h !== 12) h += 12;
+                if (ampm === 'AM' && h === 12) h = 0;
+                return (h < 10 ? '0' : '') + h + ':' + min;
+            }
+
+            // Generic window name fallback
+            var windowToTime = {
+                'Morning': '09:00',
+                'Midday': '12:00',
+                'Afternoon': '15:00',
+                'Evening': '18:00',
+                'Late Night': '21:00'
+            };
+
+            // Assign times: use posting_window property first, then content tag, then round-robin
+            function assignTimes(rows, slots) {
+                if (slots.length === 0) slots = ['12:00'];
+                return rows.map(function(row, i) {
+                    row.date = postDate;
+                    // 1. Try posting_window property (e.g., "7:00 AM CT")
+                    var parsed = parsePostingTime(row.posting_window);
+                    if (parsed) {
+                        row.time = parsed;
+                        return row;
+                    }
+                    // 2. Try [POSTING WINDOW: ...] tag in content
+                    var windowMatch = row.content ? row.content.match(/\[POSTING WINDOW:\s*([^\]]+)\]/) : null;
+                    if (windowMatch) {
+                        parsed = parsePostingTime(windowMatch[1]);
+                        if (parsed) {
+                            row.time = parsed;
+                            return row;
+                        }
+                        if (windowToTime[windowMatch[1].trim()]) {
+                            row.time = windowToTime[windowMatch[1].trim()];
+                            return row;
+                        }
+                    }
+                    // 3. Fall back to round-robin
+                    row.time = slots[i % slots.length];
+                    return row;
+                });
+            }
+
+            xRows = assignTimes(xRows, config.xSlots);
+            fbRows = assignTimes(fbRows, config.fbSlots);
+
+            // Generate XLSX in PostPlanner Bulk Upload V2 format
+            if (typeof XLSX === 'undefined') {
+                alert('SheetJS library not loaded. Falling back to CSV download.');
+                fallbackCSVDownload(xRows, fbRows, postDate);
+                return;
+            }
+
+            // Combine all rows and sort by original time
+            var allRows = xRows.concat(fbRows);
+            allRows.sort(function(a, b) {
+                return a.time.localeCompare(b.time);
+            });
+
+            // Smart time redistribution
+            allRows = redistributeTimes(allRows);
+
+            var wb = XLSX.utils.book_new();
+
+            // PostPlanner V3.1 format: Row 1 = version marker, Row 2 = headers, Row 3+ = data
+            var data = [
+                ['## ' + BRAND_NAME + ' -- PostPlanner Bulk Upload', 'BULK UPLOAD VERSION 3.1 – Please DO NOT EDIT this cell.', '', '', '', '', '', '', ''],
+                ['## POSTING TIME', 'CAPTION', 'LINK', 'MEDIA', 'TITLE', 'FIRST COMMENT', 'FIRST COMMENT DELAY', 'TOBI BACKGROUND', 'REEL OR STORY']
+            ];
+
+            allRows.forEach(function(row) {
+                var caption = cleanMarkdownForPost(row.content);
+                var mediaUrl = '';
+                if (row.type === 'image' || row.type === 'IMAGE') {
+                    mediaUrl = getImageURLForStory(row.story, row.platform === 'facebook' ? 'facebook_image' : 'x_image') || '';
+                }
+                data.push([
+                    formatTimeForPostPlanner(row.time, postDate),
+                    caption,
+                    '',
+                    mediaUrl,
+                    '', '', '', '', ''
+                ]);
+            });
+
+            var sheet = XLSX.utils.aoa_to_sheet(data);
+            sheet['!cols'] = [
+                {wch: 20}, {wch: 80}, {wch: 30}, {wch: 30}, {wch: 10}, {wch: 20}, {wch: 18}, {wch: 18}, {wch: 14}
+            ];
+            XLSX.utils.book_append_sheet(wb, sheet, 'Sheet1');
+
+            // Download
+            XLSX.writeFile(wb, 'postplanner-upload-' + postDate + '.xlsx');
+            closeSchedulePanel();
+
+            var msg = 'Downloaded postplanner-upload-' + postDate + '.xlsx with ';
+            var parts = [];
+            if (xRows.length > 0) parts.push(xRows.length + ' X posts');
+            if (fbRows.length > 0) parts.push(fbRows.length + ' Facebook posts');
+            alert(msg + parts.join(' and ') + '.\n\nUpload this file to PostPlanner via Bulk Upload.');
+        }
+
+        function cleanMarkdownForPost(text) {
+            // Strip markdown formatting and metadata that shouldn't appear in social posts
+            if (!text) return '';
+            return text
+                .replace(/\[CHARACTER COUNT:.*?\]/gi, '')
+                .replace(/\[CHAR COUNT:.*?\]/gi, '')
+                .replace(/\[\d+\/280\]/g, '')
+                .replace(/\*\*\[POSTING WINDOW:.*?\]\*\*/g, '')
+                .replace(/\[POSTING WINDOW:.*?\]/g, '')
+                .replace(/\*\*([^*]+)\*\*/g, '$1')
+                .replace(/\*([^*]+)\*/g, '$1')
+                .replace(/^#+\s+/gm, '')
+                .replace(/^[-*]\s+/gm, '')
+                .replace(/```[\s\S]*?```/g, '')
+                .replace(/\n{3,}/g, '\n\n')
+                .trim();
+        }
+
+        function fallbackCSVDownload(xRows, fbRows, postDate) {
+            // Fallback if SheetJS fails to load — generates CSV in V2-like format
+            var allRows = xRows.concat(fbRows);
+            allRows.sort(function(a, b) { return a.time.localeCompare(b.time); });
+            if (allRows.length === 0) {
+                alert('No approved posts to export.');
+                closeSchedulePanel();
+                return;
+            }
+            // Smart time redistribution (same as XLSX path)
+            allRows = redistributeTimes(allRows);
+            var csv = '## ' + BRAND_NAME + ' -- PostPlanner Bulk Upload,' + escapeCSVField('BULK UPLOAD VERSION 3.1 – Please DO NOT EDIT this cell.') + ',,,,,,,\n';
+            csv += '## POSTING TIME,CAPTION,LINK,MEDIA,TITLE,FIRST COMMENT,FIRST COMMENT DELAY,TOBI BACKGROUND,REEL OR STORY\n';
+            allRows.forEach(function(row) {
+                csv += escapeCSVField(formatTimeForPostPlanner(row.time, postDate)) + ',' +
+                       escapeCSVField(cleanMarkdownForPost(row.content)) + ',' +
+                       ',,,,,,\n';
+            });
+            downloadFile(csv, 'postplanner-upload-' + postDate + '.csv', 'text/csv');
+            closeSchedulePanel();
+        }
+
+        function downloadTOBIExport() {
+            // Generate TOBI XLSX directly (no schedule panel needed — uses same times)
+            generateAndDownloadTOBI();
+        }
+
+        function stripHashtags(text) {
+            // Remove lines that are entirely hashtags, and trailing blank lines
+            var lines = text.split('\n');
+            var cleaned = [];
+            for (var i = 0; i < lines.length; i++) {
+                var stripped = lines[i].trim();
+                if (stripped && stripped.split(/\s+/).every(function(w) { return w.charAt(0) === '#'; })) {
+                    continue;
+                }
+                cleaned.push(lines[i]);
+            }
+            while (cleaned.length > 0 && !cleaned[cleaned.length - 1].trim()) {
+                cleaned.pop();
+            }
+            return cleaned.join('\n');
+        }
+
+        function generateAndDownloadTOBI() {
+            var postDate = document.getElementById('schedule-date') ?
+                document.getElementById('schedule-date').value || DATE : DATE;
+
+            // Collect approved X/Twitter text posts only
+            var xRows = [];
+            allStories.forEach(function(story) {
+                var data = reviewData[story.id];
+                if (!data || data.status !== 'approved') return;
+                if (story.type !== 'x_post') return;
+
+                var finalContent = data.editedContent || story.content;
+                if (story.tweet_label) {
+                    xRows.push({
+                        content: finalContent,
+                        posting_window: story.posting_window || '',
+                        story: story.title
+                    });
+                }
+            });
+
+            if (xRows.length === 0) {
+                alert('No approved X/Twitter posts for TOBI export.');
+                return;
+            }
+
+            // Assign times from posting windows
+            xRows = xRows.map(function(row) {
+                row.date = postDate;
+                var m = row.posting_window ? row.posting_window.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i) : null;
+                if (m) {
+                    var h = parseInt(m[1], 10);
+                    var min = m[2];
+                    var ampm = m[3].toUpperCase();
+                    if (ampm === 'PM' && h !== 12) h += 12;
+                    if (ampm === 'AM' && h === 12) h = 0;
+                    row.time = (h < 10 ? '0' : '') + h + ':' + min;
+                } else {
+                    row.time = '12:00';
+                }
+                return row;
+            });
+
+            // Sort by time
+            xRows.sort(function(a, b) { return a.time.localeCompare(b.time); });
+
+            // Smart time redistribution
+            xRows = redistributeTimes(xRows);
+
+            // Apply hashtag split: first half keeps, second half strips
+            var midpoint = Math.floor(xRows.length / 2);
+
+            if (typeof XLSX === 'undefined') {
+                alert('SheetJS library not loaded. Cannot generate TOBI XLSX.');
+                return;
+            }
+
+            var wb = XLSX.utils.book_new();
+            var data = [
+                ['## ' + BRAND_NAME + ' -- PostPlanner TOBI Bulk Upload', 'BULK UPLOAD VERSION 3.1 – Please DO NOT EDIT this cell.', '', '', '', '', '', '', ''],
+                ['## POSTING TIME', 'CAPTION', 'LINK', 'MEDIA', 'TITLE', 'FIRST COMMENT', 'FIRST COMMENT DELAY', 'TOBI BACKGROUND', 'REEL OR STORY']
+            ];
+
+            xRows.forEach(function(row, i) {
+                var caption = cleanMarkdownForPost(row.content);
+
+                // Second half: strip hashtags
+                if (i >= midpoint) {
+                    caption = stripHashtags(caption);
+                }
+
+                // If still over 130 chars with hashtags (first half), strip them too
+                if (caption.length > 130 && i < midpoint) {
+                    caption = stripHashtags(caption);
+                }
+
+                // If STILL over 130 chars, truncate at last complete sentence
+                if (caption.length > 130) {
+                    var sentences = caption.split(/(?<=[.!?])\s+/);
+                    var truncated = '';
+                    for (var s = 0; s < sentences.length; s++) {
+                        var candidate = truncated ? truncated + ' ' + sentences[s] : sentences[s];
+                        if (candidate.length <= 130) {
+                            truncated = candidate;
+                        } else {
+                            break;
+                        }
+                    }
+                    caption = truncated || caption.substring(0, 127) + '...';
+                }
+
+                data.push([
+                    formatTimeForPostPlanner(row.time, postDate),
+                    caption,
+                    '', '', '', '', '',
+                    'true-black',
+                    ''
+                ]);
+            });
+
+            var sheet = XLSX.utils.aoa_to_sheet(data);
+            sheet['!cols'] = [
+                {wch: 20}, {wch: 80}, {wch: 10}, {wch: 10}, {wch: 10}, {wch: 20}, {wch: 18}, {wch: 18}, {wch: 14}
+            ];
+            XLSX.utils.book_append_sheet(wb, sheet, 'Sheet1');
+
+            XLSX.writeFile(wb, 'postplanner-tobi-upload-' + postDate + '.xlsx');
+
+            var withHashtags = midpoint;
+            var withoutHashtags = xRows.length - midpoint;
+            alert('Downloaded TOBI export with ' + xRows.length + ' posts.\n\n' +
+                  withHashtags + ' with hashtags, ' + withoutHashtags + ' without.\n\n' +
+                  'Background: true-black (Column H).\nUpload to PostPlanner for Facebook TOBI posts.');
+        }
+
+        function parseXPostContent(content, storyTitle) {
+            var posts = [];
+            var lines = content.split('\n');
+
+            var inTextPost = false;
+            var inThread = false;
+            var currentTweetNum = 0;
+            var currentText = [];
+
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                var trimmed = line.trim();
+
+                if (trimmed.match(/^###\s+Text Post/i)) {
+                    flushPost();
+                    inTextPost = true;
+                    inThread = false;
+                    currentText = [];
+                    continue;
+                }
+                if (trimmed.match(/^###\s+Thread Concept/i)) {
+                    flushPost();
+                    inTextPost = false;
+                    inThread = true;
+                    currentText = [];
+                    currentTweetNum = 0;
+                    continue;
+                }
+                if (trimmed.match(/^###\s+Image Post/i)) {
+                    flushPost();
+                    inTextPost = false;
+                    inThread = false;
+                    continue;
+                }
+                if (trimmed.match(/^###\s/)) {
+                    flushPost();
+                    inTextPost = false;
+                    inThread = false;
+                    continue;
+                }
+
+                if (inThread && trimmed.match(/^\*\*Tweet\s+\d+/i)) {
+                    flushPost();
+                    currentTweetNum++;
+                    currentText = [];
+                    continue;
+                }
+
+                if (inTextPost || (inThread && currentTweetNum > 0)) {
+                    if (trimmed !== '') {
+                        currentText.push(line);
+                    }
+                }
+            }
+            flushPost();
+
+            function flushPost() {
+                if (currentText.length === 0) return;
+                var text = currentText.join('\n').trim();
+                if (!text) return;
+
+                if (inTextPost) {
+                    posts.push({ text: text, type: 'text' });
+                } else if (inThread && currentTweetNum > 0) {
+                    posts.push({
+                        text: text,
+                        type: currentTweetNum === 1 ? 'thread_start' : 'thread_reply'
+                    });
+                }
+                currentText = [];
+            }
+
+            return posts;
+        }
+
+        function parseFacebookContent(content, storyTitle) {
+            var lines = content.split('\n');
+            var inLongForm = false;
+            var inImagePost = false;
+            var longFormLines = [];
+            var imageCaption = '';
+
+            for (var i = 0; i < lines.length; i++) {
+                var trimmed = lines[i].trim();
+
+                if (trimmed.match(/^###\s+Long-Form Post/i)) {
+                    inLongForm = true;
+                    inImagePost = false;
+                    longFormLines = [];
+                    continue;
+                }
+                if (trimmed.match(/^###\s+Image Post Caption/i) || trimmed.match(/^###\s+Image Post/i)) {
+                    inLongForm = false;
+                    inImagePost = true;
+                    continue;
+                }
+                if (trimmed.match(/^###\s/) || trimmed.match(/^---/)) {
+                    inLongForm = false;
+                    inImagePost = false;
+                    continue;
+                }
+
+                if (inLongForm) {
+                    longFormLines.push(lines[i]);
+                }
+                if (inImagePost && trimmed !== '') {
+                    imageCaption = trimmed;
+                    inImagePost = false;
+                }
+            }
+
+            var longForm = longFormLines.join('\n').trim();
+            if (!longForm) return null;
+
+            return {
+                content: longForm,
+                image_caption: imageCaption,
+                story: storyTitle
+            };
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            var blob = new Blob([content], { type: mimeType });
+            var url = URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        var currentStatusFilter = 'all';
+        var currentTypeFilter = 'all';
+
+        function filterByStatus(status) {
+            currentStatusFilter = status;
+            applyFilters();
+            document.querySelectorAll('.filter-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+                if (btn.textContent.trim().toLowerCase().replace(/\s+/g, '') === status.replace('-', '').toLowerCase() ||
+                    (status === 'all' && btn.textContent.trim() === 'All') ||
+                    (status === 'needs-edit' && btn.textContent.trim() === 'Needs Edit')) {
+                    btn.classList.add('active');
+                }
+            });
+            document.querySelectorAll('.sidebar .nav-item').forEach(function(item) { item.classList.remove('active'); });
+        }
+
+        function filterByType(type) {
+            currentTypeFilter = type;
+            currentStatusFilter = 'all';
+            applyFilters();
+            document.querySelectorAll('.sidebar .nav-item').forEach(function(item) { item.classList.remove('active'); });
+            document.querySelectorAll('.filter-btn').forEach(function(btn) {
+                btn.classList.remove('active');
+                if (btn.textContent.trim() === 'All') btn.classList.add('active');
+            });
+        }
+
+        function applyFilters() {
+            var cards = document.querySelectorAll('.card');
+            var visibleCount = 0;
+            cards.forEach(function(card) {
+                var cardStatus = card.getAttribute('data-status');
+                var cardType = card.getAttribute('data-type');
+                var matchesStatus = (currentStatusFilter === 'all') || (cardStatus === currentStatusFilter);
+                var matchesType = (currentTypeFilter === 'all') || (cardType === currentTypeFilter);
+                if (matchesStatus && matchesType) {
+                    card.classList.add('show');
+                    visibleCount++;
+                } else {
+                    card.classList.remove('show');
+                }
+            });
+            document.getElementById('empty-state').style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        function approveAll() {
+            if (!confirm('Approve all ' + allStories.length + ' items?')) return;
+            allStories.forEach(function(story) { setStatus(story.id, 'approved'); });
+        }
+
+        function resetAll() {
+            if (confirm('Reset all reviews? This cannot be undone.')) {
+                localStorage.removeItem(REVIEW_STORAGE_KEY + '-' + DATE);
+                location.reload();
+            }
+        }
+
+        function copyContent(storyId) {
+            var data = reviewData[storyId];
+            var story = allStories.find(function(s) { return s.id === storyId; });
+            var text = (data && data.editedContent) ? data.editedContent : (story ? story.content : '');
+            navigator.clipboard.writeText(text).then(function() {
+                var btn = document.querySelector('[data-id="' + storyId + '"] .btn-copy');
+                if (btn) { var orig = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function() { btn.textContent = orig; }, 1500); }
+            });
+        }
+
+        function exportApprovals() {
+            var items = [];
+            allStories.forEach(function(story) {
+                var data = reviewData[story.id] || {};
+                items.push({
+                    id: story.id,
+                    type: story.type,
+                    title: story.title,
+                    status: data.status || 'unreviewed',
+                    notes: data.notes || '',
+                    content: story.content,
+                    editedContent: data.editedContent || null,
+                    finalContent: data.editedContent || story.content
+                });
+            });
+
+            var exportData = {
+                date: DATE,
+                reviewed_by: '',
+                reviewed_at: new Date().toISOString(),
+                items: items
+            };
+
+            var dataStr = JSON.stringify(exportData, null, 2);
+            var dataBlob = new Blob([dataStr], { type: 'application/json' });
+            var url = URL.createObjectURL(dataBlob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = 'approvals-' + DATE + '.json';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Auto-save notes as you type
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('notes-textarea')) {
+                var storyId = e.target.id.replace('textarea-', '');
+                if (reviewData[storyId]) {
+                    reviewData[storyId].notes = e.target.value;
+                    localStorage.setItem(REVIEW_STORAGE_KEY + '-' + DATE, JSON.stringify(reviewData));
+                }
+            }
+        });
+
+        initializeApp();
+
+    </script>
+</body>
+</html>
