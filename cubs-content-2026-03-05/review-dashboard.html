@@ -1744,6 +1744,28 @@ NL Central&#x27;s ours. Sorry not sorry. 😂
             return rows;
         }
 
+        // Parse actual time from posting_window string like "7:00 AM CT" -> "07:00"
+        function parsePostingTime(timeStr) {
+            if (!timeStr) return null;
+            var m = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+            if (!m) return null;
+            var h = parseInt(m[1], 10);
+            var min = m[2];
+            var ampm = m[3].toUpperCase();
+            if (ampm === 'PM' && h !== 12) h += 12;
+            if (ampm === 'AM' && h === 12) h = 0;
+            return (h < 10 ? '0' : '') + h + ':' + min;
+        }
+
+        // Generic window name fallback
+        var windowToTime = {
+            'Morning': '09:00',
+            'Midday': '12:00',
+            'Afternoon': '15:00',
+            'Evening': '18:00',
+            'Late Night': '21:00'
+        };
+
         function generateAndDownload() {
             var config = getScheduleConfig();
             var postDate = document.getElementById('schedule-date').value || DATE;
@@ -1790,28 +1812,6 @@ NL Central&#x27;s ours. Sorry not sorry. 😂
                 alert('No approved social posts to export.');
                 return;
             }
-
-            // Parse actual time from posting_window string like "7:00 AM CT" -> "07:00"
-            function parsePostingTime(timeStr) {
-                if (!timeStr) return null;
-                var m = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-                if (!m) return null;
-                var h = parseInt(m[1], 10);
-                var min = m[2];
-                var ampm = m[3].toUpperCase();
-                if (ampm === 'PM' && h !== 12) h += 12;
-                if (ampm === 'AM' && h === 12) h = 0;
-                return (h < 10 ? '0' : '') + h + ':' + min;
-            }
-
-            // Generic window name fallback
-            var windowToTime = {
-                'Morning': '09:00',
-                'Midday': '12:00',
-                'Afternoon': '15:00',
-                'Evening': '18:00',
-                'Late Night': '21:00'
-            };
 
             // Assign times: use posting_window property first, then content tag, then round-robin
             function assignTimes(rows, slots, label) {
